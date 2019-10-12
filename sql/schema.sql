@@ -1,4 +1,6 @@
+create schema public;
 
+comment on schema public is 'standard public schema';
 
 alter schema public owner to postgres;
 
@@ -7,13 +9,14 @@ create table "user"
     user_id serial not null
         constraint user_pk
             primary key,
-    email varchar(99) not null,
-    firstname varchar(99),
-    lastname varchar(99),
-    password varchar(999) not null,
+    email varchar(128) not null,
+    firstname varchar(64),
+    lastname varchar(64),
+    password varchar(128) not null,
     ranking integer default 0,
     created_at timestamp default now()
 );
+
 
 
 create unique index user_email_uindex
@@ -27,10 +30,11 @@ create table view
     user_id integer not null
         constraint view_user__fk
             references "user",
-    view_code varchar(99) not null,
+    view_code varchar(64) not null,
     private boolean default false
 );
 
+alter table view owner to developer;
 
 create unique index view_view_code_uindex
     on view (view_code);
@@ -44,6 +48,7 @@ create table book
     testament varchar(2)
 );
 
+alter table book owner to developer;
 
 create unique index book_title_uindex
     on book (title);
@@ -59,6 +64,7 @@ create table chapter
     chapter_no integer not null
 );
 
+alter table chapter owner to developer;
 
 create table note
 (
@@ -83,6 +89,7 @@ create table note
     last_modified timestamp
 );
 
+alter table note owner to developer;
 
 create table view_note
 (
@@ -97,6 +104,7 @@ create table view_note
             references note
 );
 
+alter table view_note owner to developer;
 
 create table comment
 (
@@ -114,4 +122,5 @@ create table comment
 
 comment on table comment is 'Used for user comments on notes';
 
+alter table comment owner to developer;
 
