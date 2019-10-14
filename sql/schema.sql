@@ -1,5 +1,3 @@
-create schema public;
-
 comment on schema public is 'standard public schema';
 
 alter schema public owner to postgres;
@@ -34,7 +32,7 @@ create table view
     private boolean default false
 );
 
-alter table view owner to developer;
+
 
 create unique index view_view_code_uindex
     on view (view_code);
@@ -48,7 +46,7 @@ create table book
     testament varchar(2)
 );
 
-alter table book owner to developer;
+
 
 create unique index book_title_uindex
     on book (title);
@@ -64,7 +62,6 @@ create table chapter
     chapter_no integer not null
 );
 
-alter table chapter owner to developer;
 
 create table note
 (
@@ -89,7 +86,6 @@ create table note
     last_modified timestamp
 );
 
-alter table note owner to developer;
 
 create table view_note
 (
@@ -104,7 +100,6 @@ create table view_note
             references note
 );
 
-alter table view_note owner to developer;
 
 create table comment
 (
@@ -122,5 +117,4 @@ create table comment
 
 comment on table comment is 'Used for user comments on notes';
 
-alter table comment owner to developer;
 

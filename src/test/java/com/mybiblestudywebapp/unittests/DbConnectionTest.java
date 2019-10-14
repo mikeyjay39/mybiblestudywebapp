@@ -4,16 +4,19 @@ import com.opentable.db.postgres.embedded.EmbeddedPostgres;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.postgresql.ds.PGPoolingDataSource;
+import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.support.EncodedResource;
 import org.springframework.jdbc.datasource.init.ScriptUtils;
-import org.w3c.dom.CDATASection;
 
 import javax.sql.DataSource;
 import java.nio.file.Paths;
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.Properties;
 
 
 /**
@@ -23,14 +26,36 @@ import java.sql.Statement;
  */
 public class DbConnectionTest {
 
-    private static DataSource dataSource;
+    private static DataSource embeddedDataSource;
+    private static Connection livePostgresConnection;
 
     @BeforeClass
     public static void beforeClass() throws Exception {
-        dataSource = buildEmbeddedDataBase();
+        embeddedDataSource = buildEmbeddedDataBase();
+        Properties properties = new Properties();
+        properties.setProperty("user", System.getenv("PSQLDBUSER"));
+        properties.setProperty("password", System.getenv("PSQLDBPASS"));
+        livePostgresConnection = DriverManager.getConnection(System.getenv("PSQLDBURL"), properties);
+    }
+
+    /**
+     * Tests that connection to live postgres works
+     * @throws Exception
+     */
+    @Test
+    public void testLiveDbConnection() throws Exception {
+        Statement statement = livePostgresConnection.createStatement();
+        ResultSet rs = statement.executeQuery("SELECT 1");
+        Assert.assertTrue(rs.next());
+        Assert.assertEquals(1, rs.getInt(1));
+        Assert.assertFalse(rs.next());
     }
 
 
+    /**
+     * Tests that the connection to embedded postgres works
+     * @throws Exception
+     */
     @Test
     public void testEmbeddedPg() throws Exception
     {
@@ -52,7 +77,7 @@ public class DbConnectionTest {
      */
     @Test
     public void testEmbeddedPgBuilt() throws Exception {
-        try (Connection connection = dataSource.getConnection()) {
+        try (Connection connection = embeddedDataSource.getConnection()) {
             Statement statement = connection.createStatement();
             ResultSet rs = statement.executeQuery("SELECT * FROM book;");
             Assert.assertTrue(rs.next());
@@ -63,6 +88,19 @@ public class DbConnectionTest {
         }
     }
 
+    /**
+     * Provides the embedded Postgres for tests
+     * @return
+     */
+    public static DataSource getEmbeddedPostgres() {
+        return embeddedDataSource;
+    }
+
+    /**
+     * Builds embedded postgres db for testing
+     * @return
+     * @throws Exception
+     */
     private static DataSource buildEmbeddedDataBase() throws Exception {
         EmbeddedPostgres pg = EmbeddedPostgres.start();
         DataSource dataSource = pg.getPostgresDatabase();
