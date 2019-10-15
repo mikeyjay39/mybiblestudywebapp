@@ -4,10 +4,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Created by Michael Jeszenka
@@ -85,15 +82,36 @@ public class UserDao implements Dao<User> {
     }
 
     @Override
-    public void update(User user, String[] params) {
+    public boolean update(User user, Map<String, Object> params) {
         // TODO finish this
+        Set<String> columns = params.keySet();
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("UPDATE users SET ");
+        int columnsSize = columns.size();
+        int i = 0;
+        for (String column : columns) {
+            stringBuilder.append(column + " = '" + params.get(column) + "'");
+            i++;
+            if (i < columnsSize) {
+                stringBuilder.append(",");
+            }
+        }
+        stringBuilder.append(" WHERE user_id = " + user.getUserId());
+        String sql =  stringBuilder.toString();
 
-        //users.add(user);
+        int rows = jdbcTemplate.update(sql);
+
+        if (rows > 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override
-    public void delete(User user) {
+    public boolean delete(User user) {
         //users.remove(user);
+        return false;
     }
 
     /**

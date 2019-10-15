@@ -8,7 +8,9 @@ import org.springframework.boot.autoconfigure.quartz.QuartzProperties;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Michael Jeszenka
@@ -47,6 +49,23 @@ public class UserUnitTests {
 
         List<User> users = userDao.getAll();
         Assert.assertNotNull(users);
+    }
+
+    @Test
+    public void testUpdate() throws Exception {
+        User user = createTestUser();
+        addUser(user);
+        user = getUserByEmail(user.getEmail());
+        long originalId = user.getUserId();
+        String newEmail = "mynewemail@gmail.com";
+        Map<String, Object> params = new HashMap<>();
+        params.put("email", newEmail);
+        userDao.update(user, params);
+        User newUser = getUserByEmail(newEmail);
+        long newId = newUser.getUserId();
+        Assert.assertEquals(originalId, newId);
+        Assert.assertEquals(user, newUser);
+        Assert.assertNotEquals(user.getEmail(), newUser.getEmail());
     }
 
     private User getUserByEmail(String email) {

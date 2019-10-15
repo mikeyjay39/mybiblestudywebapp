@@ -1,6 +1,7 @@
 package com.mybiblestudywebapp.persistence;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -15,7 +16,7 @@ public interface Dao<T> {
 
     boolean save(T t);
 
-    void update(T t, String... params);
+    boolean update(T t, Map<String, Object> params);
 
-    void delete(T t);
+    boolean delete(T t);
 }
