@@ -7,10 +7,7 @@ import org.junit.Test;
 import org.springframework.boot.autoconfigure.quartz.QuartzProperties;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Michael Jeszenka
@@ -66,6 +63,18 @@ public class UserUnitTests {
         Assert.assertEquals(originalId, newId);
         Assert.assertEquals(user, newUser);
         Assert.assertNotEquals(user.getEmail(), newUser.getEmail());
+    }
+
+    @Test
+    public void testDelete() throws Exception {
+        User user = createTestUser();
+        addUser(user);
+        user = getUserByEmail(user.getEmail());
+        long originalId = user.getUserId();
+        boolean result = userDao.delete(user);
+        Optional<User> deletedUser = userDao.get(originalId);
+        Assert.assertTrue(deletedUser.isEmpty());
+        Assert.assertTrue(result);
     }
 
     private User getUserByEmail(String email) {

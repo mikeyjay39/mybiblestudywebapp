@@ -101,17 +101,20 @@ public class UserDao implements Dao<User> {
 
         int rows = jdbcTemplate.update(sql);
 
-        if (rows > 0) {
-            return true;
-        } else {
+        if (rows < 1) {
             return false;
         }
+        return false;
     }
 
     @Override
     public boolean delete(User user) {
-        //users.remove(user);
-        return false;
+        String sql = "DELETE FROM users WHERE user_id = ?";
+        int rows = jdbcTemplate.update(sql, user.getUserId());
+        if (rows < 1) {
+            return false;
+        }
+        return true;
     }
 
     /**
