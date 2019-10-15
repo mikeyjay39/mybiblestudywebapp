@@ -9,7 +9,7 @@ import java.util.Optional;
  * 2019. 10. 14.
  */
 public interface Dao<T> {
-    Optional<T> get(int id);
+    Optional<T> get(long id);
 
     List<T> getAll();
 

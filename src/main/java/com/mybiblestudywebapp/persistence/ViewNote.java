@@ -8,9 +8,9 @@ import java.util.Objects;
  * 2019. 10. 14.
  */
 public class ViewNote {
-    private int viewNoteId;
-    private int viewId;
-    private int noteId;
+    private long viewNoteId;
+    private long viewId;
+    private long noteId;
 
     @Override
     public boolean equals(Object o) {
@@ -25,27 +25,27 @@ public class ViewNote {
         return Objects.hash(getViewNoteId());
     }
 
-    public int getViewNoteId() {
+    public long getViewNoteId() {
         return viewNoteId;
     }
 
-    public void setViewNoteId(int viewNoteId) {
+    public void setViewNoteId(long viewNoteId) {
         this.viewNoteId = viewNoteId;
     }
 
-    public int getViewId() {
+    public long getViewId() {
         return viewId;
     }
 
-    public void setViewId(int viewId) {
+    public void setViewId(long viewId) {
         this.viewId = viewId;
     }
 
-    public int getNoteId() {
+    public long getNoteId() {
         return noteId;
     }
 
-    public void setNoteId(int noteId) {
+    public void setNoteId(long noteId) {
         this.noteId = noteId;
     }
 }

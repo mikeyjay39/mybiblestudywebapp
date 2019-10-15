@@ -23,8 +23,8 @@ public class UserDao implements Dao<User> {
     private List<User> users = new ArrayList<>();
 
     @Override
-    public Optional<User> get(int id) {
-        return Optional.ofNullable(users.get( id));
+    public Optional<User> get(long id) {
+        return Optional.ofNullable(users.get((int) id));
     }
 
     @Override

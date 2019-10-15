@@ -8,8 +8,8 @@ import java.util.Objects;
  * 2019. 10. 14.
  */
 public class View {
-    private int viewId;
-    private int userId;
+    private long viewId;
+    private long userId;
     private String viewCode;
     private boolean priv;
 
@@ -26,19 +26,19 @@ public class View {
         return Objects.hash(getViewId());
     }
 
-    public int getViewId() {
+    public long getViewId() {
         return viewId;
     }
 
-    public void setViewId(int viewId) {
+    public void setViewId(long viewId) {
         this.viewId = viewId;
     }
 
-    public int getUserId() {
+    public long getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(long userId) {
         this.userId = userId;
     }
 

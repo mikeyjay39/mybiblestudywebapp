@@ -8,7 +8,7 @@ import java.util.Objects;
  * 2019. 10. 14.
  */
 public class Book {
-    private int bookId;
+    private long bookId;
     private String title;
     private Testament testament;
 
@@ -25,11 +25,11 @@ public class Book {
         return Objects.hash(getBookId());
     }
 
-    public int getBookId() {
+    public long getBookId() {
         return bookId;
     }
 
-    public void setBookId(int bookId) {
+    public void setBookId(long bookId) {
         this.bookId = bookId;
     }
 

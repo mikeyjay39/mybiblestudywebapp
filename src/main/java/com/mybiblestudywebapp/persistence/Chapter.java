@@ -8,8 +8,8 @@ import java.util.Objects;
  * 2019. 10. 14.
  */
 public class Chapter {
-    private int chapterId;
-    private int bookId;
+    private long chapterId;
+    private long bookId;
     private int chapter_no;
 
     @Override
@@ -25,19 +25,19 @@ public class Chapter {
         return Objects.hash(getChapterId());
     }
 
-    public int getChapterId() {
+    public long getChapterId() {
         return chapterId;
     }
 
-    public void setChapterId(int chapterId) {
+    public void setChapterId(long chapterId) {
         this.chapterId = chapterId;
     }
 
-    public int getBookId() {
+    public long getBookId() {
         return bookId;
     }
 
-    public void setBookId(int bookId) {
+    public void setBookId(long bookId) {
         this.bookId = bookId;
     }
 

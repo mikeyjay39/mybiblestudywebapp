@@ -10,7 +10,7 @@ import java.util.Objects;
  */
 public class User {
 
-    private int userId;
+    private long userId;
     private String email;
     private String firstname;
     private String lastname;
@@ -31,11 +31,11 @@ public class User {
         return Objects.hash(getUserId());
     }
 
-    public int getUserId() {
+    public long getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(long userId) {
         this.userId = userId;
     }
 

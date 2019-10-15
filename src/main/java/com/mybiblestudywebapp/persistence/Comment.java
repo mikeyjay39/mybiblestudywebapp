@@ -10,9 +10,9 @@ import java.util.Objects;
  */
 public class Comment {
 
-    private int commentId;
-    private int userId;
-    private int noteId;
+    private long commentId;
+    private long userId;
+    private long noteId;
     private LocalDateTime createdAt;
 
     @Override
@@ -28,27 +28,27 @@ public class Comment {
         return Objects.hash(getCommentId());
     }
 
-    public int getCommentId() {
+    public long getCommentId() {
         return commentId;
     }
 
-    public void setCommentId(int commentId) {
+    public void setCommentId(long commentId) {
         this.commentId = commentId;
     }
 
-    public int getUserId() {
+    public long getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(long userId) {
         this.userId = userId;
     }
 
-    public int getNoteId() {
+    public long getNoteId() {
         return noteId;
     }
 
-    public void setNoteId(int noteId) {
+    public void setNoteId(long noteId) {
         this.noteId = noteId;
     }
 

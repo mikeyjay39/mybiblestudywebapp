@@ -10,11 +10,11 @@ import java.util.Objects;
  */
 public class Note {
 
-    private int noteId;
+    private long noteId;
     private String note;
-    private int userId;
-    private int bookId;
-    private int chapterId;
+    private long userId;
+    private long bookId;
+    private long chapterId;
     private int verse;
     private int ranking;
     private boolean priv;
@@ -35,11 +35,11 @@ public class Note {
         return Objects.hash(getNoteId());
     }
 
-    public int getNoteId() {
+    public long getNoteId() {
         return noteId;
     }
 
-    public void setNoteId(int noteId) {
+    public void setNoteId(long noteId) {
         this.noteId = noteId;
     }
 
@@ -51,27 +51,27 @@ public class Note {
         this.note = note;
     }
 
-    public int getUserId() {
+    public long getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(long userId) {
         this.userId = userId;
     }
 
-    public int getBookId() {
+    public long getBookId() {
         return bookId;
     }
 
-    public void setBookId(int bookId) {
+    public void setBookId(long bookId) {
         this.bookId = bookId;
     }
 
-    public int getChapterId() {
+    public long getChapterId() {
         return chapterId;
     }
 
-    public void setChapterId(int chapterId) {
+    public void setChapterId(long chapterId) {
         this.chapterId = chapterId;
     }
 
