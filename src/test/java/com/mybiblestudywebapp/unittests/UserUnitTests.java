@@ -15,20 +15,45 @@ import org.springframework.jdbc.core.JdbcTemplate;
 public class UserUnitTests {
 
     private UserDao userDao;
+    private User user;
+
 
     public UserUnitTests() {
         JdbcTemplate jdbcTemplate = new JdbcTemplate();
         jdbcTemplate.setDataSource(DbConnectionTest.getEmbeddedPostgres());
         userDao = new UserDao(jdbcTemplate);
+        user = createTestUser();
     }
 
     @Test
     public void testAddUser() throws Exception {
+        addUser(user);
+    }
+
+    @Test
+    public void testGetUser() throws Exception {
+        addUser(user);
+        User resultUser = getUserByEmail(user.getEmail());
+        Assert.assertNotNull(resultUser);
+
+    }
+
+    private User getUserByEmail(String email) {
+        long id = -1;
+        User user = userDao.get(email).orElse(null);
+        return user;
+    }
+
+    private User createTestUser() {
         User user = new User();
         user.setEmail("test@gmail.com");
         user.setFirstname("Han");
         user.setLastname("Solo");
         user.setPassword("12345");
+        return user;
+    }
+
+    private void addUser(User user) throws Exception {
         boolean result = userDao.save(user);
         Assert.assertTrue(result);
     }
