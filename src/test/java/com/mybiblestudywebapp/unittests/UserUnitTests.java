@@ -7,6 +7,9 @@ import org.junit.Test;
 import org.springframework.boot.autoconfigure.quartz.QuartzProperties;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Michael Jeszenka
  * <a href="mailto:michael@jeszenka.com">michael@jeszenka.com</a>
@@ -35,13 +38,41 @@ public class UserUnitTests {
         addUser(user);
         User resultUser = getUserByEmail(user.getEmail());
         Assert.assertNotNull(resultUser);
+    }
 
+    @Test
+    public void testGetAll() throws Exception {
+        // insert users
+        create3TestUsers();
+
+        List<User> users = userDao.getAll();
+        Assert.assertNotNull(users);
     }
 
     private User getUserByEmail(String email) {
         long id = -1;
         User user = userDao.get(email).orElse(null);
         return user;
+    }
+
+    /**
+     * Creates a list of 3 users
+     * @return
+     */
+    private List<User> create3TestUsers() throws Exception {
+        List<User> users = new ArrayList<>();
+
+        for (int i = 0; i < 3; i++) {
+            User user = new User();
+            user.setEmail("test_" + i + "@gmail.com");
+            user.setFirstname("Han" + i);
+            user.setLastname("Solo" + i);
+            user.setPassword("HASH" + (i + i * i - i));
+            users.add(user);
+            addUser(user);
+        }
+
+        return users;
     }
 
     private User createTestUser() {

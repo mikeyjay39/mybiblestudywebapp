@@ -28,6 +28,7 @@ public class DbConnectionTest {
 
     private static DataSource embeddedDataSource;
     private static Connection livePostgresConnection;
+    private static String sqlDir = "/home/michael/Projects/mybiblestudywebapp/sql/";
 
     /*@BeforeClass
     public static void beforeClass() throws Exception {*/
@@ -39,7 +40,7 @@ public class DbConnectionTest {
             properties.setProperty("password", System.getenv("PSQLDBPASS"));
             livePostgresConnection = DriverManager.getConnection(System.getenv("PSQLDBURL"), properties);
         } catch (Exception e) {
-            System.err.println("Failed to build embedded db for testing");
+            System.err.println("Failed to build embedded db for testing" + e.getMessage());
         }
     }
 
@@ -118,7 +119,7 @@ public class DbConnectionTest {
                     new EncodedResource(
                             new FileSystemResource(
                                     Paths.get(
-                                            "/home/developer/my-bible-study-web-app/sql/schema.sql"))));
+                                            sqlDir + "schema.sql"))));
         }
 
         try (
@@ -129,7 +130,7 @@ public class DbConnectionTest {
                     new EncodedResource(
                             new FileSystemResource(
                                     Paths.get(
-                                            "/home/developer/my-bible-study-web-app/sql/backups/mybiblestudydb.sql"))));
+                                            sqlDir + "backups/mybiblestudydb.sql"))));
         }
         return dataSource;
     }

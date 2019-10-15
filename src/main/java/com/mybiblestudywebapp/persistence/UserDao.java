@@ -23,28 +23,18 @@ public class UserDao implements Dao<User> {
     }
 
     // TODO replace this with JDBC methods
-    private List<User> users = new ArrayList<>();
+    //private List<User> users = new ArrayList<>();
 
     @Override
     public Optional<User> get(long id) {
-        var optional = Optional.ofNullable(users.get((int) id));
-        // validId is needed in case the user id (long) is larger than the max size of the array (int)
-        boolean validId = id < Integer.MAX_VALUE && id >= 0;
 
-        if (validId && optional.isPresent()) {
-            return optional;
-        } else {
-            String sql = "SELECT * FROM users WHERE user_id = ?";
-            var result = jdbcTemplate.queryForList(sql, id);
-            User user = null;
-            if (result.size() > 0) {
-                user = buildUser(result.get(0));
-            }
-            if (validId) {
-                users.add((int)user.getUserId(), user);
-            }
-            return Optional.ofNullable(user);
+        String sql = "SELECT * FROM users WHERE user_id = ?";
+        var result = jdbcTemplate.queryForList(sql, id);
+        User user = null;
+        if (result.size() > 0) {
+            user = buildUser(result.get(0));
         }
+        return Optional.ofNullable(user);
     }
 
     /**
@@ -64,6 +54,15 @@ public class UserDao implements Dao<User> {
 
     @Override
     public List<User> getAll() {
+        String sql = "SELECT * FROM users";
+        var result = jdbcTemplate.queryForList(sql);
+        if (result.size() < 1) {
+            return null;
+        }
+        List<User> users = new ArrayList<>();
+        for (Map<String, Object> row : result) {
+            users.add(buildUser(row));
+        }
         return users;
     }
 
@@ -89,12 +88,12 @@ public class UserDao implements Dao<User> {
     public void update(User user, String[] params) {
         // TODO finish this
 
-        users.add(user);
+        //users.add(user);
     }
 
     @Override
     public void delete(User user) {
-        users.remove(user);
+        //users.remove(user);
     }
 
     /**
