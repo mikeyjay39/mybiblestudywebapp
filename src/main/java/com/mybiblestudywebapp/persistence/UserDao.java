@@ -35,7 +35,13 @@ public class UserDao implements Dao<User> {
     @Override
     public boolean save(User user) {
         boolean result = false;
-        users.add(user);
+        String sql = "INSERT INTO users (email, firstname, lastname, password) VALUES (?, ?, ?, ?);";
+        int rows = jdbcTemplate.update(
+                sql, user.getEmail(), user.getFirstname(), user.getLastname(), user.getPassword()
+        );
+        if (rows > 0) {
+            result = true;
+        }
         return result;
     }
 

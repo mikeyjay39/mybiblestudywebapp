@@ -29,13 +29,18 @@ public class DbConnectionTest {
     private static DataSource embeddedDataSource;
     private static Connection livePostgresConnection;
 
-    @BeforeClass
-    public static void beforeClass() throws Exception {
-        embeddedDataSource = buildEmbeddedDataBase();
-        Properties properties = new Properties();
-        properties.setProperty("user", System.getenv("PSQLDBUSER"));
-        properties.setProperty("password", System.getenv("PSQLDBPASS"));
-        livePostgresConnection = DriverManager.getConnection(System.getenv("PSQLDBURL"), properties);
+    /*@BeforeClass
+    public static void beforeClass() throws Exception {*/
+    static {
+        try {
+            embeddedDataSource = buildEmbeddedDataBase();
+            Properties properties = new Properties();
+            properties.setProperty("user", System.getenv("PSQLDBUSER"));
+            properties.setProperty("password", System.getenv("PSQLDBPASS"));
+            livePostgresConnection = DriverManager.getConnection(System.getenv("PSQLDBURL"), properties);
+        } catch (Exception e) {
+            System.err.println("Failed to build embedded db for testing");
+        }
     }
 
     /**
@@ -79,7 +84,7 @@ public class DbConnectionTest {
     public void testEmbeddedPgBuilt() throws Exception {
         try (Connection connection = embeddedDataSource.getConnection()) {
             Statement statement = connection.createStatement();
-            ResultSet rs = statement.executeQuery("SELECT * FROM book;");
+            ResultSet rs = statement.executeQuery("SELECT * FROM books;");
             Assert.assertTrue(rs.next());
             Assert.assertEquals("Genesis", rs.getString("title"));
         } catch (Exception e) {

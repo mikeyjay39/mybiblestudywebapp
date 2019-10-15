@@ -19,11 +19,16 @@ public class UserUnitTests {
     public UserUnitTests() {
         JdbcTemplate jdbcTemplate = new JdbcTemplate();
         jdbcTemplate.setDataSource(DbConnectionTest.getEmbeddedPostgres());
+        userDao = new UserDao(jdbcTemplate);
     }
 
     @Test
     public void testAddUser() throws Exception {
         User user = new User();
+        user.setEmail("test@gmail.com");
+        user.setFirstname("Han");
+        user.setLastname("Solo");
+        user.setPassword("12345");
         boolean result = userDao.save(user);
         Assert.assertTrue(result);
     }

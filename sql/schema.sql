@@ -1,4 +1,4 @@
-create table "user"
+create table users
 (
     user_id    bigserial    not null
         constraint user_pk
@@ -12,24 +12,24 @@ create table "user"
 );
 
 create unique index user_email_uindex
-    on "user" (email);
+    on users (email);
 
-create table view
+create table views
 (
     view_id   bigserial   not null
         constraint view_pk
             primary key,
     user_id   bigint      not null
         constraint view_user__fk
-            references "user",
+            references users,
     view_code varchar(64) not null,
     priv      boolean default false
 );
 
 create unique index view_view_code_uindex
-    on view (view_code);
+    on views (view_code);
 
-create table book
+create table books
 (
     book_id   bigserial   not null
         constraint book_pk
@@ -39,20 +39,20 @@ create table book
 );
 
 create unique index book_title_uindex
-    on book (title);
+    on books (title);
 
-create table chapter
+create table chapters
 (
     chapter_id bigserial not null
         constraint chapter_pk
             primary key,
     book_id    bigint    not null
         constraint chapter_book__fk
-            references book,
+            references books,
     chapter_no integer   not null
 );
 
-create table note
+create table notes
 (
     note_id       bigserial               not null
         constraint note_pk
@@ -60,13 +60,13 @@ create table note
     note          text,
     user_id       bigint
         constraint note_user__fk
-            references "user",
+            references users,
     book_id       bigint
         constraint note_book__fk
-            references book,
+            references books,
     chapter_id    bigint
         constraint note_chapter__fk
-            references chapter,
+            references chapters,
     verse         integer                 not null,
     ranking       integer   default 0,
     priv          boolean   default false not null,
@@ -82,25 +82,26 @@ create table view_note
             primary key,
     view_id      bigint
         constraint view_note_view__fk
-            references view,
+            references views,
     note_id      bigint
         constraint view_note_note__fk
-            references note
+            references notes
 );
 
-create table comment
+create table comments
 (
     comment_id bigint not null
         constraint comment_pk
             primary key,
     user_id    integer
         constraint comment_user_user_id_fk
-            references "user",
+            references users,
     note_id    integer
         constraint comment_note_note_id_fk
-            references note,
+            references notes,
     created_at timestamp default now()
 );
 
-comment on table comment is 'Used for user comments on notes';
+comment on table comments is 'Used for user comments on notes';
+
 
