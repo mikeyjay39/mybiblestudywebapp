@@ -11,7 +11,7 @@ import java.util.*;
  * <a href="mailto:michael@jeszenka.com">michael@jeszenka.com</a>
  * 2019. 10. 14.
  */
-public class UserDao implements Dao<User> {
+public class UserDao implements UpdatableDao<User> {
 
     private JdbcTemplate jdbcTemplate;
 
@@ -39,7 +39,8 @@ public class UserDao implements Dao<User> {
      * @param email
      * @return User from database
      */
-    public Optional<User> get(String email) {
+    @Override
+    public Optional<User> getUnique(String email) {
         String sql = "SELECT * FROM users WHERE email = ?";
         var result = jdbcTemplate.queryForList(sql, email);
         User user = null;

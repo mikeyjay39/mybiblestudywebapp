@@ -1,0 +1,16 @@
+package com.mybiblestudywebapp.persistence;
+
+import java.util.Map;
+
+/**
+ * Created by Michael Jeszenka.
+ * <a href="mailto:michael@jeszenka.com">michael@jeszenka.com</a>
+ * 10/15/19
+ */
+public interface UpdatableDao<T> extends Dao<T> {
+    boolean save(T t);
+
+    boolean update(T t, Map<String, Object> params);
+
+    boolean delete(T t);
+}

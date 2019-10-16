@@ -4,7 +4,6 @@ import com.mybiblestudywebapp.persistence.User;
 import com.mybiblestudywebapp.persistence.UserDao;
 import org.junit.Assert;
 import org.junit.Test;
-import org.springframework.boot.autoconfigure.quartz.QuartzProperties;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.util.*;
@@ -79,7 +78,7 @@ public class UserUnitTests {
 
     private User getUserByEmail(String email) {
         long id = -1;
-        User user = userDao.get(email).orElse(null);
+        User user = userDao.getUnique(email).orElse(null);
         return user;
     }
 
