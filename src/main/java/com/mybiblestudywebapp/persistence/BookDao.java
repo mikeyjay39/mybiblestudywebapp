@@ -22,7 +22,9 @@ public class BookDao implements Dao<Book> {
 
     @Override
     public Optional<Book> get(long id) {
-        return null;
+        String sql = "SELECT * FROM books WHERE book_id = ?";
+        var queryResult = jdbcTemplate.queryForList(sql, id);
+        return Optional.ofNullable(buildBook(queryResult.get(0)));
     }
 
     @Override
@@ -47,6 +49,9 @@ public class BookDao implements Dao<Book> {
      * @return
      */
     private Book buildBook(Map<String, Object> row) {
+        if (row == null) {
+            return null;
+        }
         Book book = new Book();
         book.setBookId((long)row.get("book_id"));
         book.setTestament((Testament.valueOf((String)row.get("testament"))));

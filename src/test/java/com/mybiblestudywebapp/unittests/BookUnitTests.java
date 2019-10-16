@@ -28,4 +28,12 @@ public class BookUnitTests {
         int size = books.size();
         Assert.assertEquals(66, size);
     }
+
+    @Test
+    public void testGet() throws Exception {
+        int bookId = 0;
+        Book genesis = bookDao.get(1l).get();
+        Assert.assertEquals(1, genesis.getBookId());
+        Assert.assertEquals("Genesis", genesis.getTitle());
+    }
 }
