@@ -2,7 +2,9 @@ package com.mybiblestudywebapp.unittests;
 
 import com.mybiblestudywebapp.persistence.Book;
 import com.mybiblestudywebapp.persistence.BookDao;
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
 
@@ -22,6 +24,16 @@ public class BookUnitTests {
         bookDao = new BookDao(jdbcTemplate);
     }
 
+    @Before
+    public void setUp() {
+        book = null;
+    }
+
+    @After
+    public void tearDown() {
+        book = null;
+    }
+
     @Test
     public void testGetAll() throws Exception {
         var books = bookDao.getAll();
@@ -31,9 +43,15 @@ public class BookUnitTests {
 
     @Test
     public void testGet() throws Exception {
-        int bookId = 0;
-        Book genesis = bookDao.get(1l).get();
-        Assert.assertEquals(1, genesis.getBookId());
-        Assert.assertEquals("Genesis", genesis.getTitle());
+        book = bookDao.get(1l).get();
+        Assert.assertEquals(1, book.getBookId());
+        Assert.assertEquals("Genesis", book.getTitle());
+    }
+
+    @Test
+    public void testGetUnique() throws Exception {
+        book = bookDao.getUnique("Genesis").get();
+        Assert.assertEquals(1, book.getBookId());
+        Assert.assertEquals("Genesis", book.getTitle());
     }
 }

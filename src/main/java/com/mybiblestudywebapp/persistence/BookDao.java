@@ -27,9 +27,16 @@ public class BookDao implements Dao<Book> {
         return Optional.ofNullable(buildBook(queryResult.get(0)));
     }
 
+    /**
+     * Get book based on its title
+     * @param uniqueKey Title of the book
+     * @return
+     */
     @Override
     public Optional<Book> getUnique(String uniqueKey) {
-        return null;
+        String sql = "SELECT * FROM books WHERE title = ?";
+        var queryResult = jdbcTemplate.queryForList(sql, uniqueKey);
+        return Optional.ofNullable(buildBook(queryResult.get(0)));
     }
 
     @Override
