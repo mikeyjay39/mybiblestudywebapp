@@ -1,6 +1,11 @@
 package com.mybiblestudywebapp.persistence;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -14,13 +19,15 @@ import java.util.*;
 public class UserDao implements UpdatableDao<User> {
 
     private JdbcTemplate jdbcTemplate;
+    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     public UserDao(JdbcTemplate jdbcTemplate) {
+
         this.jdbcTemplate = jdbcTemplate;
+        namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
     }
 
-    // TODO replace this with JDBC methods
-    //private List<User> users = new ArrayList<>();
+
 
     @Override
     public Optional<User> get(long id) {
@@ -71,25 +78,46 @@ public class UserDao implements UpdatableDao<User> {
      */
     @Override
     public boolean save(User user) {
-        boolean result = false;
-        String sql = "INSERT INTO users (email, firstname, lastname, password) VALUES (?, ?, ?, ?);";
-        int rows = jdbcTemplate.update(
-                sql, user.getEmail(), user.getFirstname(), user.getLastname(), user.getPassword()
-        );
-        if (rows > 0) {
-            result = true;
-        }
-        return result;
+        String sql = "INSERT INTO users (email, firstname, lastname, password) " +
+                "VALUES (:email, :firstname, :lastname, :password)";
+
+        KeyHolder holder = new GeneratedKeyHolder();
+        SqlParameterSource params = new MapSqlParameterSource()
+                .addValue("email", user.getEmail())
+                .addValue("firstname", user.getFirstname())
+                .addValue("lastname", user.getLastname())
+                .addValue("password", user.getPassword());
+
+        int rows = 0;
+        rows = namedParameterJdbcTemplate.update(sql, params, holder);
+
+        return rows > 0;
     }
 
     /**
-     * TODO finish this
-     * @param user
+     * Updates the entry in the users table
+      * @param user
      * @return
      */
     @Override
     public boolean update(User user) {
-        return false;
+        String sql = "UPDATE users SET email = :email, " +
+                "firstname = :firstname, lastname = :lastname, password = :password, " +
+                "ranking = :ranking, created_at = :createdAt WHERE user_id = :userId";
+
+        KeyHolder holder = new GeneratedKeyHolder();
+        SqlParameterSource params = new MapSqlParameterSource()
+                .addValue("email", user.getEmail())
+                .addValue("userId", user.getUserId())
+                .addValue("firstname", user.getFirstname())
+                .addValue("lastname", user.getLastname())
+                .addValue("password", user.getPassword())
+                .addValue("ranking", user.getRanking())
+                .addValue("createdAt", Timestamp.valueOf(user.getCreatedAt()));
+
+        int rows = 0;
+        rows = namedParameterJdbcTemplate.update(sql, params, holder);
+        return rows > 0;
     }
 
     /**

@@ -76,6 +76,19 @@ public class UserUnitTests {
         Assert.assertTrue(result);
     }
 
+    @Test
+    public void testUpdate2() {
+        User user = createTestUser();
+        addUser(user);
+        User retrievedUser = getUserByEmail(user.getEmail());
+        Assert.assertEquals("Solo", user.getLastname());
+        retrievedUser.setLastname("Not Solo");
+        userDao.update(retrievedUser);
+        User updatedUser = userDao.get(retrievedUser.getUserId()).get();
+        Assert.assertEquals("Not Solo", updatedUser.getLastname());
+
+    }
+
     private User getUserByEmail(String email) {
         long id = -1;
         User user = userDao.getUnique(email).orElse(null);
@@ -111,7 +124,7 @@ public class UserUnitTests {
         return user;
     }
 
-    private void addUser(User user) throws Exception {
+    private void addUser(User user) {
         boolean result = userDao.save(user);
         Assert.assertTrue(result);
     }
