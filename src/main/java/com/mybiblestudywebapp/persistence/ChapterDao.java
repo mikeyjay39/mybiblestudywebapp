@@ -30,14 +30,28 @@ public class ChapterDao implements Dao<Chapter> {
         return Optional.ofNullable(jdbcTemplate.queryForObject(sql, new Object[]{id}, ChapterDao::mapRow));
     }
 
+    /**
+     * Do not use this
+     * @param uniqueKey
+     * @return
+     */
+    @Deprecated
     @Override
     public Optional<Chapter> getUnique(String uniqueKey) {
-        return Optional.empty();
+        String sql = "SELECT * FROM chapters WHERE chapter_no = ?";
+
+        return Optional.ofNullable(jdbcTemplate.queryForObject(sql, new Object[]{uniqueKey}, ChapterDao::mapRow));
     }
 
+    /**
+     * Get all chapters
+     * @return
+     */
     @Override
     public List<Chapter> getAll() {
-        return null;
+        String sql = "SELECT * FROM chapters";
+        List<Chapter> results = jdbcTemplate.query(sql, ChapterDao::mapRow);
+        return results;
     }
 
     /**

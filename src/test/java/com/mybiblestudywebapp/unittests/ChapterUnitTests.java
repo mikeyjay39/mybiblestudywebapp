@@ -51,6 +51,12 @@ public class ChapterUnitTests {
         Assert.assertEquals(2, chapter.getBookId());
     }
 
+    @Test
+    public void testGetAll() throws Exception {
+        var result = chapterDao.getAll();
+        Assert.assertEquals(1189, result.size());
+    }
+
     /**
      * Use this once on the live DB to build rows for chapters table
      * @throws Exception
