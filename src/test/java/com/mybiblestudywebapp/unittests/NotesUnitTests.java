@@ -36,6 +36,22 @@ public class NotesUnitTests {
 
     @Test
     public void testSave() throws Exception {
+        saveNote();
+    }
+
+    @Test
+    public void testUpdate() throws Exception {
+        note = saveNote();
+        note.setNoteId(1);
+        Note retrievedNote = noteDao.get(1l).get();
+        note.setNote("The note has been modified!");
+        boolean result = noteDao.update(note);
+        Note updatedNote = noteDao.get(note.getNoteId()).get();
+        Assert.assertTrue(result);
+        Assert.assertEquals("The note has been modified!", updatedNote.getNote());
+    }
+
+    private Note saveNote() {
         note = new Note();
         note.setUserId(1);
         note.setBookId(1);
@@ -45,5 +61,6 @@ public class NotesUnitTests {
         note.setLang("en");
         boolean result = noteDao.save(note);
         Assert.assertTrue(result);
+        return note;
     }
 }

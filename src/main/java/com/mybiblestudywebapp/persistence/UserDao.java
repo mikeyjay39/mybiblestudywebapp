@@ -82,9 +82,24 @@ public class UserDao implements UpdatableDao<User> {
         return result;
     }
 
+    /**
+     * TODO finish this
+     * @param user
+     * @return
+     */
     @Override
+    public boolean update(User user) {
+        return false;
+    }
+
+    /**
+     *
+     * @param user
+     * @param params
+     * @return
+     */
+    @Deprecated
     public boolean update(User user, Map<String, Object> params) {
-        // TODO finish this
         Set<String> columns = params.keySet();
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("UPDATE users SET ");
