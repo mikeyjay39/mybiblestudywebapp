@@ -1,3 +1,7 @@
+drop schema if exists public;
+
+create schema public;
+
 create table users
 (
     user_id    bigserial    not null

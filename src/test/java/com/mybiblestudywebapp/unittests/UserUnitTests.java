@@ -78,6 +78,7 @@ public class UserUnitTests {
 
     @Test
     public void testUpdate2() {
+        //userDao = new UserDao(new JdbcTemplate(DbConnectionTest.getLiveDataSource()));
         User user = createTestUser();
         addUser(user);
         User retrievedUser = getUserByEmail(user.getEmail());
