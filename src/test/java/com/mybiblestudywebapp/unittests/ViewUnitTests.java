@@ -68,6 +68,13 @@ public class ViewUnitTests {
         Assert.assertNotNull(newView);
     }
 
+    @Test
+    public void testGetAll() {
+        add3Views();
+        var result = viewDao.getAll();
+        Assert.assertTrue(result.size() > 1);
+    }
+
     private View addViewAndGet() {
         view = new View();
         view.setUserId(1);
@@ -78,5 +85,15 @@ public class ViewUnitTests {
         View newView = optionalView.get();
         Assert.assertNotNull(newView.getViewCode());
         return newView;
+    }
+
+    private void add3Views() {
+        for (int i = 0; i < 3; i++) {
+            view = new View();
+            view.setUserId(1);
+            view.setPriv(false);
+            boolean result = viewDao.save(view);
+            Assert.assertTrue(result);
+        }
     }
 }

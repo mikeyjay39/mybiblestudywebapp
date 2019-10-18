@@ -118,7 +118,8 @@ public class ViewDao implements UpdatableDao<View> {
 
     @Override
     public List<View> getAll() {
-        return null;
+        String sql = "SELECT * FROM views";
+        return jdbcTemplate.query(sql, ViewDao::mapRow);
     }
 
     private static View mapRow(ResultSet rs, int rowNum) throws SQLException {
