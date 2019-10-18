@@ -41,6 +41,33 @@ public class ViewUnitTests {
         addViewAndGet();
     }
 
+    @Test
+    public void testUpdate() {
+        view = addViewAndGet();
+        view.setPriv(true);
+        viewDao.update(view);
+        View newView = viewDao.get(1).get();
+        Assert.assertTrue(newView.isPriv());
+    }
+
+    @Test
+    public void testDelete() {
+        view = addViewAndGet();
+        boolean result = viewDao.delete(view);
+        Assert.assertTrue(result);
+        var returnedView = viewDao.get(1);
+        Assert.assertTrue(returnedView.isEmpty());
+    }
+
+    @Test
+    public void testGetUnique() {
+        view = addViewAndGet();
+        String viewCode = view.getViewCode();
+        var result = viewDao.getUnique(viewCode);
+        View newView = result.get();
+        Assert.assertNotNull(newView);
+    }
+
     private View addViewAndGet() {
         view = new View();
         view.setUserId(1);

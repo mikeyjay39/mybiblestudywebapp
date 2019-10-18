@@ -12,6 +12,7 @@ import org.springframework.jdbc.support.KeyHolder;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.List;
 import java.util.Optional;
 
@@ -50,14 +51,37 @@ public class ViewDao implements UpdatableDao<View> {
         return rows > 0;
     }
 
+    /**
+     * Update existing View in DB
+     * @param view
+     * @return true on success
+     */
     @Override
     public boolean update(View view) {
-        return false;
+        String sql = "UPDATE views SET priv = :priv WHERE view_id = :viewId";
+        KeyHolder holder = new GeneratedKeyHolder();
+        SqlParameterSource params = new MapSqlParameterSource()
+                .addValue("viewId", view.getViewId())
+                .addValue("priv", view.isPriv());
+        int rows = 0;
+        rows = namedParameterJdbcTemplate.update(sql, params, holder);
+        return rows > 0;
     }
 
+    /**
+     * Delete a View from the DB based on view_id
+     * @param view
+     * @return true on success
+     */
     @Override
     public boolean delete(View view) {
-        return false;
+        String sql = "DELETE FROM views WHERE view_id = :viewId";
+        KeyHolder holder = new GeneratedKeyHolder();
+        SqlParameterSource parameterSource = new MapSqlParameterSource()
+                .addValue("viewId", view.getViewId());
+        int rows = 0;
+        rows = namedParameterJdbcTemplate.update(sql, parameterSource, holder);
+        return rows > 0;
     }
 
     /**
@@ -68,7 +92,6 @@ public class ViewDao implements UpdatableDao<View> {
     @Override
     public Optional<View> get(long id) {
         String sql = "SELECT * FROM views WHERE view_id = :viewId";
-        KeyHolder holder = new GeneratedKeyHolder();
         SqlParameterSource params = new MapSqlParameterSource()
                 .addValue("viewId", id);
         View result = null;
@@ -82,8 +105,16 @@ public class ViewDao implements UpdatableDao<View> {
 
     @Override
     public Optional<View> getUnique(String uniqueKey) {
-        return Optional.empty();
-    }
+        String sql = "SELECT * FROM views WHERE view_code = :viewCode";
+        SqlParameterSource params = new MapSqlParameterSource()
+                .addValue("viewCode", uniqueKey, Types.OTHER);
+        View result = null;
+        try {
+            result = namedParameterJdbcTemplate.queryForObject(sql, params, ViewDao::mapRow);
+        } catch (EmptyResultDataAccessException e) {
+            logger.info("Could not get view_code = " + uniqueKey + "\n" + e.getMessage());
+        }
+        return Optional.ofNullable(result);    }
 
     @Override
     public List<View> getAll() {
