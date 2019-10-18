@@ -1,5 +1,8 @@
 package com.mybiblestudywebapp.persistence;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -21,6 +24,7 @@ import java.util.Optional;
  */
 public class NoteDao implements UpdatableDao<Note> {
 
+    private static Logger logger = LoggerFactory.getLogger(NoteDao.class);
     private JdbcTemplate jdbcTemplate;
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
@@ -76,16 +80,32 @@ public class NoteDao implements UpdatableDao<Note> {
 
     @Override
     public boolean delete(Note note) {
-        return false;
+        String sql = "DELETE FROM notes WHERE note_id = :noteId";
+        KeyHolder holder = new GeneratedKeyHolder();
+        SqlParameterSource params = new MapSqlParameterSource()
+                .addValue("noteId", note.getNoteId());
+        int rows = 0;
+        rows = namedParameterJdbcTemplate.update(sql, params, holder);
+        return rows > 0;
     }
 
     @Override
     public Optional<Note> get(long id) {
         String sql = "SELECT * FROM notes WHERE note_id = ?";
-        var result = jdbcTemplate.queryForObject(sql, new Object[]{id}, NoteDao::mapRow);
+        Note result = null;
+        try {
+            result = jdbcTemplate.queryForObject(sql, new Object[]{id}, NoteDao::mapRow);
+        } catch(EmptyResultDataAccessException e) {
+            logger.info("No result for note_id = " + id + "\n" + e.getMessage());
+        }
         return Optional.ofNullable(result);
     }
 
+    /**
+     * Deprecated
+     * @param uniqueKey
+     * @return
+     */
     @Override
     public Optional<Note> getUnique(String uniqueKey) {
         return Optional.empty();
@@ -98,6 +118,7 @@ public class NoteDao implements UpdatableDao<Note> {
 
     private static Note mapRow(ResultSet rs, int rowNum) throws SQLException {
         Note note = new Note();
+
         note.setNoteId(rs.getInt("note_id"));
         note.setNote(rs.getString("note"));
         note.setUserId(rs.getInt("user_id"));
@@ -111,6 +132,7 @@ public class NoteDao implements UpdatableDao<Note> {
         if (null != lastModified) {
             note.setLastModified(lastModified.toLocalDateTime());
         }
+
         return note;
     }
 }

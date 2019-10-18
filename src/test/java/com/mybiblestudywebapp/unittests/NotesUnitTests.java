@@ -9,6 +9,8 @@ import org.junit.Test;
 import org.springframework.context.annotation.Bean;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import java.util.Optional;
+
 /**
  * Created by Michael Jeszenka.
  * <a href="mailto:michael@jeszenka.com">michael@jeszenka.com</a>
@@ -40,16 +42,32 @@ public class NotesUnitTests {
     }
 
     @Test
-    public void testUpdate() throws Exception {
-        note = saveNote();
-        note.setNoteId(1);
-        Note retrievedNote = noteDao.get(1l).get();
+    public void testUpdate() {
+        Note retrievedNote = saveAndGet();
         note.setNote("The note has been modified!");
         boolean result = noteDao.update(note);
         Note updatedNote = noteDao.get(note.getNoteId()).get();
         Assert.assertTrue(result);
         Assert.assertEquals("The note has been modified!", updatedNote.getNote());
     }
+
+    @Test
+    public void testDelete() {
+        note = saveAndGet();
+        boolean result = noteDao.delete(note);
+        Assert.assertTrue(result);
+        Optional<Note> retrievedNote = noteDao.get(1);
+        Assert.assertTrue(retrievedNote.isEmpty());
+    }
+
+    private Note saveAndGet() {
+        note = saveNote();
+        note.setNoteId(1);
+        note = noteDao.get(1l).get();
+        Assert.assertEquals("A new note!", note.getNote());
+        return note;
+    }
+
 
     private Note saveNote() {
         note = new Note();
