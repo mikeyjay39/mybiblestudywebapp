@@ -16,7 +16,7 @@ import java.util.Optional;
  * <a href="mailto:michael@jeszenka.com">michael@jeszenka.com</a>
  * 10/17/19
  */
-public class NotesUnitTests {
+public class NoteUnitTests {
 
     private Note note;
     private NoteDao noteDao;
@@ -31,7 +31,7 @@ public class NotesUnitTests {
         note = null;
     }
 
-    public NotesUnitTests() {
+    public NoteUnitTests() {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(DbConnectionTest.getEmbeddedPostgres());
         noteDao = new NoteDao(jdbcTemplate);
     }

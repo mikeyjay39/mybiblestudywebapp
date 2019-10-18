@@ -1253,4 +1253,4 @@ INSERT INTO public.chapters (chapter_id, book_id, chapter_no) VALUES (1186, 66, 
 INSERT INTO public.chapters (chapter_id, book_id, chapter_no) VALUES (1187, 66, 20);
 INSERT INTO public.chapters (chapter_id, book_id, chapter_no) VALUES (1188, 66, 21);
 INSERT INTO public.chapters (chapter_id, book_id, chapter_no) VALUES (1189, 66, 22);
-INSERT INTO public.users (email, firstname, lastname, password, ranking, created_at) VALUES ('admin@admin.com', 'admin', 'admin', '12345', 0, '2019-10-18 17:28:48.317315');
+INSERT INTO public.users (user_id, email, firstname, lastname, password, ranking, created_at) VALUES (1, 'admin@admin.com', 'admin', 'admin', '12345', 0, '2019-10-18 17:28:48.317315');

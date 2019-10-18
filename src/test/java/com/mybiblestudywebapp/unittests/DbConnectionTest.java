@@ -16,6 +16,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 
@@ -118,7 +120,26 @@ public class DbConnectionTest {
     private static DataSource buildEmbeddedDataBase() throws Exception {
         EmbeddedPostgres pg = EmbeddedPostgres.start();
         DataSource dataSource = pg.getPostgresDatabase();
+        List<String> sqlFiles = new ArrayList<>();
+        sqlFiles.add(sqlDir + "extensions.sql");
+        sqlFiles.add(sqlDir + "schema.sql");
+        sqlFiles.add(sqlDir + "backups/mybiblestudydb.sql");
 
+        for (int i = 0; i < sqlFiles.size(); i++) {
+            String sqlFile = sqlFiles.get(i);
+            try (
+                    Connection connection = dataSource.getConnection()
+            ) {
+
+                ScriptUtils.executeSqlScript(connection,
+                        new EncodedResource(
+                                new FileSystemResource(
+                                        Paths.get(
+                                                sqlFile))));
+            }
+        }
+
+        /*
         try (
                 Connection connection = dataSource.getConnection()
         ) {
@@ -139,7 +160,7 @@ public class DbConnectionTest {
                             new FileSystemResource(
                                     Paths.get(
                                             sqlDir + "backups/mybiblestudydb.sql"))));
-        }
+        }*/
         return dataSource;
     }
 

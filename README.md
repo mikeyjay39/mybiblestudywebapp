@@ -5,6 +5,18 @@ __Backup Schema__
 3. Checkmark "Use create or replace syntax" AND "Ignore owner"
 4. Save to schema.sql
 
+NOTE: After backing up the schema we need to delete the create uuid
+functions at the end of schema.sql otherwise the import will fail.
+
+__SQL__
+
+```
+TRUNCATE TABLE table_name 
+RESTART IDENTITY CASCADE;
+```
+
+
+
 __Docker__
 
 https://hackernoon.com/dont-install-postgres-docker-pull-postgres-bee20e200198
