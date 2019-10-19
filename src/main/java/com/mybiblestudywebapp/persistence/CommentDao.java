@@ -8,12 +8,12 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -79,13 +79,38 @@ public class CommentDao implements UpdatableDao<Comment> {
         return Optional.empty();
     }
 
+    /**
+     * Get all comments for a note
+     * @param args contains key noteId
+     * @return
+     */
     @Override
-    public Optional<Comment> getUnique(String uniqueKey) {
-        return Optional.empty();
+    public Optional<List<Comment>> get(Map<String, Object> args) {
+        String sql = "SELECT * FROM comments WHERE note_id = :noteId";
+        SqlParameterSource params = new MapSqlParameterSource(args);
+        List<Comment> result = null;
+        try {
+            result = namedParameterJdbcTemplate.query(sql, params, CommentDao::mapRow);
+        } catch (DataAccessException e) {
+            String errMsg = "Could not get comments for note_id: " + args.get("noteId") + "\n" +
+                    e.getMessage();
+            logger.info(errMsg);
+        }
+        return Optional.ofNullable(result);
     }
 
     @Override
     public List<Comment> getAll() {
         return null;
+    }
+
+    static Comment mapRow(ResultSet rs, int rowNum) throws SQLException {
+        Comment comment = new Comment();
+        comment.setCommentId(rs.getInt("comment_id"));
+        comment.setNoteId(rs.getInt("note_id"));
+        comment.setUserId(rs.getInt("user_id"));
+        comment.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
+        comment.setComment(rs.getString("comment"));
+        return comment;
     }
 }

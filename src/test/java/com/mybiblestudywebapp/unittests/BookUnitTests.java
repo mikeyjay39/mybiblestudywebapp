@@ -50,7 +50,7 @@ public class BookUnitTests {
 
     @Test
     public void testGetUnique() throws Exception {
-        book = bookDao.getUnique("Genesis").get();
+        book = bookDao.get("Genesis").get();
         Assert.assertEquals(1, book.getBookId());
         Assert.assertEquals("Genesis", book.getTitle());
     }

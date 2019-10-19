@@ -18,7 +18,9 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Created by Michael Jeszenka.
@@ -124,13 +126,27 @@ public class NoteDao implements UpdatableDao<Note> {
     }
 
     /**
-     * Deprecated
-     * @param uniqueKey
+     * Get all notes in a chapter based on a key
+     * @param args keys can be: viewId + chapterId
      * @return
      */
     @Override
-    public Optional<Note> getUnique(String uniqueKey) {
-        return Optional.empty();
+    public Optional<List<Note>> get(Map<String, Object> args) {
+
+        String sql = "SELECT * FROM notes " +
+                "JOIN view_note ON view_note.note_id = notes.note_id " +
+                "WHERE view_note.view_id = view_id " +
+                "AND notes.chapter_id = :chapterId";
+        SqlParameterSource params = new MapSqlParameterSource(args);
+        List<Note> result = null;
+        try {
+            result = namedParameterJdbcTemplate.query(sql, params, NoteDao::mapRow);
+        } catch (DataAccessException e) {
+            String errMsg = "Could note retrive notes for view_id: " + args.get("viewId") + " chapter_id: " +
+                    args.get("chapterId") + "\n" + e.getMessage();
+            logger.info(errMsg);
+        }
+        return Optional.ofNullable(result);
     }
 
     @Override

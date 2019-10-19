@@ -12,8 +12,9 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -60,14 +61,19 @@ public class UserDao implements UpdatableDao<User> {
      * @return User from database
      */
     @Override
-    public Optional<User> getUnique(String email) {
-        String sql = "SELECT * FROM users WHERE email = ?";
-        var result = jdbcTemplate.queryForList(sql, email);
-        User user = null;
-        if (result.size() > 0) {
-            user = buildUser(result.get(0));
+    public Optional<List<User>> get(Map<String, Object> email) {
+        String sql = "SELECT * FROM users WHERE email = :email";
+        SqlParameterSource params = new MapSqlParameterSource()
+                .addValue("email", email);
+        List<User> result = null;
+        try {
+            result = namedParameterJdbcTemplate.query(sql, params, UserDao::mapRow);
+        } catch (DataAccessException e) {
+            String errMsg = "Error getting users with email = " + email +
+                    "\n" + e.getMessage();
         }
-        return Optional.ofNullable(user);
+
+        return Optional.ofNullable(result);
     }
 
     @Override
@@ -180,6 +186,18 @@ public class UserDao implements UpdatableDao<User> {
         return true;
     }
 
+    private static User mapRow(ResultSet rs, int rowNum) throws SQLException {
+        User user = new User();
+        user.setUserId(rs.getInt("user_id"));
+        user.setEmail(rs.getString("email"));
+        user.setFirstname(rs.getString("firstname"));
+        user.setLastname(rs.getString("lastname"));
+        user.setPassword(rs.getString("password"));
+        user.setRanking(rs.getInt("ranking"));
+        user.setCreatedAt((rs.getTimestamp("created_at")).toLocalDateTime());
+        return user;
+    }
+
     /**
      * Builds a User object after SQL query
      * @param sqlrow The result row
@@ -196,4 +214,5 @@ public class UserDao implements UpdatableDao<User> {
         user.setCreatedAt(((Timestamp)sqlrow.get("created_at")).toLocalDateTime());
         return user;
     }
+
 }

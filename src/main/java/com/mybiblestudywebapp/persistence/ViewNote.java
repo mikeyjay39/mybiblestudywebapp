@@ -1,5 +1,6 @@
 package com.mybiblestudywebapp.persistence;
 
+
 import java.util.Objects;
 
 /**
@@ -8,6 +9,8 @@ import java.util.Objects;
  * 2019. 10. 14.
  */
 public class ViewNote {
+
+
     private long viewNoteId;
     private long viewId;
     private long noteId;

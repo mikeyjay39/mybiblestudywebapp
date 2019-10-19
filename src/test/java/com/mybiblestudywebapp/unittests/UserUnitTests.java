@@ -92,7 +92,7 @@ public class UserUnitTests {
 
     private User getUserByEmail(String email) {
         long id = -1;
-        User user = userDao.getUnique(email).orElse(null);
+        User user = userDao.get(email).orElse(null);
         return user;
     }
 

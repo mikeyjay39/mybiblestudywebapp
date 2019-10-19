@@ -63,7 +63,7 @@ public class ViewUnitTests {
     public void testGetUnique() {
         view = addViewAndGet();
         String viewCode = view.getViewCode();
-        var result = viewDao.getUnique(viewCode);
+        var result = viewDao.get(viewCode);
         View newView = result.get();
         Assert.assertNotNull(newView);
     }

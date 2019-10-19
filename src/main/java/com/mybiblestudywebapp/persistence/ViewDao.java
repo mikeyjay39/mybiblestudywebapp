@@ -17,6 +17,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -121,16 +122,21 @@ public class ViewDao implements UpdatableDao<View> {
         return Optional.ofNullable(result);
     }
 
+    /**
+     *
+     * @param args key = viewCode
+     * @return
+     */
     @Override
-    public Optional<View> getUnique(String uniqueKey) {
+    public Optional<List<View>> get(Map<String, Object> args) {
         String sql = "SELECT * FROM views WHERE view_code = :viewCode";
         SqlParameterSource params = new MapSqlParameterSource()
-                .addValue("viewCode", uniqueKey, Types.OTHER);
-        View result = null;
+                .addValue("viewCode", args, Types.OTHER);
+        List<View> result = null;
         try {
-            result = namedParameterJdbcTemplate.queryForObject(sql, params, ViewDao::mapRow);
+            result = namedParameterJdbcTemplate.query(sql, params, ViewDao::mapRow);
         } catch (EmptyResultDataAccessException e) {
-            logger.info("Could not get view_code = " + uniqueKey + "\n" + e.getMessage());
+            logger.info("Could not get view_code = " + args.get("viewCode") + "\n" + e.getMessage());
         }
         return Optional.ofNullable(result);    }
 

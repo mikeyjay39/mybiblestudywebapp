@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface Dao<T> {
     Optional<T> get(long id);
 
-    Optional<List<T>> getUnique(String uniqueKey);
+    Optional<List<T>> get(Map<String, Object> args);
 
     List<T> getAll();
 

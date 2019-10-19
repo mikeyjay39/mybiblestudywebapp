@@ -1,6 +1,5 @@
 package com.mybiblestudywebapp.persistence;
 
-import com.sun.source.tree.Tree;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +10,6 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Component;
 
-import javax.xml.crypto.Data;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -50,20 +48,19 @@ public class ChapterDao implements Dao<Chapter> {
 
     /**
      * Get chapter based on book
-     * @param uniqueKey book_id
+     * @param args bookId
      * @return
      */
     @Override
-    public Optional<List<Chapter>> getUnique(String uniqueKey) {
+    public Optional<List<Chapter>> get(Map<String, Object> args) {
         String sql = "SELECT * FROM chapters WHERE book_id = :bookId";
         List<Chapter> result = null;
-        SqlParameterSource params = new MapSqlParameterSource()
-                .addValue("bookId", Long.valueOf(uniqueKey));
+        SqlParameterSource params = new MapSqlParameterSource(args);
 
         try {
             result = namedParameterJdbcTemplate.query(sql, params, ChapterDao::mapRow);
         } catch (DataAccessException e) {
-            String errMsg = "Could not get chapters for book_id = " + uniqueKey +
+            String errMsg = "Could not get chapters for book_id = " + args.get("bookId") +
                     "\n " + e.getMessage();
             logger.info(e.getMessage());
         }
@@ -172,7 +169,7 @@ public class ChapterDao implements Dao<Chapter> {
         return totalRows;
     }
 
-    private static Chapter mapRow(ResultSet rs, int rowNum) throws SQLException {
+    static Chapter mapRow(ResultSet rs, int rowNum) throws SQLException {
         Chapter chapter = new Chapter();
         chapter.setChapterId(rs.getInt("chapter_id"));
         chapter.setBookId(rs.getInt("book_id"));

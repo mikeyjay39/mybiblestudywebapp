@@ -90,16 +90,17 @@ create table view_note
 
 create table comments
 (
-	comment_id bigserial not null
-		constraint comment_pk
-			primary key,
-	user_id integer
-		constraint comment_user_user_id_fk
-			references users,
-	note_id integer
-		constraint comment_note_note_id_fk
-			references notes,
-	created_at timestamp default now()
+    comment_id bigserial not null
+        constraint comment_pk
+            primary key,
+    user_id integer
+        constraint comment_user_user_id_fk
+            references users,
+    note_id integer
+        constraint comment_note_note_id_fk
+            references notes,
+    created_at timestamp default now(),
+    comment text
 );
 
 comment on table comments is 'Used for user comments on notes';
