@@ -1,5 +1,8 @@
 package com.mybiblestudywebapp.persistence;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -18,6 +21,7 @@ import java.util.*;
  */
 public class UserDao implements UpdatableDao<User> {
 
+    private static final Logger logger = LoggerFactory.getLogger(UserDao.class);
     private JdbcTemplate jdbcTemplate;
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
@@ -74,24 +78,30 @@ public class UserDao implements UpdatableDao<User> {
     /**
      * Writes User into database
      * @param user
-     * @return true on success
+     * @return user_id or -1 on failure
      */
     @Override
-    public boolean save(User user) {
+    public long save(User user) {
         String sql = "INSERT INTO users (email, firstname, lastname, password) " +
-                "VALUES (:email, :firstname, :lastname, :password)";
+                "VALUES (:email, :firstname, :lastname, :password) " +
+                "RETURNING user_id";
 
-        KeyHolder holder = new GeneratedKeyHolder();
         SqlParameterSource params = new MapSqlParameterSource()
                 .addValue("email", user.getEmail())
                 .addValue("firstname", user.getFirstname())
                 .addValue("lastname", user.getLastname())
                 .addValue("password", user.getPassword());
 
-        int rows = 0;
-        rows = namedParameterJdbcTemplate.update(sql, params, holder);
+        long userId = -1;
+        try {
+            userId = namedParameterJdbcTemplate.queryForObject(sql, params, Long.class);
+        } catch (DataAccessException e) {
+            String errMsg = "Could not add user for email: " + user.getEmail() +
+                    "\n" + e.getMessage();
+            logger.info(errMsg);
+        }
 
-        return rows > 0;
+        return userId;
     }
 
     /**

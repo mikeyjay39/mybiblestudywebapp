@@ -8,7 +8,7 @@ import java.util.Map;
  * 10/15/19
  */
 public interface UpdatableDao<T> extends Dao<T> {
-    boolean save(T t);
+    long save(T t);
 
     boolean update(T t);
 

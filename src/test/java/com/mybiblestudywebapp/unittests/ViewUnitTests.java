@@ -79,8 +79,8 @@ public class ViewUnitTests {
         view = new View();
         view.setUserId(1);
         view.setPriv(false);
-        boolean result = viewDao.save(view);
-        Assert.assertTrue(result);
+        long result = viewDao.save(view);
+        Assert.assertTrue(result > -1);
         Optional<View> optionalView = viewDao.get(1);
         View newView = optionalView.get();
         Assert.assertNotNull(newView.getViewCode());
@@ -92,8 +92,8 @@ public class ViewUnitTests {
             view = new View();
             view.setUserId(1);
             view.setPriv(false);
-            boolean result = viewDao.save(view);
-            Assert.assertTrue(result);
+            long result = viewDao.save(view);
+            Assert.assertTrue(result > -1);
         }
     }
 }

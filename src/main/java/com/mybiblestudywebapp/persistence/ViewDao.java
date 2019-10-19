@@ -2,6 +2,7 @@ package com.mybiblestudywebapp.persistence;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -36,19 +37,27 @@ public class ViewDao implements UpdatableDao<View> {
     /**
      * Creates a View in the DB
      * @param view
-     * @return
+     * @return view_id or -1 on failure
      */
     @Override
-    public boolean save(View view) {
+    public long save(View view) {
         String sql = "INSERT INTO views (user_id, priv) " +
-                "VALUES (:userId, :priv)";
+                "VALUES (:userId, :priv)" +
+                "RETURNING view_id";
         KeyHolder holder = new GeneratedKeyHolder();
         SqlParameterSource params = new MapSqlParameterSource()
                 .addValue("userId", view.getUserId())
                 .addValue("priv", view.isPriv());
-        int rows = 0;
-        rows = namedParameterJdbcTemplate.update(sql, params, holder);
-        return rows > 0;
+
+        long viewId = -1;
+        try {
+            viewId = namedParameterJdbcTemplate.queryForObject(sql, params, Long.class);
+        } catch (DataAccessException e) {
+            String errMsg = "Could not add view for user_id: " + view.getUserId() +
+                    "\n" + e.getMessage();
+            logger.info(errMsg);
+        }
+        return viewId;
     }
 
     /**

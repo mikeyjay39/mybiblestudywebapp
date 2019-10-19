@@ -77,8 +77,8 @@ public class NoteUnitTests {
         note.setNote("A new note!");
         note.setPriv(false);
         note.setLang("en");
-        boolean result = noteDao.save(note);
-        Assert.assertTrue(result);
+        long result = noteDao.save(note);
+        Assert.assertTrue(result > -1);
         return note;
     }
 }

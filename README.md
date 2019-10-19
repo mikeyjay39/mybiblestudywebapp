@@ -8,6 +8,9 @@ __Backup Schema__
 NOTE: After backing up the schema we need to delete the create uuid
 functions at the end of schema.sql otherwise the import will fail.
 
+For INSERT statements .sql file we need to remove the primary key columns
+otherwise the sequences nextval() will not properly be incremented.
+
 __SQL__
 
 ```

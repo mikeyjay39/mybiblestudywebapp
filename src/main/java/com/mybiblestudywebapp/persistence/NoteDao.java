@@ -2,6 +2,7 @@ package com.mybiblestudywebapp.persistence;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -24,7 +25,7 @@ import java.util.Optional;
  */
 public class NoteDao implements UpdatableDao<Note> {
 
-    private static Logger logger = LoggerFactory.getLogger(NoteDao.class);
+    private static final Logger logger = LoggerFactory.getLogger(NoteDao.class);
     private JdbcTemplate jdbcTemplate;
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
@@ -33,13 +34,18 @@ public class NoteDao implements UpdatableDao<Note> {
         namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate.getDataSource());
     }
 
+    /**
+     * Save Note to DB
+     * @param note
+     * @return note_id or -1 on failure
+     */
     @Override
-    public boolean save(Note note) {
+    public long save(Note note) {
         String sql = "INSERT INTO notes (note, user_id, book_id, chapter_id, verse, priv, lang) " +
-                "VALUES (:note, :userId, :bookId, :chapterId, :verse, :priv, :lang)";
-        int rows = 0;
+                "VALUES (:note, :userId, :bookId, :chapterId, :verse, :priv, :lang) " +
+                "RETURNING note_id";
+        long noteId = -1;
 
-        KeyHolder holder = new GeneratedKeyHolder();
         SqlParameterSource namedParams = new MapSqlParameterSource()
                 .addValue("note", note.getNote())
                 .addValue("userId", note.getUserId())
@@ -49,9 +55,16 @@ public class NoteDao implements UpdatableDao<Note> {
                 .addValue("priv", note.isPriv())
                 .addValue("lang", note.getLang());
 
-        rows = namedParameterJdbcTemplate.update(sql, namedParams, holder);
+        try {
+            noteId = namedParameterJdbcTemplate.queryForObject(sql, namedParams, Long.class);
+        } catch (DataAccessException e) {
+            String errMsg = "Could note add note for user_id: " + note.getUserId() +
+                    " book_id: " + note.getBookId() + " chapter_id: " + note.getChapterId() +
+                    " verse: " + note.getVerse() + "\n" + e.getMessage();
+            logger.info(errMsg);
+        }
 
-        return rows > 0;
+        return noteId;
     }
 
     @Override

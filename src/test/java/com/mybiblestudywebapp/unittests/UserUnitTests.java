@@ -126,7 +126,7 @@ public class UserUnitTests {
     }
 
     private void addUser(User user) {
-        boolean result = userDao.save(user);
-        Assert.assertTrue(result);
+        long result = userDao.save(user);
+        Assert.assertTrue(result > -1);
     }
 }

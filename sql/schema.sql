@@ -90,7 +90,7 @@ create table view_note
 
 create table comments
 (
-	comment_id bigint not null
+	comment_id bigserial not null
 		constraint comment_pk
 			primary key,
 	user_id integer

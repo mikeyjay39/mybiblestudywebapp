@@ -139,28 +139,7 @@ public class DbConnectionTest {
             }
         }
 
-        /*
-        try (
-                Connection connection = dataSource.getConnection()
-        ) {
 
-            ScriptUtils.executeSqlScript(connection,
-                    new EncodedResource(
-                            new FileSystemResource(
-                                    Paths.get(
-                                            sqlDir + "schema.sql"))));
-        }
-
-        try (
-                Connection connection = dataSource.getConnection()
-                ) {
-
-            ScriptUtils.executeSqlScript(connection,
-                    new EncodedResource(
-                            new FileSystemResource(
-                                    Paths.get(
-                                            sqlDir + "backups/mybiblestudydb.sql"))));
-        }*/
         return dataSource;
     }
 
