@@ -8,6 +8,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
@@ -66,7 +68,15 @@ public class CommentDao implements UpdatableDao<Comment> {
 
     @Override
     public boolean update(Comment comment) {
-        return false;
+        String sql = "UPDATE comments SET comment = :comment " +
+                "WHERE comment_id = :commentId";
+        KeyHolder holder = new GeneratedKeyHolder();
+        SqlParameterSource params = new MapSqlParameterSource()
+                .addValue("comment", comment.getComment())
+                .addValue("commentId", comment.getCommentId());
+        int rows = 0;
+        rows = namedParameterJdbcTemplate.update(sql, params, holder);
+        return rows > 0;
     }
 
     @Override
