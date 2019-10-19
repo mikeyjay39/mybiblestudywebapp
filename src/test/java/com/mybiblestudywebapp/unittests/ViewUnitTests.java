@@ -8,6 +8,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -19,6 +21,8 @@ public class ViewUnitTests {
 
     private View view;
     private ViewDao viewDao;
+    private Map<String, Object> args = new HashMap<>();
+
 
     public ViewUnitTests() {
         JdbcTemplate jdbcTemplate = new JdbcTemplate();
@@ -63,8 +67,9 @@ public class ViewUnitTests {
     public void testGetUnique() {
         view = addViewAndGet();
         String viewCode = view.getViewCode();
-        var result = viewDao.get(viewCode);
-        View newView = result.get();
+        args.put("viewCod", viewCode);
+        var result = viewDao.get(args);
+        View newView = result.get().get(0);
         Assert.assertNotNull(newView);
     }
 

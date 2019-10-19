@@ -17,6 +17,8 @@ public class UserUnitTests {
 
     private UserDao userDao;
     private User user;
+    private Map<String, Object> args = new HashMap<>();
+
 
 
     public UserUnitTests() {
@@ -54,9 +56,8 @@ public class UserUnitTests {
         user = getUserByEmail(user.getEmail());
         long originalId = user.getUserId();
         String newEmail = "mynewemail@gmail.com";
-        Map<String, Object> params = new HashMap<>();
-        params.put("email", newEmail);
-        userDao.update(user, params);
+        args.put("email", newEmail);
+        userDao.update(user, args);
         User newUser = getUserByEmail(newEmail);
         long newId = newUser.getUserId();
         Assert.assertEquals(originalId, newId);
@@ -92,7 +93,8 @@ public class UserUnitTests {
 
     private User getUserByEmail(String email) {
         long id = -1;
-        User user = userDao.get(email).orElse(null);
+        args.put("email", email);
+        User user = userDao.get(args).orElse(null).get(0);
         return user;
     }
 

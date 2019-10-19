@@ -8,6 +8,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by Michael Jeszenka.
  * <a href="mailto:michael@jeszenka.com">michael@jeszenka.com</a>
@@ -50,7 +53,9 @@ public class BookUnitTests {
 
     @Test
     public void testGetUnique() throws Exception {
-        book = bookDao.get("Genesis").get();
+        Map<String, Object> args = new HashMap<>();
+        args.put("title", "Genesis");
+        book = bookDao.get(args).get().get(0);
         Assert.assertEquals(1, book.getBookId());
         Assert.assertEquals("Genesis", book.getTitle());
     }
