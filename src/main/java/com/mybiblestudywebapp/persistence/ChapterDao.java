@@ -1,9 +1,17 @@
 package com.mybiblestudywebapp.persistence;
 
 import com.sun.source.tree.Tree;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.stereotype.Component;
 
+import javax.xml.crypto.Data;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -16,12 +24,22 @@ import java.util.TreeMap;
  * <a href="mailto:michael@jeszenka.com">michael@jeszenka.com</a>
  * 10/17/19
  */
+@Component
 public class ChapterDao implements Dao<Chapter> {
 
+    @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+
+    private static final Logger logger = LoggerFactory.getLogger(ChapterDao.class);
+
+    public ChapterDao(){}
 
     public ChapterDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
+        namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
     }
 
     @Override
@@ -31,16 +49,26 @@ public class ChapterDao implements Dao<Chapter> {
     }
 
     /**
-     * Do not use this
-     * @param uniqueKey
+     * Get chapter based on book
+     * @param uniqueKey book_id
      * @return
      */
-    @Deprecated
     @Override
-    public Optional<Chapter> getUnique(String uniqueKey) {
-        String sql = "SELECT * FROM chapters WHERE chapter_no = ?";
+    public Optional<List<Chapter>> getUnique(String uniqueKey) {
+        String sql = "SELECT * FROM chapters WHERE book_id = :bookId";
+        List<Chapter> result = null;
+        SqlParameterSource params = new MapSqlParameterSource()
+                .addValue("bookId", Long.valueOf(uniqueKey));
 
-        return Optional.ofNullable(jdbcTemplate.queryForObject(sql, new Object[]{uniqueKey}, ChapterDao::mapRow));
+        try {
+            result = namedParameterJdbcTemplate.query(sql, params, ChapterDao::mapRow);
+        } catch (DataAccessException e) {
+            String errMsg = "Could not get chapters for book_id = " + uniqueKey +
+                    "\n " + e.getMessage();
+            logger.info(e.getMessage());
+        }
+
+        return Optional.ofNullable(result);
     }
 
     /**

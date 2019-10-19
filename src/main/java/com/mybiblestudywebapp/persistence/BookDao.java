@@ -1,6 +1,8 @@
 package com.mybiblestudywebapp.persistence;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,9 +14,13 @@ import java.util.Optional;
  * <a href="mailto:michael@jeszenka.com">michael@jeszenka.com</a>
  * 10/15/19
  */
+@Component
 public class BookDao implements Dao<Book> {
 
+    @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    public BookDao(){}
 
     public BookDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;

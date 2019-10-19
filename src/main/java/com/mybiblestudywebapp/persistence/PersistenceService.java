@@ -15,15 +15,5 @@ import javax.annotation.PostConstruct;
 public class PersistenceService {
 
     @Autowired
-    private JdbcTemplate jdbcTemplate;
-    private UserDao userDao;
-
-    @PostConstruct
-    private void postConstruct() {
-        userDao = new UserDao(jdbcTemplate);
-    }
-
-    public boolean addUser(User user) {
-        return false;
-    }
+    private DaoService daoService;
 }

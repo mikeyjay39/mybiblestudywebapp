@@ -1,5 +1,7 @@
 package com.mybiblestudywebapp.persistence;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -11,6 +13,7 @@ public class Book {
     private long bookId;
     private String title;
     private Testament testament;
+    private List<Chapter> chapters = new ArrayList<>();
 
     @Override
     public boolean equals(Object o) {
@@ -47,5 +50,13 @@ public class Book {
 
     public void setTestament(Testament testament) {
         this.testament = testament;
+    }
+
+    public List<Chapter> getChapters() {
+        return chapters;
+    }
+
+    public void setChapters(List<Chapter> chapters) {
+        this.chapters = chapters;
     }
 }

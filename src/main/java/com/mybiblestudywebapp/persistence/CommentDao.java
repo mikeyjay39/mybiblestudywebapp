@@ -2,6 +2,7 @@ package com.mybiblestudywebapp.persistence;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -9,6 +10,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Component;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -19,11 +21,18 @@ import java.util.Optional;
  * <a href="mailto:michael@jeszenka.com">michael@jeszenka.com</a>
  * 10/18/19
  */
+@Component
 public class CommentDao implements UpdatableDao<Comment> {
 
-    private static final Logger logger = LoggerFactory.getLogger(CommentDao.class);
+    private final Logger logger = LoggerFactory.getLogger(CommentDao.class);
+
+    @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+
+    public CommentDao(){}
 
     public CommentDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;

@@ -1,6 +1,8 @@
 package com.mybiblestudywebapp.persistence;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -17,6 +19,8 @@ public class User {
     private String password;
     private int ranking;
     private LocalDateTime createdAt;
+    private List<View> views = new ArrayList<>();
+    private List<Note> notes = new ArrayList<>();
 
     @Override
     public boolean equals(Object o) {
@@ -85,5 +89,21 @@ public class User {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public List<View> getViews() {
+        return views;
+    }
+
+    public void setViews(List<View> views) {
+        this.views = views;
+    }
+
+    public List<Note> getNotes() {
+        return notes;
+    }
+
+    public void setNotes(List<Note> notes) {
+        this.notes = notes;
     }
 }

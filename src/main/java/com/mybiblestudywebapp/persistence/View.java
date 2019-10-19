@@ -1,5 +1,7 @@
 package com.mybiblestudywebapp.persistence;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -12,6 +14,7 @@ public class View {
     private long userId;
     private String viewCode;
     private boolean priv;
+    private List<Note> notes = new ArrayList<>();
 
     @Override
     public boolean equals(Object o) {

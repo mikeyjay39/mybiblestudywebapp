@@ -12,7 +12,8 @@ import java.util.Optional;
 public interface Dao<T> {
     Optional<T> get(long id);
 
-    Optional<T> getUnique(String uniqueKey);
+    Optional<List<T>> getUnique(String uniqueKey);
 
     List<T> getAll();
+
 }
