@@ -1254,4 +1254,7 @@ INSERT INTO public.chapters (chapter_id, book_id, chapter_no) VALUES (1187, 66, 
 INSERT INTO public.chapters (chapter_id, book_id, chapter_no) VALUES (1188, 66, 21);
 INSERT INTO public.chapters (chapter_id, book_id, chapter_no) VALUES (1189, 66, 22);
 INSERT INTO public.users (email, firstname, lastname, password, ranking, created_at) VALUES ('admin@admin.com', 'admin', 'admin', '12345', 0, '2019-10-18 17:28:48.317315');
+INSERT INTO public.users (email, firstname, lastname, password, ranking, created_at) VALUES ('user2@gmail.com', 'test', 'test', '54321', 0, '2019-10-20 22:08:55.466646');
 INSERT INTO public.notes (note, user_id, book_id, chapter_id, verse, ranking, priv, lang, created_at, last_modified) VALUES ('This is the first note', 1, 1, 1, 1, 0, true, 'en', '2019-10-19 00:14:39.941854', null);
+INSERT INTO public.comments (user_id, note_id, created_at, comment) VALUES (2, 1, '2019-10-20 22:09:41.976445', 'This is a comment on note_id 1');
+INSERT INTO public.views (user_id, view_code, priv) VALUES (1, '6e9e6366-f386-11e9-b633-0242ac110002', true);

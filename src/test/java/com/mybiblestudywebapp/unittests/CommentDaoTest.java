@@ -8,6 +8,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import java.util.Optional;
+
 import static org.junit.Assert.*;
 
 /**
@@ -41,14 +43,29 @@ public class CommentDaoTest {
 
     @Test
     public void update() {
+        comment = getComment();
+        String newCommentField = "This is the new comment text";
+        Assert.assertNotEquals(newCommentField, comment.getComment());
+        long id = comment.getCommentId();
+        comment.setComment(newCommentField);
+        boolean result = commentDao.update(comment);
+        Assert.assertTrue(result);
+        Comment updatedComment = commentDao.get(1).get();
+        Assert.assertEquals(newCommentField, updatedComment.getComment());
     }
 
     @Test
     public void delete() {
+        comment = commentDao.get(1).get();
+        boolean result = commentDao.delete(comment);
+        Assert.assertTrue(result);
+        Optional<Comment> comment1 = commentDao.get(1);
+        Assert.assertTrue(comment1.isEmpty());
     }
 
     @Test
     public void get() {
+        getComment();
     }
 
     @Test
@@ -62,5 +79,12 @@ public class CommentDaoTest {
         long result = commentDao.save(comment);
         Assert.assertTrue(result > -1);
         return result;
+    }
+
+    private Comment getComment() {
+        comment = commentDao.get(1).orElse(null);
+        Assert.assertNotNull(comment);
+        Assert.assertEquals(2, comment.getUserId());
+        return comment;
     }
 }

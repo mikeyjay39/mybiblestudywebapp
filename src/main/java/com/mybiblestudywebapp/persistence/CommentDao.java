@@ -66,6 +66,11 @@ public class CommentDao implements UpdatableDao<Comment> {
         return commentId;
     }
 
+    /**
+     * Update comment
+     * @param comment
+     * @return true on success
+     */
     @Override
     public boolean update(Comment comment) {
         String sql = "UPDATE comments SET comment = :comment " +
@@ -79,14 +84,41 @@ public class CommentDao implements UpdatableDao<Comment> {
         return rows > 0;
     }
 
+    /**
+     * Delete by comment_id
+     * @param comment
+     * @return
+     */
     @Override
     public boolean delete(Comment comment) {
-        return false;
+        String sql = "DELETE FROM comments WHERE comment_id = :commentId";
+        SqlParameterSource params = new MapSqlParameterSource()
+                .addValue("commentId", comment.getCommentId());
+
+        int rows = 0;
+        rows = namedParameterJdbcTemplate.update(sql, params);
+
+        return rows > 0;
     }
 
+    /**
+     * Get comment by comment_id
+     * @param id
+     * @return
+     */
     @Override
     public Optional<Comment> get(long id) {
-        return Optional.empty();
+        String sql = "SELECT * FROM comments WHERE comment_id = :commentId";
+        SqlParameterSource params = new MapSqlParameterSource()
+                .addValue("commentId", id);
+        Comment result = null;
+        try {
+            result = namedParameterJdbcTemplate.queryForObject(sql, params, CommentDao::mapRow);
+        } catch (DataAccessException e) {
+            String errMsg = "Could not get comment_id: " + id + "\n" + e.getMessage();
+            logger.info(errMsg);
+        }
+        return Optional.ofNullable(result);
     }
 
     /**
