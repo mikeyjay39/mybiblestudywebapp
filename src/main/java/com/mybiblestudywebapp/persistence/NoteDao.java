@@ -154,7 +154,7 @@ public class NoteDao implements UpdatableDao<Note> {
         return null;
     }
 
-    private static Note mapRow(ResultSet rs, int rowNum) throws SQLException {
+    static Note mapRow(ResultSet rs, int rowNum) throws SQLException {
         Note note = new Note();
 
         note.setNoteId(rs.getInt("note_id"));
