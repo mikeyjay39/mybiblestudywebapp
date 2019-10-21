@@ -36,7 +36,7 @@ public class GetBibleTest {
 
     @Test
     public void getVersesForChapter() {
-        getBibleResponse = getBible.getVersesForChapter("Genesis", 1);
+        getBibleResponse = getBible.getVersesForChapter("Exodus", 1);
         List<Map<String, String>> verses = getBibleResponse.getVerses();
         Assert.assertNotNull(verses);
     }

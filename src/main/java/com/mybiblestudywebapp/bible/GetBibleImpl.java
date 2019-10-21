@@ -27,7 +27,7 @@ public class GetBibleImpl implements GetBible {
 
     private RestTemplate restTemplate = new RestTemplate();
 
-    private String apiUrl = "https://getbible.net/json?p=Genesis1";
+    private String apiUrl = "https://getbible.net/json?p=";
 
     public GetBibleImpl(){
 
@@ -49,23 +49,26 @@ public class GetBibleImpl implements GetBible {
      */
     @Override
     public GetBibleResponse getVersesForChapter(String book, int chapter) {
-        Map<String, String> args = new HashMap<>();
-        args.put("p", book + String.valueOf(chapter));
-        //ResponseEntity<GetBibleChapterResponseImpl> response = null;
+        /*MultiValueMap<String, String> args = new LinkedMultiValueMap<>();
+        args.add("p", book + String.valueOf(chapter));*/
         ResponseEntity<String> response = null;
         HttpHeaders headers = new HttpHeaders();
         List<MediaType> acceptTypes = new ArrayList<>();
         acceptTypes.add(MediaType.APPLICATION_JSON_UTF8);
         acceptTypes.add(MediaType.TEXT_XML);
         headers.setAccept(acceptTypes);
-        //headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+        //headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         headers.add("User-Agent",
                 "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/77.0.3865.90 Chrome/77.0.3865.90 Safari/537.36");
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(null, headers);
 
         try {
             response =
-                    restTemplate.exchange(apiUrl, HttpMethod.GET, request, String.class);
+                    restTemplate.exchange(
+                            apiUrl + book + String.valueOf(chapter),
+                            HttpMethod.GET,
+                            request,
+                            String.class);
         } catch (RestClientException e) {
             String errMsg = "error fetching verses for book: " + book + " chapter: " + chapter + e.getMessage();
             logger.error(errMsg);
