@@ -16,6 +16,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 
@@ -28,14 +30,28 @@ public class DbConnectionTest {
 
     private static DataSource embeddedDataSource;
     private static Connection livePostgresConnection;
+    private static DataSource liveDataSource;
+    private static String sqlDir = "/home/michael/Projects/mybiblestudywebapp/sql/";
 
-    @BeforeClass
-    public static void beforeClass() throws Exception {
-        embeddedDataSource = buildEmbeddedDataBase();
-        Properties properties = new Properties();
-        properties.setProperty("user", System.getenv("PSQLDBUSER"));
-        properties.setProperty("password", System.getenv("PSQLDBPASS"));
-        livePostgresConnection = DriverManager.getConnection(System.getenv("PSQLDBURL"), properties);
+    /*@BeforeClass
+    public static void beforeClass() throws Exception {*/
+    static {
+        try {
+            embeddedDataSource = buildEmbeddedDataBase();
+            Properties properties = new Properties();
+            properties.setProperty("user", System.getenv("PSQLDBUSER"));
+            properties.setProperty("password", System.getenv("PSQLDBPASS"));
+            livePostgresConnection = DriverManager.getConnection(System.getenv("PSQLDBURL"), properties);
+        } catch (Exception e) {
+            System.err.println("Failed to build embedded db for testing" + e.getMessage());
+        }
+
+        DataSourceBuilder dataSourceBuilder = DataSourceBuilder.create();
+        dataSourceBuilder.driverClassName(System.getenv("PSQLDBDRIVER"));
+        dataSourceBuilder.url(System.getenv("PSQLDBURL"));
+        dataSourceBuilder.username(System.getenv("PSQLDBUSER"));
+        dataSourceBuilder.password(System.getenv("PSQLDBPASS"));
+        liveDataSource = dataSourceBuilder.build();
     }
 
     /**
@@ -79,7 +95,7 @@ public class DbConnectionTest {
     public void testEmbeddedPgBuilt() throws Exception {
         try (Connection connection = embeddedDataSource.getConnection()) {
             Statement statement = connection.createStatement();
-            ResultSet rs = statement.executeQuery("SELECT * FROM book;");
+            ResultSet rs = statement.executeQuery("SELECT * FROM books;");
             Assert.assertTrue(rs.next());
             Assert.assertEquals("Genesis", rs.getString("title"));
         } catch (Exception e) {
@@ -104,29 +120,31 @@ public class DbConnectionTest {
     private static DataSource buildEmbeddedDataBase() throws Exception {
         EmbeddedPostgres pg = EmbeddedPostgres.start();
         DataSource dataSource = pg.getPostgresDatabase();
+        List<String> sqlFiles = new ArrayList<>();
+        sqlFiles.add(sqlDir + "extensions.sql");
+        sqlFiles.add(sqlDir + "schema.sql");
+        sqlFiles.add(sqlDir + "backups/mybiblestudydb.sql");
 
-        try (
-                Connection connection = dataSource.getConnection()
-        ) {
+        for (int i = 0; i < sqlFiles.size(); i++) {
+            String sqlFile = sqlFiles.get(i);
+            try (
+                    Connection connection = dataSource.getConnection()
+            ) {
 
-            ScriptUtils.executeSqlScript(connection,
-                    new EncodedResource(
-                            new FileSystemResource(
-                                    Paths.get(
-                                            "/home/developer/my-bible-study-web-app/sql/schema.sql"))));
+                ScriptUtils.executeSqlScript(connection,
+                        new EncodedResource(
+                                new FileSystemResource(
+                                        Paths.get(
+                                                sqlFile))));
+            }
         }
 
-        try (
-                Connection connection = dataSource.getConnection()
-                ) {
 
-            ScriptUtils.executeSqlScript(connection,
-                    new EncodedResource(
-                            new FileSystemResource(
-                                    Paths.get(
-                                            "/home/developer/my-bible-study-web-app/sql/backups/mybiblestudydb.sql"))));
-        }
         return dataSource;
+    }
+
+    public static DataSource getLiveDataSource() {
+        return liveDataSource;
     }
 }
 
