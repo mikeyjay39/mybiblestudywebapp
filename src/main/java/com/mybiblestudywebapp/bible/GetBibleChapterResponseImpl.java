@@ -35,10 +35,11 @@ public class GetBibleChapterResponseImpl implements GetBibleResponse {
         }
 
         // build map that contains keys of verseNr and verse.
-        for (int i = 0; i < chapter.size(); i++) {
+        //for (int i = 0; i < chapter.size(); i++) {
+        for (Integer v : verseNumbers) {
             Map<String, String> map = new HashMap<>();
-            map.put("verseNr", chapter.get(String.valueOf(i)).get("verse_nr"));
-            map.put("verse", chapter.get(String.valueOf(i)).get("verse"));
+            map.put("verseNr", chapter.get(String.valueOf(v)).get("verse_nr"));
+            map.put("verse", chapter.get(String.valueOf(v)).get("verse"));
             verses.add(map);
         }
 
