@@ -64,7 +64,7 @@ public class NoteUnitTests {
         note = saveNote();
         note.setNoteId(1);
         note = noteDao.get(1l).get();
-        Assert.assertEquals("A new note!", note.getNote());
+        Assert.assertEquals("This is the first note!", note.getNote());
         return note;
     }
 

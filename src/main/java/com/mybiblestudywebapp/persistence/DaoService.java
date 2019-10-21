@@ -1,5 +1,8 @@
 package com.mybiblestudywebapp.persistence;
 
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -16,4 +19,10 @@ public interface DaoService {
      * @return
      */
     CompletableFuture<Long> addUserNotesToView(long userId, long viewId);
-}
+
+    JdbcTemplate getJdbcTemplate();
+    void setJdbcTemplate(JdbcTemplate jdbcTemplate);
+    NamedParameterJdbcTemplate getNamedParameterJdbcTemplate();
+    void setNamedParameterJdbcTemplate(NamedParameterJdbcTemplate namedParameterJdbcTemplate);
+
+    }

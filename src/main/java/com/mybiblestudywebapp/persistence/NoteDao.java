@@ -158,13 +158,14 @@ public class NoteDao implements UpdatableDao<Note> {
         Note note = new Note();
 
         note.setNoteId(rs.getInt("note_id"));
-        note.setNote(rs.getString("note"));
         note.setUserId(rs.getInt("user_id"));
         note.setBookId(rs.getInt("book_id"));
         note.setChapterId(rs.getInt("chapter_id"));
         note.setVerse(rs.getInt("verse"));
         note.setRanking(rs.getInt("ranking"));
         note.setPriv(rs.getBoolean("priv"));
+        note.setNote(rs.getString("note"));
+        note.setLang(rs.getString("lang"));
         note.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
         var lastModified = rs.getTimestamp("last_modified");
         if (null != lastModified) {
