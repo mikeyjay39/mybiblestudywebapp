@@ -43,11 +43,13 @@ public class DaoServiceTest {
         var completedResult = daoService.addUserNotesToView(1, 1);
         long result = completedResult.get();
         Assert.assertTrue(result > 0);
-        Dao viewNoteDao = new ViewNoteDao();
+        // test that viewNote was added
+        Dao viewNoteDao = new ViewNoteDao(jdbcTemplate);
+        var allViewNotes = viewNoteDao.getAll();
         Map<String, Object> args = new HashMap<>();
         args.put("viewId", 1l);
-        args.put("userId", 1l);
-        Optional<List<ViewNote>> viewNoteResult = viewNoteDao.get(1);
+        args.put("chapterId", 1);
+        Optional<List<ViewNote>> viewNoteResult = viewNoteDao.get(args);
         List<ViewNote> viewNotes = viewNoteResult.get();
         Assert.assertTrue(viewNotes.size() > 0);
 
@@ -69,6 +71,7 @@ public class DaoServiceTest {
             result.add(noteDao.save(note));
             Optional<Note> opt = noteDao.get(i + 2);
             Note testNote = opt.get();
+            Assert.assertEquals(i + 2, testNote.getNoteId());
         }
         return result;
     }

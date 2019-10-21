@@ -47,13 +47,14 @@ public class ViewNoteDao implements Dao<ViewNote> {
 
     /**
      *
-     * @param args keys: viewId noteId
+     * @param args keys: viewId chapterId
      * @return
      */
     @Override
     public Optional<List<ViewNote>> get(Map<String, Object> args) {
-        String sql = "SELECT * FROM view_note WHERE " +
-                "view_id = :viewId AND note_id = :noteId";
+        String sql = "SELECT * FROM view_note " +
+                "JOIN notes ON view_note.note_id = notes.note_id WHERE " +
+                "view_id = :viewId AND chapter_id = :chapterId";
         SqlParameterSource params = new MapSqlParameterSource(args);
         List<ViewNote> result = null;
         try {
@@ -61,13 +62,15 @@ public class ViewNoteDao implements Dao<ViewNote> {
         } catch (DataAccessException e) {
             String errMsg = "Could not get view_note for view_id: " + args.get("viewId") +
                     " note_id: " + args.get("noteId") + "\n" + e.getMessage();
+            logger.info(errMsg);
         }
         return Optional.ofNullable(result);
     }
 
     @Override
     public List<ViewNote> getAll() {
-        return null;
+        String sql = "SELECT * FROM view_note";
+        return jdbcTemplate.query(sql, ViewNoteDao::mapRow);
     }
 
     static ViewNote mapRow(ResultSet rs, int rowNum) throws SQLException {

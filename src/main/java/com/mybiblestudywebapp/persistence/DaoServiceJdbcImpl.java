@@ -65,15 +65,15 @@ public class DaoServiceJdbcImpl implements DaoService {
     @Transactional
     @Async
     public CompletableFuture<Long> addUserNotesToView(long userId, long viewId) {
-        String sql = "SELECT note_id FROM notes WHERE user_id = :userId AND priv = false";
+        String sql = "SELECT * FROM notes WHERE user_id = :userId AND priv = false";
         SqlParameterSource params = new MapSqlParameterSource()
                 .addValue("userId", userId)
                 .addValue("viewId", viewId);
         List<Note> results = null;
         try {
             results = namedParameterJdbcTemplate.query(sql, params, NoteDao::mapRow);
-            if (results.size() >= 0) {
-                return CompletableFuture.completedFuture(0l);
+            if (results.size() <= 0) {
+                return CompletableFuture.completedFuture((long)results.size());
             }
         } catch (DataAccessException e) {
             String errMsg = "Could not find notes for user_id: " + userId + "\n" + e.getMessage();
