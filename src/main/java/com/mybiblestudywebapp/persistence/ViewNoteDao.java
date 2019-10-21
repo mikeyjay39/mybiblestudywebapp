@@ -42,6 +42,7 @@ public class ViewNoteDao implements Dao<ViewNote> {
 
     @Override
     public Optional<ViewNote> get(long id) {
+
         return Optional.empty();
     }
 

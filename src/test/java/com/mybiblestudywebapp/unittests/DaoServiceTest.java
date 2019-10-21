@@ -36,6 +36,7 @@ public class DaoServiceTest {
     public void tearDown() throws Exception {
     }
 
+
     @Test
     public void addUserNotesToView() throws Exception {
         List<Long> noteIds = createNotes();
@@ -43,6 +44,7 @@ public class DaoServiceTest {
         var completedResult = daoService.addUserNotesToView(1, 1);
         long result = completedResult.get();
         Assert.assertTrue(result > 0);
+
         // test that viewNote was added
         Dao viewNoteDao = new ViewNoteDao(jdbcTemplate);
         var allViewNotes = viewNoteDao.getAll();
@@ -52,8 +54,20 @@ public class DaoServiceTest {
         Optional<List<ViewNote>> viewNoteResult = viewNoteDao.get(args);
         List<ViewNote> viewNotes = viewNoteResult.get();
         Assert.assertTrue(viewNotes.size() > 0);
+    }
 
+    @Test
+    public void testGetStudyNotes() throws Exception {
+        createNotes();
+        var completedResult = daoService.addUserNotesToView(1, 1);
+        long result = completedResult.get();
+        Assert.assertTrue(result > 0);
 
+        Dao viewDao = new ViewDao(jdbcTemplate);
+        View view = (View)viewDao.get(1).get();
+
+        List<Note> notes = daoService.getStudyNotesForChapter(view.getViewCode(), "Genesis", "1").get();
+        Assert.assertTrue(notes.size() > 0);
     }
 
     private List<Long> createNotes() {

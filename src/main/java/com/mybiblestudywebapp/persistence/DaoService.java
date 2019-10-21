@@ -3,6 +3,8 @@ package com.mybiblestudywebapp.persistence;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -19,6 +21,15 @@ public interface DaoService {
      * @return
      */
     CompletableFuture<Long> addUserNotesToView(long userId, long viewId);
+
+    /**
+     *
+     * @param viewCode
+     * @param book
+     * @param chapterNo
+     * @return
+     */
+    CompletableFuture<List<Note>> getStudyNotesForChapter(String viewCode, String book, String chapterNo);
 
     JdbcTemplate getJdbcTemplate();
     void setJdbcTemplate(JdbcTemplate jdbcTemplate);
