@@ -20,12 +20,11 @@ import static org.junit.Assert.*;
 public class DaoServiceTest {
 
     private JdbcTemplate jdbcTemplate;
-    private DaoService daoService = new DaoServiceJdbcImpl();
+    private DaoService daoService;
 
     public DaoServiceTest() {
         jdbcTemplate = new JdbcTemplate(DbConnectionTest.getEmbeddedPostgres());
-        daoService.setJdbcTemplate(jdbcTemplate);
-        daoService.setNamedParameterJdbcTemplate(new NamedParameterJdbcTemplate(jdbcTemplate));
+        daoService = new DaoServiceJdbcImpl(jdbcTemplate);
     }
 
     @Before
@@ -66,7 +65,7 @@ public class DaoServiceTest {
         Dao viewDao = new ViewDao(jdbcTemplate);
         View view = (View)viewDao.get(1).get();
 
-        List<Note> notes = daoService.getStudyNotesForChapter(view.getViewCode(), "Genesis", "1").get();
+        List<Note> notes = daoService.getStudyNotesForChapter(view.getViewCode(), "Genesis", 1).get();
         Assert.assertTrue(notes.size() > 0);
     }
 

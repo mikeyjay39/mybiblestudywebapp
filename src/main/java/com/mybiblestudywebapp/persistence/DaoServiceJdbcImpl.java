@@ -51,6 +51,23 @@ public class DaoServiceJdbcImpl implements DaoService {
     @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
+    public DaoServiceJdbcImpl(){}
+
+    /**
+     * Used for unit tests. Pass the JdbcTemplate with the embedded postgres datasource as the arg.
+     * @param jdbcTemplate
+     */
+    public DaoServiceJdbcImpl(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+        namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
+        bookDao = new BookDao(jdbcTemplate);
+        chapterDao = new ChapterDao(jdbcTemplate);
+        commentDao = new CommentDao(jdbcTemplate);
+        noteDao = new NoteDao(jdbcTemplate);
+        userDao = new UserDao(jdbcTemplate);
+        viewDao = new ViewDao(jdbcTemplate);
+    }
+
 
     /**
      * {@inheritDoc}
@@ -106,7 +123,7 @@ public class DaoServiceJdbcImpl implements DaoService {
      * @return
      */
     @Override
-    public CompletableFuture<List<Note>> getStudyNotesForChapter(String viewCode, String book, String chapterNo) {
+    public CompletableFuture<List<Note>> getStudyNotesForChapter(String viewCode, String book, long chapterNo) {
         Map<String, Object> viewArgs = new HashMap<String, Object>();
         Map<String, Object> bookArgs = new HashMap<String, Object>();
         Map<String, Object> chapterArgs = new HashMap<String, Object>();
@@ -135,7 +152,7 @@ public class DaoServiceJdbcImpl implements DaoService {
                 .addValue("chapterId", chapterId);
 
         String sql = "SELECT * FROM notes " +
-                "JOIN view_note ON view_note.note_id = note_id " +
+                "JOIN view_note ON view_note.note_id = notes.note_id " +
                 "JOIN chapters ON notes.chapter_id = chapters.chapter_id " +
                 "WHERE chapters.chapter_id = :chapterId " +
                 "AND view_note.view_id = :viewId";

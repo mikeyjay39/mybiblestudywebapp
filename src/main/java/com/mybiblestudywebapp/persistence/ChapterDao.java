@@ -48,7 +48,7 @@ public class ChapterDao implements Dao<Chapter> {
 
     /**
      * Get chapter based on book
-     * @param args bookId chapterNo
+     * @param args string bookId long chapterNo
      * @return
      */
     @Override

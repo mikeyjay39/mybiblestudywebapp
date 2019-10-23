@@ -14,6 +14,6 @@ public interface MainService {
      * @param chapter
      * @return BibleStudyResponse
      */
-    BibleStudyResponse getChapterAndNotes(String viewCode, String book, String chapter);
+    BibleStudyResponse getChapterAndNotes(String viewCode, String book, int chapter);
 
 }

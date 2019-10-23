@@ -131,7 +131,7 @@ public class ViewDao implements UpdatableDao<View> {
     public Optional<List<View>> get(Map<String, Object> args) {
         String sql = "SELECT * FROM views WHERE view_code = :viewCode";
         SqlParameterSource params = new MapSqlParameterSource()
-                .addValue("viewCode", args, Types.OTHER);
+                .addValue("viewCode", args.get("viewCode"), Types.OTHER);
         List<View> result = null;
         try {
             result = namedParameterJdbcTemplate.query(sql, params, ViewDao::mapRow);

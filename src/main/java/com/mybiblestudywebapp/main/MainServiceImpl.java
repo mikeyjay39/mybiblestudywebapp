@@ -24,9 +24,9 @@ public class MainServiceImpl implements MainService {
      * {@inheritDoc}
      */
     @Override
-    public BibleStudyResponse getChapterAndNotes(String viewId, String book, String chapterNo) {
+    public BibleStudyResponse getChapterAndNotes(String viewId, String book, int chapterNo) {
 
-        var verses = getBibleService.getVersesForChapter(book, Integer.valueOf(chapterNo));
+        var verses = getBibleService.getVersesForChapter(book, chapterNo);
         var notes = daoService.getStudyNotesForChapter(viewId, book, chapterNo);
         return null;
     }

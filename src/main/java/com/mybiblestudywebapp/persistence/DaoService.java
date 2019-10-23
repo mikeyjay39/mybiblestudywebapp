@@ -29,7 +29,7 @@ public interface DaoService {
      * @param chapterNo
      * @return
      */
-    CompletableFuture<List<Note>> getStudyNotesForChapter(String viewCode, String book, String chapterNo);
+    CompletableFuture<List<Note>> getStudyNotesForChapter(String viewCode, String book, long chapterNo);
 
     JdbcTemplate getJdbcTemplate();
     void setJdbcTemplate(JdbcTemplate jdbcTemplate);
