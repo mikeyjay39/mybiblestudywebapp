@@ -1,5 +1,7 @@
 package com.mybiblestudywebapp.main;
 
+import com.mybiblestudywebapp.persistence.Note;
+
 import java.util.List;
 import java.util.Map;
 
@@ -11,9 +13,10 @@ import java.util.Map;
 public class BibleStudyResponse {
 
     private String book;
-    private String chapter;
+    private int chapter;
     private List<Map<String, String>> verses;
-    private List<Map<String, String>> notes;
+    private List<Note> notes;
+    private String errMsg;
 
     public String getBook() {
         return book;
@@ -23,11 +26,11 @@ public class BibleStudyResponse {
         this.book = book;
     }
 
-    public String getChapter() {
+    public int getChapter() {
         return chapter;
     }
 
-    public void setChapter(String chapter) {
+    public void setChapter(int chapter) {
         this.chapter = chapter;
     }
 
@@ -39,11 +42,19 @@ public class BibleStudyResponse {
         this.verses = verses;
     }
 
-    public List<Map<String, String>> getNotes() {
+    public List<Note> getNotes() {
         return notes;
     }
 
-    public void setNotes(List<Map<String, String>> notes) {
+    public void setNotes(List<Note> notes) {
         this.notes = notes;
+    }
+
+    public String getErrMsg() {
+        return errMsg;
+    }
+
+    public void setErrMsg(String errMsg) {
+        this.errMsg = errMsg;
     }
 }
