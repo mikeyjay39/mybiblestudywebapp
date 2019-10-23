@@ -1,12 +1,11 @@
 package com.mybiblestudywebapp.unittests;
 
-import com.mybiblestudywebapp.persistence.Note;
+import com.mybiblestudywebapp.persistence.model.Note;
 import com.mybiblestudywebapp.persistence.NoteDao;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.context.annotation.Bean;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.util.Optional;
@@ -22,8 +21,9 @@ public class NoteUnitTests {
     private NoteDao noteDao;
 
     @Before
-    public void setUp() {
+    public void setUp() throws Exception {
         note = null;
+        noteDao = new NoteDao(new JdbcTemplate(DbConnectionTest.rebuildEmbeddedDataBase()));
     }
 
     @After
@@ -64,7 +64,7 @@ public class NoteUnitTests {
         note = saveNote();
         note.setNoteId(1);
         note = noteDao.get(1l).get();
-        Assert.assertEquals("This is the first note!", note.getNote());
+        Assert.assertEquals("This is the first note", note.getNote());
         return note;
     }
 

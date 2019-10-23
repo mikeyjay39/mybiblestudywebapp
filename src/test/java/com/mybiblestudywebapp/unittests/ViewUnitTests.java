@@ -1,6 +1,6 @@
 package com.mybiblestudywebapp.unittests;
 
-import com.mybiblestudywebapp.persistence.View;
+import com.mybiblestudywebapp.persistence.model.View;
 import com.mybiblestudywebapp.persistence.ViewDao;
 import org.junit.After;
 import org.junit.Assert;
@@ -31,8 +31,9 @@ public class ViewUnitTests {
     }
 
     @Before
-    public void setUp() {
+    public void setUp() throws Exception {
         view = null;
+        viewDao = new ViewDao(new JdbcTemplate(DbConnectionTest.rebuildEmbeddedDataBase()));
     }
 
     @After
@@ -67,7 +68,7 @@ public class ViewUnitTests {
     public void testGetUnique() {
         view = addViewAndGet();
         String viewCode = view.getViewCode();
-        args.put("viewCod", viewCode);
+        args.put("viewCode", viewCode);
         var result = viewDao.get(args);
         View newView = result.get().get(0);
         Assert.assertNotNull(newView);

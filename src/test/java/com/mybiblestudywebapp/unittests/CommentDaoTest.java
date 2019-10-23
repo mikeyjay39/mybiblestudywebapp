@@ -1,6 +1,6 @@
 package com.mybiblestudywebapp.unittests;
 
-import com.mybiblestudywebapp.persistence.Comment;
+import com.mybiblestudywebapp.persistence.model.Comment;
 import com.mybiblestudywebapp.persistence.CommentDao;
 import org.junit.After;
 import org.junit.Assert;
@@ -9,8 +9,6 @@ import org.junit.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.util.Optional;
-
-import static org.junit.Assert.*;
 
 /**
  * Created by Michael Jeszenka.
@@ -27,8 +25,9 @@ public class CommentDaoTest {
     }
 
     @Before
-    public void setUp() {
+    public void setUp() throws Exception {
         comment = null;
+        commentDao = new CommentDao(new JdbcTemplate(DbConnectionTest.rebuildEmbeddedDataBase()));
     }
 
     @After

@@ -1,16 +1,16 @@
 package com.mybiblestudywebapp.unittests;
 
 import com.mybiblestudywebapp.persistence.*;
+import com.mybiblestudywebapp.persistence.model.Note;
+import com.mybiblestudywebapp.persistence.model.View;
+import com.mybiblestudywebapp.persistence.model.ViewNote;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import java.util.*;
-
-import static org.junit.Assert.*;
 
 /**
  * Created by Michael Jeszenka.
@@ -20,12 +20,11 @@ import static org.junit.Assert.*;
 public class DaoServiceTest {
 
     private JdbcTemplate jdbcTemplate;
-    private DaoService daoService = new DaoServiceJdbcImpl();
+    private DaoService daoService;
 
     public DaoServiceTest() {
         jdbcTemplate = new JdbcTemplate(DbConnectionTest.getEmbeddedPostgres());
-        daoService.setJdbcTemplate(jdbcTemplate);
-        daoService.setNamedParameterJdbcTemplate(new NamedParameterJdbcTemplate(jdbcTemplate));
+        daoService = new DaoServiceJdbcImpl(jdbcTemplate);
     }
 
     @Before
@@ -36,6 +35,7 @@ public class DaoServiceTest {
     public void tearDown() throws Exception {
     }
 
+
     @Test
     public void addUserNotesToView() throws Exception {
         List<Long> noteIds = createNotes();
@@ -43,6 +43,7 @@ public class DaoServiceTest {
         var completedResult = daoService.addUserNotesToView(1, 1);
         long result = completedResult.get();
         Assert.assertTrue(result > 0);
+
         // test that viewNote was added
         Dao viewNoteDao = new ViewNoteDao(jdbcTemplate);
         var allViewNotes = viewNoteDao.getAll();
@@ -52,8 +53,20 @@ public class DaoServiceTest {
         Optional<List<ViewNote>> viewNoteResult = viewNoteDao.get(args);
         List<ViewNote> viewNotes = viewNoteResult.get();
         Assert.assertTrue(viewNotes.size() > 0);
+    }
 
+    @Test
+    public void testGetStudyNotes() throws Exception {
+        createNotes();
+        var completedResult = daoService.addUserNotesToView(1, 1);
+        long result = completedResult.get();
+        Assert.assertTrue(result > 0);
 
+        Dao viewDao = new ViewDao(jdbcTemplate);
+        View view = (View)viewDao.get(1).get();
+
+        List<Note> notes = daoService.getStudyNotesForChapter(view.getViewCode(), "Genesis", 1).get();
+        Assert.assertTrue(notes.size() > 0);
     }
 
     private List<Long> createNotes() {

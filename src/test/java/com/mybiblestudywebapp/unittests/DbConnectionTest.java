@@ -143,6 +143,11 @@ public class DbConnectionTest {
         return dataSource;
     }
 
+    public static DataSource rebuildEmbeddedDataBase() throws Exception {
+        embeddedDataSource = buildEmbeddedDataBase();
+        return embeddedDataSource;
+    }
+
     public static DataSource getLiveDataSource() {
         return liveDataSource;
     }

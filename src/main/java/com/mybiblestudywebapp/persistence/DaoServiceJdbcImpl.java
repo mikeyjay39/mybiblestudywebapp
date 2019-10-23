@@ -1,5 +1,6 @@
 package com.mybiblestudywebapp.persistence;
 
+import com.mybiblestudywebapp.persistence.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +14,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.IntStream;
 
@@ -52,6 +51,23 @@ public class DaoServiceJdbcImpl implements DaoService {
 
     @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+
+    public DaoServiceJdbcImpl(){}
+
+    /**
+     * Used for unit tests. Pass the JdbcTemplate with the embedded postgres datasource as the arg.
+     * @param jdbcTemplate
+     */
+    public DaoServiceJdbcImpl(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+        namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
+        bookDao = new BookDao(jdbcTemplate);
+        chapterDao = new ChapterDao(jdbcTemplate);
+        commentDao = new CommentDao(jdbcTemplate);
+        noteDao = new NoteDao(jdbcTemplate);
+        userDao = new UserDao(jdbcTemplate);
+        viewDao = new ViewDao(jdbcTemplate);
+    }
 
 
     /**
@@ -98,6 +114,53 @@ public class DaoServiceJdbcImpl implements DaoService {
         int total = IntStream.of(updateCounts).reduce(0, (a, b) -> a + b);
 
         return CompletableFuture.completedFuture((long)total);
+    }
+
+    /**
+     * {@inheritDoc}
+     * @param viewCode
+     * @param book
+     * @param chapterNo
+     * @return
+     */
+    @Override
+    public CompletableFuture<List<Note>> getStudyNotesForChapter(String viewCode, String book, long chapterNo) {
+        Map<String, Object> viewArgs = new HashMap<String, Object>();
+        Map<String, Object> bookArgs = new HashMap<String, Object>();
+        Map<String, Object> chapterArgs = new HashMap<String, Object>();
+
+        viewArgs.put("viewCode", viewCode);
+        bookArgs.put("title", book);
+
+        // get view_id
+        List<View> viewList = (List<View>) viewDao.get(viewArgs).get();
+        View view = viewList.get(0);
+        long viewId = view.getViewId();
+
+        // get book_id
+        List<Book> bookResults = (List<Book>)bookDao.get(bookArgs).get();
+        Book bookResult = bookResults.get(0);
+
+        // get chapter_id
+        chapterArgs.put("bookId", bookResult.getBookId());
+        chapterArgs.put("chapterNo", chapterNo);
+        List<Chapter> chapterIds = (List<Chapter>)chapterDao.get(chapterArgs).get();
+        Chapter chapter = chapterIds.get(0);
+        long chapterId = chapter.getChapterId();
+
+        SqlParameterSource params = new MapSqlParameterSource()
+                .addValue("viewId", viewId)
+                .addValue("chapterId", chapterId);
+
+        String sql = "SELECT * FROM notes " +
+                "JOIN view_note ON view_note.note_id = notes.note_id " +
+                "JOIN chapters ON notes.chapter_id = chapters.chapter_id " +
+                "WHERE chapters.chapter_id = :chapterId " +
+                "AND view_note.view_id = :viewId";
+
+        List<Note> result = namedParameterJdbcTemplate.query(sql, params, NoteDao::mapRow);
+
+        return CompletableFuture.completedFuture(result);
     }
 
     public JdbcTemplate getJdbcTemplate() {

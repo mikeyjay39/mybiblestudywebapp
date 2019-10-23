@@ -1,6 +1,6 @@
 package com.mybiblestudywebapp.unittests;
 
-import com.mybiblestudywebapp.persistence.Book;
+import com.mybiblestudywebapp.persistence.model.Book;
 import com.mybiblestudywebapp.persistence.BookDao;
 import org.junit.After;
 import org.junit.Assert;

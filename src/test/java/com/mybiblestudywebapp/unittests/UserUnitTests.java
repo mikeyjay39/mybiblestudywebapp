@@ -1,8 +1,9 @@
 package com.mybiblestudywebapp.unittests;
 
-import com.mybiblestudywebapp.persistence.User;
+import com.mybiblestudywebapp.persistence.model.User;
 import com.mybiblestudywebapp.persistence.UserDao;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
 
@@ -19,6 +20,10 @@ public class UserUnitTests {
     private User user;
     private Map<String, Object> args = new HashMap<>();
 
+    @Before
+    public void setUp() throws Exception {
+        userDao = new UserDao(new JdbcTemplate(DbConnectionTest.rebuildEmbeddedDataBase()));
+    }
 
 
     public UserUnitTests() {

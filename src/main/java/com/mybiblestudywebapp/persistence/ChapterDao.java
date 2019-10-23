@@ -1,5 +1,6 @@
 package com.mybiblestudywebapp.persistence;
 
+import com.mybiblestudywebapp.persistence.model.Chapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,12 +49,12 @@ public class ChapterDao implements Dao<Chapter> {
 
     /**
      * Get chapter based on book
-     * @param args bookId
+     * @param args string bookId long chapterNo
      * @return
      */
     @Override
     public Optional<List<Chapter>> get(Map<String, Object> args) {
-        String sql = "SELECT * FROM chapters WHERE book_id = :bookId";
+        String sql = "SELECT * FROM chapters WHERE book_id = :bookId AND chapter_no = :chapterNo";
         List<Chapter> result = null;
         SqlParameterSource params = new MapSqlParameterSource(args);
 

@@ -1,5 +1,6 @@
 package com.mybiblestudywebapp.persistence;
 
+import com.mybiblestudywebapp.persistence.model.ViewNote;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +43,7 @@ public class ViewNoteDao implements Dao<ViewNote> {
 
     @Override
     public Optional<ViewNote> get(long id) {
+
         return Optional.empty();
     }
 

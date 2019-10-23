@@ -1,4 +1,4 @@
-package com.mybiblestudywebapp.persistence;
+package com.mybiblestudywebapp.persistence.model;
 
 /**
  * Created by Michael Jeszenka

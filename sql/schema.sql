@@ -77,15 +77,17 @@ create table notes
 
 create table view_note
 (
-	view_note_id bigserial not null
-		constraint view_note_pk
-			primary key,
-	view_id bigint
-		constraint view_note_view__fk
-			references views,
-	note_id bigint
-		constraint view_note_note__fk
-			references notes
+    view_note_id bigserial not null
+        constraint view_note_pk
+            primary key,
+    view_id      bigint
+        constraint view_note_view__fk
+            references views
+            on update cascade on delete cascade,
+    note_id      bigint
+        constraint view_note_note__fk
+            references notes
+            on update cascade on delete cascade
 );
 
 create table comments
@@ -93,14 +95,16 @@ create table comments
     comment_id bigserial not null
         constraint comment_pk
             primary key,
-    user_id integer
+    user_id    integer
         constraint comment_user_user_id_fk
-            references users,
-    note_id integer
+            references users
+            on update cascade on delete cascade,
+    note_id    integer
         constraint comment_note_note_id_fk
-            references notes,
+            references notes
+            on update cascade on delete cascade,
     created_at timestamp default now(),
-    comment text
+    comment    text
 );
 
 comment on table comments is 'Used for user comments on notes';
