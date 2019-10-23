@@ -57,19 +57,19 @@ public class UserDao implements UpdatableDao<User> {
 
     /**
      * Gets user from database based on email value
-     * @param email
+     * @param args key is email
      * @return User from database
      */
     @Override
-    public Optional<List<User>> get(Map<String, Object> email) {
+    public Optional<List<User>> get(Map<String, Object> args) {
         String sql = "SELECT * FROM users WHERE email = :email";
         SqlParameterSource params = new MapSqlParameterSource()
-                .addValue("email", email);
+                .addValue("email", args.get("email"));
         List<User> result = null;
         try {
             result = namedParameterJdbcTemplate.query(sql, params, UserDao::mapRow);
         } catch (DataAccessException e) {
-            String errMsg = "Error getting users with email = " + email +
+            String errMsg = "Error getting users with email = " + args.get("email") +
                     "\n" + e.getMessage();
         }
 

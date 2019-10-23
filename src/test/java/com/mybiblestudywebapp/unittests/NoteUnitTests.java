@@ -22,8 +22,9 @@ public class NoteUnitTests {
     private NoteDao noteDao;
 
     @Before
-    public void setUp() {
+    public void setUp() throws Exception {
         note = null;
+        noteDao = new NoteDao(new JdbcTemplate(DbConnectionTest.rebuildEmbeddedDataBase()));
     }
 
     @After
@@ -64,7 +65,7 @@ public class NoteUnitTests {
         note = saveNote();
         note.setNoteId(1);
         note = noteDao.get(1l).get();
-        Assert.assertEquals("This is the first note!", note.getNote());
+        Assert.assertEquals("This is the first note", note.getNote());
         return note;
     }
 

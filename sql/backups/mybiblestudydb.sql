@@ -1259,7 +1259,7 @@ INSERT INTO public.views (user_id, view_code, priv) VALUES (1, '6e9e6366-f386-11
 INSERT INTO public.notes (note, user_id, book_id, chapter_id, verse, ranking, priv, lang, created_at, last_modified) VALUES ('This is the first note', 1, 1, 1, 1, 0, false, 'en', '2019-10-19 00:14:39.941854', null);
 INSERT INTO public.notes (note, user_id, book_id, chapter_id, verse, ranking, priv, lang, created_at, last_modified) VALUES ('This is the second note', 1, 1, 1, 1, 0, false, 'en', '2019-10-23 20:08:32.432593', null);
 INSERT INTO public.notes (note, user_id, book_id, chapter_id, verse, ranking, priv, lang, created_at, last_modified) VALUES ('This is the third note', 1, 1, 1, 1, 0, false, null, '2019-10-23 20:08:32.432593', null);
-INSERT INTO public.view_note (view_id, note_id) VALUES (1, 1, 1);
-INSERT INTO public.view_note (view_id, note_id) VALUES (2, 1, 2);
-INSERT INTO public.view_note (view_id, note_id) VALUES (3, 1, 3);
+INSERT INTO public.view_note (view_id, note_id) VALUES (1, 1);
+INSERT INTO public.view_note (view_id, note_id) VALUES (1, 2);
+INSERT INTO public.view_note (view_id, note_id) VALUES (1, 3);
 INSERT INTO public.comments (user_id, note_id, created_at, comment) VALUES (2, 1, '2019-10-20 22:09:41.976445', 'This is a comment on note_id 1');

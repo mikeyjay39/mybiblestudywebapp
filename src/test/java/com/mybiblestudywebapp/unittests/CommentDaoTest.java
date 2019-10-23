@@ -27,8 +27,9 @@ public class CommentDaoTest {
     }
 
     @Before
-    public void setUp() {
+    public void setUp() throws Exception {
         comment = null;
+        commentDao = new CommentDao(new JdbcTemplate(DbConnectionTest.rebuildEmbeddedDataBase()));
     }
 
     @After
