@@ -16,7 +16,7 @@ public class BibleStudyController {
     @Autowired
     private MainService mainService;
 
-    @PostMapping("/biblestudy")
+    @PostMapping(path = "/biblestudy", consumes = "application/json", produces = "application/json")
     public ResponseEntity<BibleStudyResponse> getChapterAndNotes(
             @RequestBody BibleStudyRequest request) {
         return mainService.getChapterAndNotes(request);
