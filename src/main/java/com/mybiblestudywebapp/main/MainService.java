@@ -16,6 +16,6 @@ public interface MainService {
      * @param chapter
      * @return BibleStudyResponse
      */
-    ResponseEntity<BibleStudyResponse> getChapterAndNotes(String viewCode, String book, int chapter);
+    ResponseEntity<BibleStudyResponse> getChapterAndNotes(BibleStudyRequest request);
 
 }

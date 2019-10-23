@@ -30,11 +30,14 @@ public class MainServiceImpl implements MainService {
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<BibleStudyResponse> getChapterAndNotes(String viewId, String book, int chapterNo) {
+    public ResponseEntity<BibleStudyResponse> getChapterAndNotes(BibleStudyRequest request) {
 
+        String viewCode = request.getViewCode();
+        String book = request.getBook();
+        int chapterNo = request.getChapterNo();
         BibleStudyResponse response = new BibleStudyResponse();
         var verses = getBibleService.getVersesForChapter(book, chapterNo);
-        var notes = daoService.getStudyNotesForChapter(viewId, book, chapterNo);
+        var notes = daoService.getStudyNotesForChapter(viewCode, book, chapterNo);
         response.setBook(book);
         response.setChapter(chapterNo);
 
