@@ -1,6 +1,6 @@
 package com.mybiblestudywebapp.unittests;
 
-import com.mybiblestudywebapp.persistence.User;
+import com.mybiblestudywebapp.persistence.model.User;
 import com.mybiblestudywebapp.persistence.UserDao;
 import org.junit.Assert;
 import org.junit.Before;

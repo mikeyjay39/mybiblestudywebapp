@@ -1,6 +1,6 @@
 package com.mybiblestudywebapp.main;
 
-import com.mybiblestudywebapp.persistence.Note;
+import com.mybiblestudywebapp.persistence.model.Note;
 
 import java.util.List;
 import java.util.Map;

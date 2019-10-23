@@ -1,10 +1,10 @@
 package com.mybiblestudywebapp.persistence;
 
+import com.mybiblestudywebapp.persistence.model.Note;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 /**

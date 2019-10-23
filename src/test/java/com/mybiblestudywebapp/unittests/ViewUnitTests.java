@@ -1,6 +1,6 @@
 package com.mybiblestudywebapp.unittests;
 
-import com.mybiblestudywebapp.persistence.View;
+import com.mybiblestudywebapp.persistence.model.View;
 import com.mybiblestudywebapp.persistence.ViewDao;
 import org.junit.After;
 import org.junit.Assert;

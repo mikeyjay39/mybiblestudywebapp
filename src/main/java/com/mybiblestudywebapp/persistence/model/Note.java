@@ -1,4 +1,4 @@
-package com.mybiblestudywebapp.persistence;
+package com.mybiblestudywebapp.persistence.model;
 
 import java.time.LocalDateTime;
 import java.util.Objects;

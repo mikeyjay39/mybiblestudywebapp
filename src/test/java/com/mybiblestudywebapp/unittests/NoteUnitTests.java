@@ -1,12 +1,11 @@
 package com.mybiblestudywebapp.unittests;
 
-import com.mybiblestudywebapp.persistence.Note;
+import com.mybiblestudywebapp.persistence.model.Note;
 import com.mybiblestudywebapp.persistence.NoteDao;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.context.annotation.Bean;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.util.Optional;

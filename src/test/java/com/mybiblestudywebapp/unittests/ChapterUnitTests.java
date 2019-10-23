@@ -1,16 +1,12 @@
 package com.mybiblestudywebapp.unittests;
 
-import com.mybiblestudywebapp.persistence.Chapter;
+import com.mybiblestudywebapp.persistence.model.Chapter;
 import com.mybiblestudywebapp.persistence.ChapterDao;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.jdbc.core.JdbcTemplate;
-
-import javax.sql.DataSource;
-import java.util.TreeMap;
 
 /**
  * Created by Michael Jeszenka.
