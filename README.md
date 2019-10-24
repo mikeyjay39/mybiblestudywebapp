@@ -26,8 +26,20 @@ https://hackernoon.com/dont-install-postgres-docker-pull-postgres-bee20e200198
 
 To launch Postgres:
 
-```sudo docker run --rm --name pg-docker -e POSTGRES_PASSWORD=$(echo $PSQLPASSWORD) -d -p 5432:5432 -v $HOME/docker/volumes/postgres:/var/lib/postgresql/data postgres```
+```
+sudo docker run --rm --name pg-docker -e POSTGRES_PASSWORD=$(echo $PSQLPASSWORD) -d -p 5432:5432 -v $HOME/docker/volumes/postgres:/var/lib/postgresql/data postgres
+```
 
 To stop:
 
-```sudo docker sto <container id>```
+```
+sudo docker sto <container id>
+```
+
+__MileStone__
+
+Hit API with curl:
+
+```
+curl -X POST -H "Content-Type: application/json" -d '{"viewCode":"6e9e6366-f386-11e9-b633-0242ac110002","book":"Genesis","chapterNo":1}' localhost:8080/biblestudy
+```
