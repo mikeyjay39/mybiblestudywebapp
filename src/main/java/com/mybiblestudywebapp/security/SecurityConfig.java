@@ -15,6 +15,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.password.StandardPasswordEncoder;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
+import org.springframework.security.web.csrf.CsrfFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 
 import javax.sql.DataSource;
 
@@ -77,7 +79,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .httpBasic().authenticationEntryPoint(new HttpStatusEntryPoint(FORBIDDEN))
                 .and()
                 .authorizeRequests()
-                .anyRequest().authenticated();
+                .anyRequest().authenticated()
+        ;
 
 
         /*.and()
@@ -117,4 +120,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .logout();*/
     }
+
 }

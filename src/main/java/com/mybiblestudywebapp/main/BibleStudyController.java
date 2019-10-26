@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
  * <a href="mailto:michael@jeszenka.com">michael@jeszenka.com</a>
  * 10/22/19
  */
-@CrossOrigin(origins = "*", allowCredentials = "true", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.OPTIONS})
+//@CrossOrigin(origins = "*", allowCredentials = "true", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.OPTIONS})
 @RestController
 @RequestMapping("biblestudy")
 public class BibleStudyController {
