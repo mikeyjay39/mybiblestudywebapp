@@ -104,7 +104,7 @@ function getChapter() {
         type: "GET",
         datatype: "application/json; charset=utf-8",
         beforeSend: function (xhr){
-            xhr.setRequestHeader('Authorization', make_base_auth("admin@admin.com", "12345"));
+            xhr.setRequestHeader("Authorization", "Basic " + btoa("admin:12345"));
         },
         success: function (data, status) {
             var returnedBook = data.book;

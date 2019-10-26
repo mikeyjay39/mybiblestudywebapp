@@ -66,6 +66,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
 
         http
+                .cors()
+                .and()
                 .httpBasic()
                 .and()
                 .authorizeRequests()
@@ -74,6 +76,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.PUT, "/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.PATCH, "/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.DELETE, "/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.OPTIONS, "/**").hasRole("ADMIN")
                 .and()
                 .csrf().disable()
                 .formLogin().disable();
