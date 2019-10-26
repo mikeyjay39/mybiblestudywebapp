@@ -9,7 +9,9 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.password.StandardPasswordEncoder;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 
 import javax.sql.DataSource;
@@ -38,29 +40,29 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 
-        /*auth
+        auth
                 .jdbcAuthentication()
                 .dataSource(dataSource)
                 .usersByUsernameQuery(
-                        "SELECT email, password FROM users " +
-                                "WHERE email = ?"
+                        "SELECT firstname, CONCAT('{noop}',password), enabled FROM users " +
+                                "WHERE firstname = ?"
                 )
                 .authoritiesByUsernameQuery(
-                        "SELECT email, authority FROM user_authorities " +
-                                "WHERE email = ?"
+                        "SELECT firstname, authority FROM user_authorities " +
+                                "WHERE firstname = ?"
                 )
-                .passwordEncoder(new BCryptPasswordEncoder());*/
+                ;
 
-        auth.inMemoryAuthentication()
+        /*auth.inMemoryAuthentication()
                 .withUser("admin").password(encoder().encode("12345")).roles("ADMIN")
                 .and()
-                .withUser("user").password(encoder().encode("userPass")).roles("USER");
+                .withUser("user").password(encoder().encode("userPass")).roles("USER");*/
     }
 
-    @Bean
+    /*@Bean
     public PasswordEncoder  encoder() {
         return new BCryptPasswordEncoder();
-    }
+    }*/
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -71,15 +73,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .httpBasic()
                 .and()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.GET, "/**").hasRole("ADMIN")
-                .antMatchers(HttpMethod.POST, "/**").hasRole("ADMIN")
-                .antMatchers(HttpMethod.PUT, "/**").hasRole("ADMIN")
-                .antMatchers(HttpMethod.PATCH, "/**").hasRole("ADMIN")
-                .antMatchers(HttpMethod.DELETE, "/**").hasRole("ADMIN")
-                .antMatchers(HttpMethod.OPTIONS, "/**").hasRole("ADMIN")
+                .anyRequest().authenticated();
+
+        /*http
+                .cors()
+                .and()
+                .httpBasic()
+                .and()
+                .authorizeRequests()
+                .antMatchers(HttpMethod.GET, "/**").hasRole("USER")
+                .antMatchers(HttpMethod.POST, "/**").hasRole("USER")
+                .antMatchers(HttpMethod.PUT, "/**").hasRole("USER")
+                .antMatchers(HttpMethod.PATCH, "/**").hasRole("USER")
+                .antMatchers(HttpMethod.DELETE, "/**").hasRole("USER")
+                .antMatchers(HttpMethod.OPTIONS, "/**").hasRole("USER")
                 .and()
                 .csrf().disable()
-                .formLogin().disable();
+                .formLogin().disable();*/
 
                 /*.csrf().disable()
                 .exceptionHandling()
