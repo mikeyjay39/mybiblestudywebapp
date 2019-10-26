@@ -22,7 +22,7 @@ public class BibleStudyController {
      * @param request
      * @return
      */
-    @PostMapping(consumes = "application/json", produces = "application/json")
+    @PostMapping
     public ResponseEntity<BibleStudyResponse> getChapterAndNotes(
             @RequestBody BibleStudyRequest request) {
         return mainService.getChapterAndNotes(request);
