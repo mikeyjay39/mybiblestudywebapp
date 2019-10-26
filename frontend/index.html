@@ -87,6 +87,11 @@
 var url = "http://localhost:8080/biblestudy";
 var viewCode = "6e9e6366-f386-11e9-b633-0242ac110002";
 
+function make_base_auth(user, password) {
+    var tok = user + ':' + password;
+    var hash = btoa(tok);
+    return "Basic " + hash;
+}
 
 function getChapter() {
     var book = $("#book").val();
@@ -98,6 +103,9 @@ function getChapter() {
         url: apiEndPoint,
         type: "GET",
         datatype: "application/json; charset=utf-8",
+        beforeSend: function (xhr){
+            xhr.setRequestHeader('Authorization', make_base_auth("admin@admin.com", "12345"));
+        },
         success: function (data, status) {
             var returnedBook = data.book;
             var verseOutput = "";
