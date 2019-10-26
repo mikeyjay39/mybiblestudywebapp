@@ -8,13 +8,17 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.password.StandardPasswordEncoder;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 
 import javax.sql.DataSource;
+
+import static org.springframework.http.HttpStatus.FORBIDDEN;
 
 /**
  * Created by Michael Jeszenka.
@@ -44,12 +48,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .jdbcAuthentication()
                 .dataSource(dataSource)
                 .usersByUsernameQuery(
-                        "SELECT firstname, CONCAT('{noop}',password), enabled FROM users " +
-                                "WHERE firstname = ?"
+                        "SELECT email, CONCAT('{noop}',password), enabled FROM users " +
+                                "WHERE email = ?"
                 )
                 .authoritiesByUsernameQuery(
-                        "SELECT firstname, authority FROM user_authorities " +
-                                "WHERE firstname = ?"
+                        "SELECT email, authority FROM user_authorities " +
+                                "WHERE email = ?"
                 )
                 ;
 
@@ -70,10 +74,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .cors()
                 .and()
-                .httpBasic()
+                .httpBasic().authenticationEntryPoint(new HttpStatusEntryPoint(FORBIDDEN))
                 .and()
                 .authorizeRequests()
                 .anyRequest().authenticated();
+
+
+        /*.and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);*/
+        /*.and()
+        .formLogin()
+        .and()
+        .httpBasic()
+        .disable();*/
 
         /*http
                 .cors()
