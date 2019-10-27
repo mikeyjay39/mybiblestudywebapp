@@ -8,10 +8,10 @@ function make_base_auth(user, password) {
 }
 
 function getChapter() {
+
     var book = $("#book").val();
     var chapterNo = $("#chapter").val();
     var apiEndPoint = url + "/" + viewCode + "/" + book + "/" + chapterNo;
-
 
     $.ajax({
         url: apiEndPoint,
@@ -21,8 +21,6 @@ function getChapter() {
             xhr.setRequestHeader("Authorization", "Basic " + btoa("admin@admin.com:12345"));
         },
         success: function (data, status) {
-
-            processCsrf();
 
             var returnedBook = data.book;
             var verseOutput = "";
@@ -140,10 +138,10 @@ function test() {
         contentType: "application/json",
         //headers: {'X-CSRF-TOKEN': token},
         data: data,
-        beforeSend: function (xhr){
+       /* beforeSend: function (xhr){
             xhr.setRequestHeader("Authorization", "Basic " + btoa("admin@admin.com:12345"));
             //xhr.setRequestHeader("X-CSRF-TOKEN", token);
-        },
+        },*/
         /*beforeSend: function (xhr){
             xhr.setRequestHeader("X-CSRF-TOKEN", token);
         },*/
