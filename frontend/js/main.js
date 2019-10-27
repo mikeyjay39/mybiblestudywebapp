@@ -136,7 +136,7 @@ function test() {
         type: "POST",
         datatype: "json",
         contentType: "application/json",
-        //headers: {'X-CSRF-TOKEN': token},
+        headers: {'X-XSRF-TOKEN': token},
         data: data,
        /* beforeSend: function (xhr){
             xhr.setRequestHeader("Authorization", "Basic " + btoa("admin@admin.com:12345"));

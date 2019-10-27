@@ -19,6 +19,7 @@ import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfFilter;
+import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 
 import javax.sql.DataSource;
@@ -40,16 +41,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private DataSource dataSource;
 
-    @Autowired
-    private RestAuthenticationEntryPoint restAuthenticationEntryPoint;
-
-    @Autowired
-    private MySavedRequestAwareAuthenticationSuccessHandler mySuccessHandler;
-
-    private SimpleUrlAuthenticationFailureHandler myFailureHandler = new SimpleUrlAuthenticationFailureHandler();
-
     private static final String SALT = "thisisasalt";
-
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -77,6 +69,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
+        //http.addFilterBefore(characterEncodingFilter(), CsrfFilter.class);
+
         http
                 .cors()
                 .and()
@@ -85,8 +79,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .anyRequest().authenticated()
         .and()
-        .csrf().disable()
-        //.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()) // use this if we want to enable csrf protection
+        .csrf()
+        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()) // use this if we want to enable csrf protection
         ;
 
         // CSRF tokens handling
