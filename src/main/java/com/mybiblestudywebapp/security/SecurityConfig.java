@@ -23,6 +23,8 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 
 import javax.sql.DataSource;
 
+import java.security.SecureRandom;
+
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 
 /**
@@ -46,6 +48,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private SimpleUrlAuthenticationFailureHandler myFailureHandler = new SimpleUrlAuthenticationFailureHandler();
 
+    private static final String SALT = "thisisasalt";
+
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 
@@ -53,7 +58,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .jdbcAuthentication()
                 .dataSource(dataSource)
                 .usersByUsernameQuery(
-                        "SELECT email, CONCAT('{noop}',password), enabled FROM users " +
+                        "SELECT email, password, enabled FROM users " +
                                 "WHERE email = ?"
                 )
                 .authoritiesByUsernameQuery(
@@ -61,17 +66,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                                 "WHERE email = ?"
                 )
                 ;
-
-        /*auth.inMemoryAuthentication()
-                .withUser("admin").password(encoder().encode("12345")).roles("ADMIN")
-                .and()
-                .withUser("user").password(encoder().encode("userPass")).roles("USER");*/
     }
 
-    /*@Bean
+    @Bean
     public PasswordEncoder  encoder() {
-        return new BCryptPasswordEncoder();
-    }*/
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12, new SecureRandom(SALT.getBytes()));
+        return encoder;
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
