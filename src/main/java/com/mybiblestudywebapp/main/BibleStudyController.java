@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.*;
  * <a href="mailto:michael@jeszenka.com">michael@jeszenka.com</a>
  * 10/22/19
  */
+//@CrossOrigin(origins = "*", allowCredentials = "true", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.OPTIONS})
 @RestController
 @RequestMapping("biblestudy")
-@CrossOrigin(origins = "*", allowCredentials = "true", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.OPTIONS})
 public class BibleStudyController {
 
     @Autowired
@@ -22,7 +22,7 @@ public class BibleStudyController {
      * @param request
      * @return
      */
-    @PostMapping(consumes = "application/json", produces = "application/json")
+    @PostMapping
     public ResponseEntity<BibleStudyResponse> getChapterAndNotes(
             @RequestBody BibleStudyRequest request) {
         return mainService.getChapterAndNotes(request);
