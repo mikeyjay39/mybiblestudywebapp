@@ -118,9 +118,15 @@ create table user_authorities
     user_authorities_id bigserial not null
         constraint user_authorities_pk
             primary key,
-    email varchar(128),
-    authority varchar(64) default USER not null
+    email varchar(128) not null
+        constraint user_authorities_users_email_fk
+            references users (email)
+            on update cascade on delete cascade,
+    authority varchar(64) default 'USER'::character varying not null
 );
 
 create unique index user_authorities_user_authorities_id_uindex
     on user_authorities (user_authorities_id);
+
+create unique index user_authorities_email_uindex
+    on user_authorities (email);

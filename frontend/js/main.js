@@ -188,7 +188,7 @@ function test() {
 
 function createUser() {
 
-    var apiEndPoint = "http://localhost:8080/users";
+    var apiEndPoint = "http://localhost:8080/users/signup";
 
     var request = {
         email:"testingemail@testingthis.com",

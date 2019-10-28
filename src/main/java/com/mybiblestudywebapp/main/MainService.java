@@ -1,11 +1,10 @@
 package com.mybiblestudywebapp.main;
 
-import com.mybiblestudywebapp.persistence.model.User;
 import org.springframework.http.ResponseEntity;
 
 /**
- * Delegates requests to async services and packages responses into Response Entities to
- * return to the controllers.
+ * Acts as a boss thread delegating requests to async worker services and packages responses into Response Entities
+ * to return to the controllers.
  *
  * Created by Michael Jeszenka.
  * <a href="mailto:michael@jeszenka.com">michael@jeszenka.com</a>

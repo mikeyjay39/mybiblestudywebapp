@@ -38,7 +38,7 @@ import static org.springframework.http.HttpStatus.FORBIDDEN;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private static final String[] PUBLIC_URLS = {
-            //"/biblestudy/**",
+            "/biblestudy/**",
             "/test/**",
             "/users/**"
     };

@@ -24,6 +24,7 @@ public class UsersController {
     @Autowired
     private MainService mainService;
 
+    @RequestMapping("/signup")
     @PostMapping(consumes = "application/json", produces = "application/json")
     public ResponseEntity<CreateUserAccountResponse> create(
             @RequestBody CreateUserRequest request) {
