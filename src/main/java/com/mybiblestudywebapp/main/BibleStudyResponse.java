@@ -10,12 +10,16 @@ import java.util.Map;
  * <a href="mailto:michael@jeszenka.com">michael@jeszenka.com</a>
  * 10/21/19
  */
-public class BibleStudyResponse {
+public class BibleStudyResponse extends Response {
 
     private String book;
+
     private int chapter;
+
     private List<Map<String, String>> verses;
+
     private List<Note> notes;
+
     private String errMsg;
 
     public String getBook() {

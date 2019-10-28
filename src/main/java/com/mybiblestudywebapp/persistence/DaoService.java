@@ -1,6 +1,7 @@
 package com.mybiblestudywebapp.persistence;
 
 import com.mybiblestudywebapp.persistence.model.Note;
+import com.mybiblestudywebapp.persistence.model.User;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
@@ -30,6 +31,13 @@ public interface DaoService {
      * @return
      */
     CompletableFuture<List<Note>> getStudyNotesForChapter(String viewCode, String book, long chapterNo);
+
+    /**
+     * Creates a new user account. Hashes the password if encoder is present.
+     * @param user
+     * @return
+     */
+    CompletableFuture<User> createUserAccount(User user);
 
     JdbcTemplate getJdbcTemplate();
     void setJdbcTemplate(JdbcTemplate jdbcTemplate);

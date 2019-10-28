@@ -61,7 +61,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public PasswordEncoder  encoder() {
+    public PasswordEncoder encoder() {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12, new SecureRandom(SALT.getBytes()));
         return encoder;
     }

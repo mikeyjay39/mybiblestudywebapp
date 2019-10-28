@@ -11,6 +11,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,6 +52,9 @@ public class DaoServiceJdbcImpl implements DaoService {
 
     @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+
+    @Autowired
+    private PasswordEncoder encoder;
 
     public DaoServiceJdbcImpl(){}
 
@@ -161,6 +165,20 @@ public class DaoServiceJdbcImpl implements DaoService {
         List<Note> result = namedParameterJdbcTemplate.query(sql, params, NoteDao::mapRow);
 
         return CompletableFuture.completedFuture(result);
+    }
+
+    /**
+     * {@inheritDoc}
+     * @param user
+     * @return
+     */
+    @Async
+    @Override
+    public CompletableFuture<User> createUserAccount(User user) {
+        user.setPassword(encoder.encode(user.getPassword()));
+        long userId = userDao.save(user);
+        user.setUserId(userId);
+        return CompletableFuture.completedFuture(user);
     }
 
     public JdbcTemplate getJdbcTemplate() {

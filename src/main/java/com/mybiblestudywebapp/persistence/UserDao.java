@@ -11,7 +11,9 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -96,6 +98,7 @@ public class UserDao implements UpdatableDao<User> {
      * @param user
      * @return user_id or -1 on failure
      */
+    @Transactional
     @Override
     public long save(User user) {
         String sql = "INSERT INTO users (email, firstname, lastname, password) " +
