@@ -1,8 +1,8 @@
 package com.mybiblestudywebapp.unittests.bible;
 
-import com.mybiblestudywebapp.bible.GetBible;
-import com.mybiblestudywebapp.bible.GetBibleImpl;
-import com.mybiblestudywebapp.bible.GetBibleResponse;
+import com.mybiblestudywebapp.getbible.GetBible;
+import com.mybiblestudywebapp.getbible.GetBibleImpl;
+import com.mybiblestudywebapp.getbible.GetBibleResponse;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;

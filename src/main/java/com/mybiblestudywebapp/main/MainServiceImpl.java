@@ -1,6 +1,6 @@
 package com.mybiblestudywebapp.main;
 
-import com.mybiblestudywebapp.bible.GetBibleService;
+import com.mybiblestudywebapp.getbible.GetBibleService;
 import com.mybiblestudywebapp.persistence.DaoService;
 import com.mybiblestudywebapp.persistence.model.User;
 import java.util.concurrent.ExecutionException;
@@ -33,7 +33,7 @@ public class MainServiceImpl implements MainService {
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<BibleStudyResponse> getChapterAndNotes(BibleStudyRequest request) {
+    public ResponseEntity<? extends Response> getChapterAndNotes(BibleStudyRequest request) {
 
         String viewCode = request.getViewCode();
         String book = request.getBook();
@@ -46,20 +46,44 @@ public class MainServiceImpl implements MainService {
 
         try {
             response.setVerses(verses.get());
-        } catch (Exception e) {
-            String errMsg = "Could not get Bible verses \n" + e.getMessage();
+
+        } catch (InterruptedException e) {
+            String errMsg = "Could not get Bible verses. Thread interrupted\n"
+                    + e.getMessage();
             LOGGER.error(errMsg);
-            response.setErrMsg(errMsg);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+            response.getErrorResponse().setTitle("Interrupted Exception")
+                    .setStatus(409)
+                    .setDetail(errMsg);
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+
+        } catch (ExecutionException e) {
+            String errMsg = "Could not get Bible verses. \n"
+                    + e.getMessage();
+            response.getErrorResponse().setTitle("Execution Exception")
+                    .setStatus(409)
+                    .setDetail(errMsg);
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
         }
 
         try {
             response.setNotes(notes.get());
-        } catch (Exception e) {
-            String errMsg = "Could not get notes \n" + e.getMessage();
+
+        } catch (InterruptedException e) {
+            String errMsg = "Could not get Notes. Thread interrupted\n"
+                    + e.getMessage();
             LOGGER.error(errMsg);
-            response.setErrMsg(errMsg);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+            response.getErrorResponse().setTitle("Interrupted Exception")
+                    .setStatus(409)
+                    .setDetail(errMsg);
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+
+        } catch (ExecutionException e) {
+            String errMsg = "Could not get Notes. \n"
+                    + e.getMessage();
+            response.getErrorResponse().setTitle("Execution Exception")
+                    .setStatus(409)
+                    .setDetail(errMsg);
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
@@ -71,8 +95,8 @@ public class MainServiceImpl implements MainService {
      * @return
      */
     @Override
-    public ResponseEntity<CreateUserAccountResponse> createUserAccount(CreateUserRequest request) {
-        CreateUserAccountResponse response = new CreateUserAccountResponse();
+    public ResponseEntity<? extends Response> createUserAccount(CreateUserRequest request) {
+        CreateUserResponse response = new CreateUserResponse();
         User requestUser = new User();
         requestUser.setEmail(request.getEmail());
         requestUser.setFirstname(request.getFirstname());
@@ -92,14 +116,18 @@ public class MainServiceImpl implements MainService {
             String errMsg = "Create user account " + request.getEmail() + " thread interrupted\n"
                     + e.getMessage();
             LOGGER.error(errMsg);
-            response.setTitle("Interrupted Exception")
+            response.getErrorResponse().setTitle("Interrupted Exception")
                     .setStatus(409)
                     .setDetail(errMsg);
-            ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
 
         } catch (ExecutionException e) {
             String errMsg = "Create user account " + request.getEmail()
                     + " thread execution exception\n" + e.getMessage();
+            response.getErrorResponse().setTitle("Execution Exception")
+                    .setStatus(409)
+                    .setDetail(errMsg);
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
         }
 
         return ResponseEntity.ok(response);

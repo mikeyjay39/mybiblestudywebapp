@@ -1,4 +1,4 @@
-package com.mybiblestudywebapp.bible;
+package com.mybiblestudywebapp.getbible;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

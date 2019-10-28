@@ -1,6 +1,5 @@
 package com.mybiblestudywebapp.main;
 
-import com.mybiblestudywebapp.persistence.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +25,7 @@ public class UsersController {
 
     @RequestMapping("/signup")
     @PostMapping(consumes = "application/json", produces = "application/json")
-    public ResponseEntity<CreateUserAccountResponse> create(
+    public ResponseEntity<? extends Response> create(
             @RequestBody CreateUserRequest request) {
         return mainService.createUserAccount(request);
     }

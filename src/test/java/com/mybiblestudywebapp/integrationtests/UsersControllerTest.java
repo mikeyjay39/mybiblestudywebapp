@@ -2,6 +2,8 @@ package com.mybiblestudywebapp.integrationtests;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mybiblestudywebapp.main.CreateUserRequest;
+import com.mybiblestudywebapp.main.CreateUserResponse;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,18 +39,27 @@ public class UsersControllerTest {
     @Rollback
     @Test
     public void create() throws Exception {
+        String firstname = "Abe";
+        String lastname = "Lincoln";
         CreateUserRequest requestObj = new CreateUserRequest();
         requestObj.setEmail("testingemail@testingthis.com");
-        requestObj.setFirstname("Abe");
-        requestObj.setLastname("Lincoln");
+        requestObj.setFirstname(firstname);
+        requestObj.setLastname(lastname);
         requestObj.setPassword("testpassword");
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonRequest = objectMapper.writeValueAsString(requestObj);
 
-        mvc.perform(post("/users/signup")
+        MvcResult result = mvc.perform(post("/users/signup")
                 .with(csrf().asHeader())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonRequest))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String content = result.getResponse().getContentAsString();
+        Assert.assertNotNull(content);
+        CreateUserResponse response = objectMapper.readValue(content, CreateUserResponse.class);
+        Assert.assertEquals(firstname, response.getFirstname());
+        Assert.assertEquals(lastname, response.getLastname());
     }
 }

@@ -10,7 +10,7 @@ import java.util.Map;
  * <a href="mailto:michael@jeszenka.com">michael@jeszenka.com</a>
  * 10/21/19
  */
-public class BibleStudyResponse extends Response {
+public class BibleStudyResponse implements Response {
 
     private String book;
 
@@ -21,6 +21,8 @@ public class BibleStudyResponse extends Response {
     private List<Note> notes;
 
     private String errMsg;
+
+    private ErrorResponse errorResponse;
 
     public String getBook() {
         return book;
@@ -60,5 +62,13 @@ public class BibleStudyResponse extends Response {
 
     public void setErrMsg(String errMsg) {
         this.errMsg = errMsg;
+    }
+
+    public ErrorResponse getErrorResponse() {
+        return errorResponse;
+    }
+
+    public void setErrorResponse(ErrorResponse errorResponse) {
+        this.errorResponse = errorResponse;
     }
 }

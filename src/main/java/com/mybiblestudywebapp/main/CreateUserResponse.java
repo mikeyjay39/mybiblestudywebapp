@@ -5,7 +5,7 @@ package com.mybiblestudywebapp.main;
  * <a href="mailto:michael@jeszenka.com">michael@jeszenka.com</a>
  * 10/27/19
  */
-public class CreateUserAccountResponse extends Response {
+public class CreateUserResponse implements Response {
 
     private long userId;
 
@@ -15,11 +15,13 @@ public class CreateUserAccountResponse extends Response {
 
     private String lastname;
 
+    private ErrorResponse errorResponse;
+
     public long getUserId() {
         return userId;
     }
 
-    public CreateUserAccountResponse setUserId(long userId) {
+    public CreateUserResponse setUserId(long userId) {
         this.userId = userId;
         return this;
     }
@@ -28,7 +30,7 @@ public class CreateUserAccountResponse extends Response {
         return email;
     }
 
-    public CreateUserAccountResponse setEmail(String email) {
+    public CreateUserResponse setEmail(String email) {
         this.email = email;
         return this;
     }
@@ -37,7 +39,7 @@ public class CreateUserAccountResponse extends Response {
         return firstname;
     }
 
-    public CreateUserAccountResponse setFirstname(String firstname) {
+    public CreateUserResponse setFirstname(String firstname) {
         this.firstname = firstname;
         return this;
     }
@@ -46,8 +48,16 @@ public class CreateUserAccountResponse extends Response {
         return lastname;
     }
 
-    public CreateUserAccountResponse setLastname(String lastname) {
+    public CreateUserResponse setLastname(String lastname) {
         this.lastname = lastname;
         return this;
+    }
+
+    public ErrorResponse getErrorResponse() {
+        return errorResponse;
+    }
+
+    public void setErrorResponse(ErrorResponse errorResponse) {
+        this.errorResponse = errorResponse;
     }
 }

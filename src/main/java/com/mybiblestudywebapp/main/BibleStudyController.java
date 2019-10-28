@@ -23,7 +23,7 @@ public class BibleStudyController {
      * @return
      */
     @PostMapping
-    public ResponseEntity<BibleStudyResponse> getChapterAndNotes(
+    public ResponseEntity<? extends Response> getChapterAndNotes(
             @RequestBody BibleStudyRequest request) {
         return mainService.getChapterAndNotes(request);
     }
@@ -36,7 +36,7 @@ public class BibleStudyController {
      * @return
      */
     @GetMapping("/{viewCode}/{book}/{chapterNo}")
-    public ResponseEntity<BibleStudyResponse> getChapterAndNotes(
+    public ResponseEntity<? extends Response> getChapterAndNotes(
             @PathVariable String viewCode, @PathVariable String book, @PathVariable int chapterNo) {
         BibleStudyRequest request = new BibleStudyRequest();
         request.setViewCode(viewCode);

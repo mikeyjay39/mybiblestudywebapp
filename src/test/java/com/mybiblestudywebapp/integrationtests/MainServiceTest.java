@@ -1,6 +1,8 @@
 package com.mybiblestudywebapp.integrationtests;
 
+import com.mybiblestudywebapp.main.BibleStudyResponse;
 import com.mybiblestudywebapp.main.CreateUserRequest;
+import com.mybiblestudywebapp.main.CreateUserResponse;
 import com.mybiblestudywebapp.main.MainService;
 import com.mybiblestudywebapp.persistence.model.User;
 import org.junit.Assert;
@@ -36,7 +38,7 @@ public class MainServiceTest {
         user.setLastname("Integration Test");
         user.setEmail("mainservice@intergation.test");
         var result = mainService.createUserAccount(user);
-        var body = result.getBody();
+        CreateUserResponse body = (CreateUserResponse) result.getBody();
         Assert.assertEquals(HttpStatus.OK, result.getStatusCode());
         Assert.assertNotNull(body.getUserId());
     }
