@@ -21,6 +21,6 @@ public interface MainService {
      */
     ResponseEntity<BibleStudyResponse> getChapterAndNotes(BibleStudyRequest request);
 
-    ResponseEntity<CreateUserAccountResponse> createUserAccount(User request);
+    ResponseEntity<CreateUserAccountResponse> createUserAccount(CreateUserRequest request);
 
 }

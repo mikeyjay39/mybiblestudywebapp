@@ -71,12 +71,17 @@ public class MainServiceImpl implements MainService {
      * @return
      */
     @Override
-    public ResponseEntity<CreateUserAccountResponse> createUserAccount(User request) {
+    public ResponseEntity<CreateUserAccountResponse> createUserAccount(CreateUserRequest request) {
         CreateUserAccountResponse response = new CreateUserAccountResponse();
+        User requestUser = new User();
+        requestUser.setEmail(request.getEmail());
+        requestUser.setFirstname(request.getFirstname());
+        requestUser.setLastname(request.getFirstname());
+        requestUser.setPassword(request.getPassword());
         User result = null;
 
         try {
-            result = daoService.createUserAccount(request).get();
+            result = daoService.createUserAccount(requestUser).get();
             response
                     .setUserId(result.getUserId())
                     .setEmail(result.getEmail())

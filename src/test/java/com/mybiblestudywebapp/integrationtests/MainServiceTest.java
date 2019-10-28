@@ -1,5 +1,6 @@
 package com.mybiblestudywebapp.integrationtests;
 
+import com.mybiblestudywebapp.main.CreateUserRequest;
 import com.mybiblestudywebapp.main.MainService;
 import com.mybiblestudywebapp.persistence.model.User;
 import org.junit.Assert;
@@ -28,7 +29,7 @@ public class MainServiceTest {
     @Rollback
     @Test
     public void createUserAccount() throws Exception {
-        User user = new User();
+        CreateUserRequest user = new CreateUserRequest();
         String password = "testpass";
         user.setPassword(password);
         user.setFirstname("Main Service");
