@@ -24,7 +24,7 @@ public class UsersController {
     @Autowired
     private MainService mainService;
 
-    @PostMapping
+    @PostMapping(consumes = "application/json", produces = "application/json")
     public ResponseEntity<CreateUserAccountResponse> create(
             @RequestBody CreateUserRequest request) {
         return mainService.createUserAccount(request);

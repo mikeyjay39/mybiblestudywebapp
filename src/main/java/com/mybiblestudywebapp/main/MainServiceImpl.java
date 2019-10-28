@@ -76,7 +76,7 @@ public class MainServiceImpl implements MainService {
         User requestUser = new User();
         requestUser.setEmail(request.getEmail());
         requestUser.setFirstname(request.getFirstname());
-        requestUser.setLastname(request.getFirstname());
+        requestUser.setLastname(request.getLastname());
         requestUser.setPassword(request.getPassword());
         User result = null;
 

@@ -29,4 +29,13 @@ public class BcryptTest {
         Assert.assertTrue(encoder.matches("12345", hash));
 
     }
+
+    @Test
+    public void testAnotherHash() {
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12, new SecureRandom(salt.getBytes()));
+
+        String hash = "$2a$12$g9WA.xsnvRbTqLoBAL/vj.L7sLTGkuQ4b3Cl737zJmpSVHf21g6ba";
+        Assert.assertTrue(encoder.matches("testpassword", hash));
+
+    }
 }
