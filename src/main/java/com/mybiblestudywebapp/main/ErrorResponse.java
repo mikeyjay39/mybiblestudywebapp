@@ -7,7 +7,7 @@ package com.mybiblestudywebapp.main;
  * <a href="mailto:michael@jeszenka.com">michael@jeszenka.com</a>
  * 10/27/19
  */
-public class ErrorResponse implements Response {
+public class ErrorResponse {
 
     private String type;
 
@@ -63,4 +63,5 @@ public class ErrorResponse implements Response {
         this.instance = instance;
         return this;
     }
+
 }
