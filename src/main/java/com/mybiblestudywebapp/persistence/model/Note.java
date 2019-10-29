@@ -11,7 +11,7 @@ import java.util.Objects;
 public class Note {
 
     private long noteId;
-    private String note;
+    private String noteText;
     private long userId;
     private long bookId;
     private long chapterId;
@@ -43,12 +43,12 @@ public class Note {
         this.noteId = noteId;
     }
 
-    public String getNote() {
-        return note;
+    public String getNoteText() {
+        return noteText;
     }
 
-    public void setNote(String note) {
-        this.note = note;
+    public void setNoteText(String noteText) {
+        this.noteText = noteText;
     }
 
     public long getUserId() {

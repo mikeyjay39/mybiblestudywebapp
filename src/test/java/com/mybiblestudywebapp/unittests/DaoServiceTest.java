@@ -80,7 +80,7 @@ public class DaoServiceTest {
             //note.setVerse(1);
             note.setPriv(false);
             note.setLang("en");
-            note.setNote("this is note #" + i);
+            note.setNoteText("this is note #" + i);
             result.add(noteDao.save(note));
             Optional<Note> opt = noteDao.get(i + 2);
             Note testNote = opt.get();

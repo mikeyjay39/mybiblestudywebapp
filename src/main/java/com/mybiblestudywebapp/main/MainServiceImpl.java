@@ -56,7 +56,7 @@ public class MainServiceImpl implements MainService {
             String errMsg = "Could not get Bible verses. Thread interrupted\n"
                     + e.getMessage();
             LOGGER.error(errMsg);
-            response.getErrorResponse().setTitle(ErrorTitle.INTERRUPTED_EXECPTION)
+            response.getErrorResponse().setTitle(ErrorTitle.INTERRUPTED_EXCEPTION)
                     .setStatus(409)
                     .setDetail(errMsg);
             return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
@@ -77,7 +77,7 @@ public class MainServiceImpl implements MainService {
             String errMsg = "Could not get Notes. Thread interrupted\n"
                     + e.getMessage();
             LOGGER.error(errMsg);
-            response.getErrorResponse().setTitle(ErrorTitle.INTERRUPTED_EXECPTION)
+            response.getErrorResponse().setTitle(ErrorTitle.INTERRUPTED_EXCEPTION)
                     .setStatus(409)
                     .setDetail(errMsg);
             return ResponseEntity.status(HttpStatus.CONFLICT).body(response);

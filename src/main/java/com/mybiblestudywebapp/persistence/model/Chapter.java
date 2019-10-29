@@ -8,9 +8,10 @@ import java.util.Objects;
  * 2019. 10. 14.
  */
 public class Chapter {
+
     private long chapterId;
     private long bookId;
-    private int chapter_no;
+    private int chapterNo;
 
     @Override
     public boolean equals(Object o) {
@@ -41,12 +42,12 @@ public class Chapter {
         this.bookId = bookId;
     }
 
-    public int getChapter_no() {
-        return chapter_no;
+    public int getChapterNo() {
+        return chapterNo;
     }
 
-    public void setChapter_no(int chapter_no) {
-        this.chapter_no = chapter_no;
+    public void setChapterNo(int chapterNo) {
+        this.chapterNo = chapterNo;
     }
 
 

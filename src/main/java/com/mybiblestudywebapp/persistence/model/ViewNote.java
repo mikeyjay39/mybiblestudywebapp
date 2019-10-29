@@ -10,7 +10,6 @@ import java.util.Objects;
  */
 public class ViewNote {
 
-
     private long viewNoteId;
     private long viewId;
     private long noteId;

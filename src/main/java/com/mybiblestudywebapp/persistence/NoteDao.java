@@ -58,7 +58,7 @@ public class NoteDao implements UpdatableDao<Note> {
         long noteId = -1;
 
         SqlParameterSource namedParams = new MapSqlParameterSource()
-                .addValue("note", note.getNote())
+                .addValue("note", note.getNoteText())
                 .addValue("userId", note.getUserId())
                 .addValue("bookId", note.getBookId())
                 .addValue("chapterId", note.getChapterId())
@@ -88,7 +88,7 @@ public class NoteDao implements UpdatableDao<Note> {
         KeyHolder holder = new GeneratedKeyHolder();
         SqlParameterSource namedParams = new MapSqlParameterSource()
                 .addValue("noteId", note.getNoteId())
-                .addValue("note", note.getNote())
+                .addValue("note", note.getNoteText())
                 .addValue("bookId", note.getBookId())
                 .addValue("chapterId", note.getChapterId())
                 .addValue("verse", note.getVerse())
@@ -164,7 +164,7 @@ public class NoteDao implements UpdatableDao<Note> {
         note.setVerse(rs.getInt("verse"));
         note.setRanking(rs.getInt("ranking"));
         note.setPriv(rs.getBoolean("priv"));
-        note.setNote(rs.getString("note"));
+        note.setNoteText(rs.getString("note"));
         note.setLang(rs.getString("lang"));
         note.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
         var lastModified = rs.getTimestamp("last_modified");

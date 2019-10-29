@@ -7,6 +7,9 @@ package com.mybiblestudywebapp.error;
  */
 public class ErrorTitle {
 
-    public static final String INTERRUPTED_EXECPTION = "Interrupted Exception";
+    public static final String INTERRUPTED_EXCEPTION = "Interrupted Exception";
     public static final String EXECUTION_EXCEPTION = "Execution Exception";
+
+    private ErrorTitle() {
+    }
 }

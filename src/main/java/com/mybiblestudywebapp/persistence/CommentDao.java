@@ -78,7 +78,7 @@ public class CommentDao implements UpdatableDao<Comment> {
                 "WHERE comment_id = :commentId";
         KeyHolder holder = new GeneratedKeyHolder();
         SqlParameterSource params = new MapSqlParameterSource()
-                .addValue("comment", comment.getComment())
+                .addValue("comment", comment.getCommentText())
                 .addValue("commentId", comment.getCommentId());
         int rows = 0;
         rows = namedParameterJdbcTemplate.update(sql, params, holder);
@@ -153,7 +153,7 @@ public class CommentDao implements UpdatableDao<Comment> {
         comment.setNoteId(rs.getInt("note_id"));
         comment.setUserId(rs.getInt("user_id"));
         comment.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
-        comment.setComment(rs.getString("comment"));
+        comment.setCommentText(rs.getString("comment"));
         return comment;
     }
 }

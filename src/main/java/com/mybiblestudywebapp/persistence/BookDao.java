@@ -64,6 +64,7 @@ public class BookDao implements Dao<Book> {
         } catch (DataAccessException e) {
             String errMsg = "Could not get book with title: " + args.get("title") + "\n" +
                     e.getMessage();
+            logger.error(errMsg);
         }
         return Optional.ofNullable(result);
     }

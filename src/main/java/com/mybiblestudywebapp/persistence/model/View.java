@@ -10,6 +10,7 @@ import java.util.Objects;
  * 2019. 10. 14.
  */
 public class View {
+
     private long viewId;
     private long userId;
     private String viewCode;
