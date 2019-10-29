@@ -1,5 +1,7 @@
 package com.mybiblestudywebapp.main;
 
+import com.mybiblestudywebapp.client.BibleStudyRequest;
+import com.mybiblestudywebapp.dashboard.users.CreateUserRequest;
 import org.springframework.http.ResponseEntity;
 
 /**

@@ -1,5 +1,7 @@
-package com.mybiblestudywebapp.main;
+package com.mybiblestudywebapp.client;
 
+import com.mybiblestudywebapp.main.MainService;
+import com.mybiblestudywebapp.main.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

@@ -1,4 +1,7 @@
-package com.mybiblestudywebapp.main;
+package com.mybiblestudywebapp.dashboard.users;
+
+import com.mybiblestudywebapp.main.ErrorResponse;
+import com.mybiblestudywebapp.main.Response;
 
 /**
  * Created by Michael Jeszenka.

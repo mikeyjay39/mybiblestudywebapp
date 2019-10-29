@@ -1,7 +1,7 @@
 package com.mybiblestudywebapp.integrationtests;
 
-import com.mybiblestudywebapp.main.BibleStudyRequest;
-import com.mybiblestudywebapp.main.BibleStudyResponse;
+import com.mybiblestudywebapp.client.BibleStudyRequest;
+import com.mybiblestudywebapp.client.BibleStudyResponse;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -44,7 +44,8 @@ public class BibleStudyControllerTest {
         uri = new URI(url);
     }
 
-    @Test
+    // TODO - Will probably remove this since we'll go with GET requests not POST
+    /*@Test
     public void getChapterAndNotes() throws Exception {
 
         // build request
@@ -65,7 +66,7 @@ public class BibleStudyControllerTest {
                 uri, HttpMethod.POST, request, BibleStudyResponse.class);
 
         testResponse(response);
-    }
+    }*/
 
     @Test
     public void testGetRequestChapterAndNotes() throws Exception {

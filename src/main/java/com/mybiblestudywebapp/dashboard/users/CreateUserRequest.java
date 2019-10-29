@@ -1,4 +1,4 @@
-package com.mybiblestudywebapp.main;
+package com.mybiblestudywebapp.dashboard.users;
 
 /**
  * Created by Michael Jeszenka.

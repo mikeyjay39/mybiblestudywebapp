@@ -1,10 +1,14 @@
 package com.mybiblestudywebapp.main;
 
+import com.mybiblestudywebapp.client.BibleStudyRequest;
+import com.mybiblestudywebapp.client.BibleStudyResponse;
 import com.mybiblestudywebapp.getbible.GetBibleService;
 import com.mybiblestudywebapp.persistence.DaoService;
 import com.mybiblestudywebapp.persistence.model.User;
 import java.util.concurrent.ExecutionException;
 
+import com.mybiblestudywebapp.dashboard.users.CreateUserRequest;
+import com.mybiblestudywebapp.dashboard.users.CreateUserResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,5 +1,7 @@
-package com.mybiblestudywebapp.main;
+package com.mybiblestudywebapp.client;
 
+import com.mybiblestudywebapp.main.ErrorResponse;
+import com.mybiblestudywebapp.main.Response;
 import com.mybiblestudywebapp.persistence.model.Note;
 
 import java.util.List;

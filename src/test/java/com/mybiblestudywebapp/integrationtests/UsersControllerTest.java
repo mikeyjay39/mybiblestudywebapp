@@ -1,8 +1,8 @@
 package com.mybiblestudywebapp.integrationtests;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mybiblestudywebapp.main.CreateUserRequest;
-import com.mybiblestudywebapp.main.CreateUserResponse;
+import com.mybiblestudywebapp.dashboard.users.CreateUserRequest;
+import com.mybiblestudywebapp.dashboard.users.CreateUserResponse;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,10 +14,8 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.junit.Assert.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;

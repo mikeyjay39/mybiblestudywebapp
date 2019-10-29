@@ -1,10 +1,8 @@
 package com.mybiblestudywebapp.integrationtests;
 
-import com.mybiblestudywebapp.main.BibleStudyResponse;
-import com.mybiblestudywebapp.main.CreateUserRequest;
-import com.mybiblestudywebapp.main.CreateUserResponse;
+import com.mybiblestudywebapp.dashboard.users.CreateUserRequest;
+import com.mybiblestudywebapp.dashboard.users.CreateUserResponse;
 import com.mybiblestudywebapp.main.MainService;
-import com.mybiblestudywebapp.persistence.model.User;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
