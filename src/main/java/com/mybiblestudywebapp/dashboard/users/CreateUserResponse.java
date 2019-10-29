@@ -63,4 +63,8 @@ public class CreateUserResponse implements Response {
     public void setErrorResponse(ErrorResponse errorResponse) {
         this.errorResponse = errorResponse;
     }
+
+    public CreateUserResponse() {
+        this.errorResponse = new ErrorResponse();
+    }
 }

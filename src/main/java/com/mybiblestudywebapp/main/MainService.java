@@ -2,6 +2,7 @@ package com.mybiblestudywebapp.main;
 
 import com.mybiblestudywebapp.client.BibleStudyRequest;
 import com.mybiblestudywebapp.dashboard.users.CreateUserRequest;
+import com.mybiblestudywebapp.persistence.model.Note;
 import org.springframework.http.ResponseEntity;
 
 /**
@@ -22,6 +23,18 @@ public interface MainService {
      */
     ResponseEntity<Response> getChapterAndNotes(BibleStudyRequest request);
 
+    /**
+     * Create a new user account
+     * @param request
+     * @return
+     */
     ResponseEntity<Response> createUserAccount(CreateUserRequest request);
+
+    /**
+     * Add a new note
+     * @param request
+     * @return
+     */
+    ResponseEntity<Response> addNote(Note request);
 
 }
