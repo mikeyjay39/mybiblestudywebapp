@@ -27,8 +27,6 @@ import java.util.stream.IntStream;
 @Service
 public class DaoServiceJdbcImpl implements DaoService {
 
-    // TODO look through linter and fix null checking
-
     private static final Logger logger = LoggerFactory.getLogger(DaoServiceJdbcImpl.class);
 
     @Autowired
@@ -94,7 +92,7 @@ public class DaoServiceJdbcImpl implements DaoService {
         List<Note> results = null;
         try {
             results = namedParameterJdbcTemplate.query(sql, params, NoteDao::mapRow);
-            if (results.size() <= 0) {
+            if (results.isEmpty()) {
                 return CompletableFuture.completedFuture((long)results.size());
             }
         } catch (DataAccessException e) {
@@ -132,9 +130,9 @@ public class DaoServiceJdbcImpl implements DaoService {
     @Override
     public CompletableFuture<List<Note>> getStudyNotesForChapter(String viewCode, String book, long chapterNo)
     throws DaoServiceException {
-        Map<String, Object> viewArgs = new HashMap<String, Object>();
-        Map<String, Object> bookArgs = new HashMap<String, Object>();
-        Map<String, Object> chapterArgs = new HashMap<String, Object>();
+        Map<String, Object> viewArgs = new HashMap<>();
+        Map<String, Object> bookArgs = new HashMap<>();
+        Map<String, Object> chapterArgs = new HashMap<>();
 
         viewArgs.put("viewCode", viewCode);
         bookArgs.put("title", book);

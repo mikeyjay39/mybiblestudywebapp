@@ -1,7 +1,5 @@
 package com.mybiblestudywebapp.persistence;
 
-import java.util.Map;
-
 /**
  * Created by Michael Jeszenka.
  * <a href="mailto:michael@jeszenka.com">michael@jeszenka.com</a>

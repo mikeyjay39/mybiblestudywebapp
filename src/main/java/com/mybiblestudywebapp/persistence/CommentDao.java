@@ -15,9 +15,12 @@ import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import static com.mybiblestudywebapp.main.Constants.*;
 
 /**
  * Created by Michael Jeszenka.
@@ -79,7 +82,7 @@ public class CommentDao implements UpdatableDao<Comment> {
         KeyHolder holder = new GeneratedKeyHolder();
         SqlParameterSource params = new MapSqlParameterSource()
                 .addValue("comment", comment.getCommentText())
-                .addValue("commentId", comment.getCommentId());
+                .addValue(COMMENT_ID, comment.getCommentId());
         int rows = 0;
         rows = namedParameterJdbcTemplate.update(sql, params, holder);
         return rows > 0;
@@ -94,7 +97,7 @@ public class CommentDao implements UpdatableDao<Comment> {
     public boolean delete(Comment comment) {
         String sql = "DELETE FROM comments WHERE comment_id = :commentId";
         SqlParameterSource params = new MapSqlParameterSource()
-                .addValue("commentId", comment.getCommentId());
+                .addValue(COMMENT_ID, comment.getCommentId());
 
         int rows = 0;
         rows = namedParameterJdbcTemplate.update(sql, params);
@@ -111,7 +114,7 @@ public class CommentDao implements UpdatableDao<Comment> {
     public Optional<Comment> get(long id) {
         String sql = "SELECT * FROM comments WHERE comment_id = :commentId";
         SqlParameterSource params = new MapSqlParameterSource()
-                .addValue("commentId", id);
+                .addValue(COMMENT_ID, id);
         Comment result = null;
         try {
             result = namedParameterJdbcTemplate.queryForObject(sql, params, CommentDao::mapRow);
@@ -144,7 +147,7 @@ public class CommentDao implements UpdatableDao<Comment> {
 
     @Override
     public List<Comment> getAll() {
-        return null;
+        return new ArrayList<>();
     }
 
     static Comment mapRow(ResultSet rs, int rowNum) throws SQLException {

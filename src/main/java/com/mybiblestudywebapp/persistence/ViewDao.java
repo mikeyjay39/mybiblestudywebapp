@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static com.mybiblestudywebapp.main.Constants.*;
+
 /**
  * Created by Michael Jeszenka.
  * <a href="mailto:michael@jeszenka.com">michael@jeszenka.com</a>
@@ -29,7 +31,7 @@ import java.util.Optional;
 @Component
 public class ViewDao implements UpdatableDao<View> {
 
-    private static final Logger logger = LoggerFactory.getLogger(ViewDao.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ViewDao.class);
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -55,18 +57,19 @@ public class ViewDao implements UpdatableDao<View> {
         String sql = "INSERT INTO views (user_id, priv) " +
                 "VALUES (:userId, :priv)" +
                 "RETURNING view_id";
-        KeyHolder holder = new GeneratedKeyHolder();
+
         SqlParameterSource params = new MapSqlParameterSource()
                 .addValue("userId", view.getUserId())
                 .addValue("priv", view.isPriv());
 
         long viewId = -1;
+
         try {
             viewId = namedParameterJdbcTemplate.queryForObject(sql, params, Long.class);
         } catch (DataAccessException e) {
             String errMsg = "Could not add view for user_id: " + view.getUserId() +
                     "\n" + e.getMessage();
-            logger.info(errMsg);
+            LOGGER.info(errMsg);
         }
         return viewId;
     }
@@ -81,7 +84,7 @@ public class ViewDao implements UpdatableDao<View> {
         String sql = "UPDATE views SET priv = :priv WHERE view_id = :viewId";
         KeyHolder holder = new GeneratedKeyHolder();
         SqlParameterSource params = new MapSqlParameterSource()
-                .addValue("viewId", view.getViewId())
+                .addValue(VIEW_ID, view.getViewId())
                 .addValue("priv", view.isPriv());
         int rows = 0;
         rows = namedParameterJdbcTemplate.update(sql, params, holder);
@@ -98,7 +101,7 @@ public class ViewDao implements UpdatableDao<View> {
         String sql = "DELETE FROM views WHERE view_id = :viewId";
         KeyHolder holder = new GeneratedKeyHolder();
         SqlParameterSource parameterSource = new MapSqlParameterSource()
-                .addValue("viewId", view.getViewId());
+                .addValue(VIEW_ID, view.getViewId());
         int rows = 0;
         rows = namedParameterJdbcTemplate.update(sql, parameterSource, holder);
         return rows > 0;
@@ -113,12 +116,13 @@ public class ViewDao implements UpdatableDao<View> {
     public Optional<View> get(long id) {
         String sql = "SELECT * FROM views WHERE view_id = :viewId";
         SqlParameterSource params = new MapSqlParameterSource()
-                .addValue("viewId", id);
+                .addValue(VIEW_ID, id);
         View result = null;
         try {
             result = namedParameterJdbcTemplate.queryForObject(sql, params, ViewDao::mapRow);
         } catch (EmptyResultDataAccessException e) {
-            logger.info("Could not get view_id = " + id + "\n" + e.getMessage());
+            String errMsg = "Could not get view_id = " + id + "\n" + e.getMessage();
+            LOGGER.error(errMsg);
         }
         return Optional.ofNullable(result);
     }
@@ -132,12 +136,13 @@ public class ViewDao implements UpdatableDao<View> {
     public Optional<List<View>> get(Map<String, Object> args) {
         String sql = "SELECT * FROM views WHERE view_code = :viewCode";
         SqlParameterSource params = new MapSqlParameterSource()
-                .addValue("viewCode", args.get("viewCode"), Types.OTHER);
+                .addValue(VIEW_CODE, args.get(VIEW_CODE), Types.OTHER);
         List<View> result = null;
         try {
             result = namedParameterJdbcTemplate.query(sql, params, ViewDao::mapRow);
         } catch (EmptyResultDataAccessException e) {
-            logger.info("Could not get view_code = " + args.get("viewCode") + "\n" + e.getMessage());
+            String errMsg = "Could not get view_code = " + args.get(VIEW_CODE) + "\n" + e.getMessage();
+            LOGGER.info(errMsg);
         }
         return Optional.ofNullable(result);    }
 
