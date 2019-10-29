@@ -40,6 +40,13 @@ public interface DaoService {
      */
     CompletableFuture<User> createUserAccount(User user) throws DaoServiceException;
 
+    /**
+     * Add a new note
+     * @param request
+     * @return noteId
+     */
+    CompletableFuture<Long> addNote(Note request) throws DaoServiceException;
+
     JdbcTemplate getJdbcTemplate();
     void setJdbcTemplate(JdbcTemplate jdbcTemplate);
     NamedParameterJdbcTemplate getNamedParameterJdbcTemplate();

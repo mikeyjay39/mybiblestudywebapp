@@ -6,4 +6,6 @@ package com.mybiblestudywebapp.main;
  * 10/28/19
  */
 public interface Response {
+
+    ErrorResponse getErrorResponse();
 }

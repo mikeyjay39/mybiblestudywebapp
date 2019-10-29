@@ -13,6 +13,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -54,11 +55,12 @@ public class NoteDao implements UpdatableDao<Note> {
      * @return note_id or -1 on failure
      */
     @Override
+    @Transactional
     public long save(Note note) {
         String sql = "INSERT INTO notes (note, user_id, book_id, chapter_id, verse, priv, lang) " +
                 "VALUES (:note, :userId, :bookId, :chapterId, :verse, :priv, :lang) " +
                 "RETURNING note_id";
-        long noteId = -1;
+        Long noteId = null;
 
         SqlParameterSource namedParams = new MapSqlParameterSource()
                 .addValue("note", note.getNoteText())
@@ -78,7 +80,7 @@ public class NoteDao implements UpdatableDao<Note> {
             logger.info(errMsg);
         }
 
-        return noteId;
+        return noteId == null ? -1 : noteId;
     }
 
     @Override

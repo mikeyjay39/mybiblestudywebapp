@@ -73,4 +73,8 @@ public class BibleStudyResponse implements Response {
     public void setErrorResponse(ErrorResponse errorResponse) {
         this.errorResponse = errorResponse;
     }
+
+    public BibleStudyResponse() {
+        this.errorResponse = new ErrorResponse();
+    }
 }

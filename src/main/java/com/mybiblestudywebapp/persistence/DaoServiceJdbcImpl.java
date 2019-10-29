@@ -203,6 +203,24 @@ public class DaoServiceJdbcImpl implements DaoService {
         return CompletableFuture.completedFuture(user);
     }
 
+    /**
+     * {@inheritDoc}
+     * @param request
+     * @return
+     * @throws DaoServiceException
+     */
+    @Override
+    @Async
+    public CompletableFuture<Long> addNote(Note request) throws DaoServiceException {
+        long result = noteDao.save(request);
+
+        if (result < 0) {
+            throw new DaoServiceException("Could not add new note: " + request.getNoteText());
+        }
+
+        return CompletableFuture.completedFuture(result);
+    }
+
     public JdbcTemplate getJdbcTemplate() {
         return jdbcTemplate;
     }
