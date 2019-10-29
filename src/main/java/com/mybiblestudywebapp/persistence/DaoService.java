@@ -30,7 +30,8 @@ public interface DaoService {
      * @param chapterNo
      * @return
      */
-    CompletableFuture<List<Note>> getStudyNotesForChapter(String viewCode, String book, long chapterNo);
+    CompletableFuture<List<Note>> getStudyNotesForChapter(String viewCode, String book, long chapterNo)
+    throws DaoServiceException;
 
     /**
      * Creates a new user account. Hashes the password if encoder is present.

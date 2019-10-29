@@ -2,7 +2,6 @@ package com.mybiblestudywebapp.main;
 
 import com.mybiblestudywebapp.client.BibleStudyRequest;
 import com.mybiblestudywebapp.client.BibleStudyResponse;
-import com.mybiblestudywebapp.error.ErrorTitle;
 import com.mybiblestudywebapp.getbible.GetBibleService;
 import com.mybiblestudywebapp.persistence.DaoService;
 import com.mybiblestudywebapp.persistence.model.User;
@@ -25,6 +24,8 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class MainServiceImpl implements MainService {
+
+    // TODO fix errors in this file
 
     @Autowired
     private GetBibleService getBibleService;
@@ -53,10 +54,11 @@ public class MainServiceImpl implements MainService {
             response.setVerses(verses.get());
 
         } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
             String errMsg = "Could not get Bible verses. Thread interrupted\n"
                     + e.getMessage();
             LOGGER.error(errMsg);
-            response.getErrorResponse().setTitle(ErrorTitle.INTERRUPTED_EXCEPTION)
+            response.getErrorResponse().setTitle(ErrorConstants.INTERRUPTED_EXCEPTION)
                     .setStatus(409)
                     .setDetail(errMsg);
             return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
@@ -64,7 +66,7 @@ public class MainServiceImpl implements MainService {
         } catch (ExecutionException e) {
             String errMsg = "Could not get Bible verses. \n"
                     + e.getMessage();
-            response.getErrorResponse().setTitle(ErrorTitle.EXECUTION_EXCEPTION)
+            response.getErrorResponse().setTitle(ErrorConstants.EXECUTION_EXCEPTION)
                     .setStatus(409)
                     .setDetail(errMsg);
             return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
@@ -74,10 +76,11 @@ public class MainServiceImpl implements MainService {
             response.setNotes(notes.get());
 
         } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
             String errMsg = "Could not get Notes. Thread interrupted\n"
                     + e.getMessage();
             LOGGER.error(errMsg);
-            response.getErrorResponse().setTitle(ErrorTitle.INTERRUPTED_EXCEPTION)
+            response.getErrorResponse().setTitle(ErrorConstants.INTERRUPTED_EXCEPTION)
                     .setStatus(409)
                     .setDetail(errMsg);
             return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
@@ -85,7 +88,7 @@ public class MainServiceImpl implements MainService {
         } catch (ExecutionException e) {
             String errMsg = "Could not get Notes. \n"
                     + e.getMessage();
-            response.getErrorResponse().setTitle(ErrorTitle.EXECUTION_EXCEPTION)
+            response.getErrorResponse().setTitle(ErrorConstants.EXECUTION_EXCEPTION)
                     .setStatus(409)
                     .setDetail(errMsg);
             return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
@@ -118,6 +121,7 @@ public class MainServiceImpl implements MainService {
                     .setLastname(result.getLastname());
 
         } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
             String errMsg = "Create user account " + request.getEmail() + " thread interrupted\n"
                     + e.getMessage();
             LOGGER.error(errMsg);
