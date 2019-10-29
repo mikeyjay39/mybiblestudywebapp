@@ -117,14 +117,15 @@ public class UserDao implements UpdatableDao<User> {
                 .addValue("password", user.getPassword())
                 .addValue("authority", "USER");
 
-        long userId = -1;
+        Long userId = null;
         try {
             userId = namedParameterJdbcTemplate.queryForObject(sql, params, Long.class);
             int rows = namedParameterJdbcTemplate.update(userAuthoritiesSql, params);
-            if (rows < 1) {
-                throw new NonTransientDataAccessResourceException("Could not insert into user_authorities table");
+            if (userId == null || rows < 1) {
+                throw new DaoServiceException("Could not insert into user_authorities table");
             }
-        } catch (DataAccessException e) {
+        } catch (DaoServiceException e) {
+            userId = null;
             String errMsg = "Could not add user for email: " + user.getEmail() +
                     "\n" + e.getMessage();
             logger.info(errMsg);

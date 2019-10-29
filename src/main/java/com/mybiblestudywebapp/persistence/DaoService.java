@@ -38,7 +38,7 @@ public interface DaoService {
      * @param user
      * @return
      */
-    CompletableFuture<User> createUserAccount(User user);
+    CompletableFuture<User> createUserAccount(User user) throws DaoServiceException;
 
     JdbcTemplate getJdbcTemplate();
     void setJdbcTemplate(JdbcTemplate jdbcTemplate);

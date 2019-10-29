@@ -192,9 +192,15 @@ public class DaoServiceJdbcImpl implements DaoService {
      */
     @Async
     @Override
-    public CompletableFuture<User> createUserAccount(User user) {
+    public CompletableFuture<User> createUserAccount(User user)
+            throws DaoServiceException {
         user.setPassword(encoder.encode(user.getPassword()));
-        long userId = userDao.save(user);
+
+        Long userId = userDao.save(user);
+
+        if (userId == null) {
+            throw new DaoServiceException("Could not create user: " + user.getEmail());
+        }
         user.setUserId(userId);
         return CompletableFuture.completedFuture(user);
     }

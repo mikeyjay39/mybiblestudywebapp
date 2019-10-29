@@ -4,7 +4,12 @@ import com.mybiblestudywebapp.client.BibleStudyRequest;
 import com.mybiblestudywebapp.client.BibleStudyResponse;
 import com.mybiblestudywebapp.getbible.GetBibleService;
 import com.mybiblestudywebapp.persistence.DaoService;
+import com.mybiblestudywebapp.persistence.DaoServiceException;
+import com.mybiblestudywebapp.persistence.model.Note;
 import com.mybiblestudywebapp.persistence.model.User;
+
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 import com.mybiblestudywebapp.dashboard.users.CreateUserRequest;
@@ -25,8 +30,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class MainServiceImpl implements MainService {
 
-    // TODO fix errors in this file
-
     @Autowired
     private GetBibleService getBibleService;
 
@@ -46,49 +49,37 @@ public class MainServiceImpl implements MainService {
         int chapterNo = request.getChapterNo();
         BibleStudyResponse response = new BibleStudyResponse();
         var verses = getBibleService.getVersesForChapter(book, chapterNo);
-        var notes = daoService.getStudyNotesForChapter(viewCode, book, chapterNo);
+        CompletableFuture<List<Note>> futureNotes;
+
+        try {
+            futureNotes = daoService.getStudyNotesForChapter(viewCode, book, chapterNo);
+        } catch (DaoServiceException e) {
+            response.getErrorResponse()
+                    .setTitle(e.getClass().getName())
+                    .setStatus(204)
+                    .setDetail(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(response);
+        }
+
         response.setBook(book);
         response.setChapter(chapterNo);
 
         try {
             response.setVerses(verses.get());
-
+            response.setNotes(futureNotes.get());
         } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            String errMsg = "Could not get Bible verses. Thread interrupted\n"
+            String errMsg = "Could not finish getting Bible verses and notes. Thread interrupted\n"
                     + e.getMessage();
             LOGGER.error(errMsg);
-            response.getErrorResponse().setTitle(ErrorConstants.INTERRUPTED_EXCEPTION)
+            response.getErrorResponse().setTitle(e.getClass().getName())
                     .setStatus(409)
                     .setDetail(errMsg);
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
-
-        } catch (ExecutionException e) {
-            String errMsg = "Could not get Bible verses. \n"
-                    + e.getMessage();
-            response.getErrorResponse().setTitle(ErrorConstants.EXECUTION_EXCEPTION)
-                    .setStatus(409)
-                    .setDetail(errMsg);
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
-        }
-
-        try {
-            response.setNotes(notes.get());
-
-        } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            String errMsg = "Could not get Notes. Thread interrupted\n"
-                    + e.getMessage();
-            LOGGER.error(errMsg);
-            response.getErrorResponse().setTitle(ErrorConstants.INTERRUPTED_EXCEPTION)
-                    .setStatus(409)
-                    .setDetail(errMsg);
             return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
-
         } catch (ExecutionException e) {
-            String errMsg = "Could not get Notes. \n"
+            String errMsg = "Could not get Bible verses and notes. Execution exception \n"
                     + e.getMessage();
-            response.getErrorResponse().setTitle(ErrorConstants.EXECUTION_EXCEPTION)
+            response.getErrorResponse().setTitle(e.getClass().getName())
                     .setStatus(409)
                     .setDetail(errMsg);
             return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
@@ -119,17 +110,22 @@ public class MainServiceImpl implements MainService {
                     .setEmail(result.getEmail())
                     .setFirstname(result.getFirstname())
                     .setLastname(result.getLastname());
-
+        } catch (DaoServiceException e) {
+            LOGGER.error(e.getMessage());
+            response.getErrorResponse()
+                    .setTitle(e.getClass().getName())
+                    .setStatus(400)
+                    .setDetail(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
             String errMsg = "Create user account " + request.getEmail() + " thread interrupted\n"
                     + e.getMessage();
             LOGGER.error(errMsg);
             response.getErrorResponse().setTitle("Interrupted Exception")
                     .setStatus(409)
                     .setDetail(errMsg);
+            Thread.currentThread().interrupt();
             return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
-
         } catch (ExecutionException e) {
             String errMsg = "Create user account " + request.getEmail()
                     + " thread execution exception\n" + e.getMessage();
