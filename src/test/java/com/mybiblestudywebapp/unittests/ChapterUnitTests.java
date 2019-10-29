@@ -40,10 +40,10 @@ public class ChapterUnitTests {
 
         // get first chapter in Genesis
         chapter = chapterDao.get(1).get();
-        Assert.assertEquals(1, chapter.getChapter_no());
+        Assert.assertEquals(1, chapter.getChapterNo());
         // get first chapter in Exodus
         chapter = chapterDao.get(51).get();
-        Assert.assertEquals(1, chapter.getChapter_no());
+        Assert.assertEquals(1, chapter.getChapterNo());
         Assert.assertEquals(2, chapter.getBookId());
     }
 

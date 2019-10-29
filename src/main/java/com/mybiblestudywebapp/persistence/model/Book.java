@@ -10,6 +10,7 @@ import java.util.Objects;
  * 2019. 10. 14.
  */
 public class Book {
+
     private long bookId;
     private String title;
     private Testament testament;

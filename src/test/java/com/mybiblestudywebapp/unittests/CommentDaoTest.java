@@ -44,13 +44,13 @@ public class CommentDaoTest {
     public void update() {
         comment = getComment();
         String newCommentField = "This is the new comment text";
-        Assert.assertNotEquals(newCommentField, comment.getComment());
+        Assert.assertNotEquals(newCommentField, comment.getCommentText());
         long id = comment.getCommentId();
-        comment.setComment(newCommentField);
+        comment.setCommentText(newCommentField);
         boolean result = commentDao.update(comment);
         Assert.assertTrue(result);
         Comment updatedComment = commentDao.get(1).get();
-        Assert.assertEquals(newCommentField, updatedComment.getComment());
+        Assert.assertEquals(newCommentField, updatedComment.getCommentText());
     }
 
     @Test

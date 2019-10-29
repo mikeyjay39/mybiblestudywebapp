@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static com.mybiblestudywebapp.main.Constants.*;
+
 /**
  * Created by Michael Jeszenka.
  * <a href="mailto:michael@jeszenka.com">michael@jeszenka.com</a>
@@ -62,8 +64,9 @@ public class BookDao implements Dao<Book> {
         try {
             result = namedParameterJdbcTemplate.query(sql, params, BookDao::mapRow);
         } catch (DataAccessException e) {
-            String errMsg = "Could not get book with title: " + args.get("title") + "\n" +
-                    e.getMessage();
+            String errMsg = "Could not get book with title: " + args.get(TITLE + "\n" +
+                    e.getMessage());
+            logger.error(errMsg);
         }
         return Optional.ofNullable(result);
     }
@@ -91,14 +94,14 @@ public class BookDao implements Dao<Book> {
         Book book = new Book();
         book.setBookId((long)row.get("book_id"));
         book.setTestament((Testament.valueOf((String)row.get("testament"))));
-        book.setTitle((String)row.get("title"));
+        book.setTitle((String)row.get(TITLE));
         return book;
     }
 
     static Book mapRow(ResultSet rs, int rowNum) throws SQLException {
         Book book = new Book();
         book.setBookId(rs.getInt("book_id"));
-        book.setTitle(rs.getString("title"));
+        book.setTitle(rs.getString(TITLE));
         book.setTestament(Testament.valueOf(rs.getString("testament")));
         return book;
     }

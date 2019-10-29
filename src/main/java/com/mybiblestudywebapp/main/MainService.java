@@ -20,8 +20,8 @@ public interface MainService {
      * @param request
      * @return
      */
-    ResponseEntity<? extends Response> getChapterAndNotes(BibleStudyRequest request);
+    ResponseEntity<Response> getChapterAndNotes(BibleStudyRequest request);
 
-    ResponseEntity<? extends Response> createUserAccount(CreateUserRequest request);
+    ResponseEntity<Response> createUserAccount(CreateUserRequest request);
 
 }

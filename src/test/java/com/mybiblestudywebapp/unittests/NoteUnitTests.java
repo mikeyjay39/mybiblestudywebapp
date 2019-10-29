@@ -44,11 +44,11 @@ public class NoteUnitTests {
     @Test
     public void testUpdate() {
         Note retrievedNote = saveAndGet();
-        note.setNote("The note has been modified!");
+        note.setNoteText("The note has been modified!");
         boolean result = noteDao.update(note);
         Note updatedNote = noteDao.get(note.getNoteId()).get();
         Assert.assertTrue(result);
-        Assert.assertEquals("The note has been modified!", updatedNote.getNote());
+        Assert.assertEquals("The note has been modified!", updatedNote.getNoteText());
     }
 
     @Test
@@ -64,7 +64,7 @@ public class NoteUnitTests {
         note = saveNote();
         note.setNoteId(1);
         note = noteDao.get(1l).get();
-        Assert.assertEquals("This is the first note", note.getNote());
+        Assert.assertEquals("This is the first note", note.getNoteText());
         return note;
     }
 
@@ -74,7 +74,7 @@ public class NoteUnitTests {
         note.setUserId(1);
         note.setBookId(1);
         note.setChapterId(1);
-        note.setNote("A new note!");
+        note.setNoteText("A new note!");
         note.setPriv(false);
         note.setLang("en");
         long result = noteDao.save(note);

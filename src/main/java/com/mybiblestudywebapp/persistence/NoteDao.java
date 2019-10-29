@@ -18,9 +18,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import static com.mybiblestudywebapp.main.Constants.*;
 
 /**
  * Created by Michael Jeszenka.
@@ -58,11 +61,11 @@ public class NoteDao implements UpdatableDao<Note> {
         long noteId = -1;
 
         SqlParameterSource namedParams = new MapSqlParameterSource()
-                .addValue("note", note.getNote())
+                .addValue("note", note.getNoteText())
                 .addValue("userId", note.getUserId())
                 .addValue("bookId", note.getBookId())
-                .addValue("chapterId", note.getChapterId())
-                .addValue("verse", note.getVerse())
+                .addValue(CHAPTER_ID, note.getChapterId())
+                .addValue(VERSE, note.getVerse())
                 .addValue("priv", note.isPriv())
                 .addValue("lang", note.getLang());
 
@@ -88,10 +91,10 @@ public class NoteDao implements UpdatableDao<Note> {
         KeyHolder holder = new GeneratedKeyHolder();
         SqlParameterSource namedParams = new MapSqlParameterSource()
                 .addValue("noteId", note.getNoteId())
-                .addValue("note", note.getNote())
+                .addValue("note", note.getNoteText())
                 .addValue("bookId", note.getBookId())
-                .addValue("chapterId", note.getChapterId())
-                .addValue("verse", note.getVerse())
+                .addValue(CHAPTER_ID, note.getChapterId())
+                .addValue(VERSE, note.getVerse())
                 .addValue("priv", note.isPriv())
                 .addValue("lang", note.getLang())
                 .addValue("lastModified", Timestamp.valueOf(note.getLastModified()));
@@ -120,7 +123,8 @@ public class NoteDao implements UpdatableDao<Note> {
         try {
             result = jdbcTemplate.queryForObject(sql, new Object[]{id}, NoteDao::mapRow);
         } catch(EmptyResultDataAccessException e) {
-            logger.info("No result for note_id = " + id + "\n" + e.getMessage());
+            String errMsg = "No result for note_id = " + id + "\n" + e.getMessage();
+            logger.error(errMsg);
         }
         return Optional.ofNullable(result);
     }
@@ -143,7 +147,7 @@ public class NoteDao implements UpdatableDao<Note> {
             result = namedParameterJdbcTemplate.query(sql, params, NoteDao::mapRow);
         } catch (DataAccessException e) {
             String errMsg = "Could note retrive notes for view_id: " + args.get("viewId") + " chapter_id: " +
-                    args.get("chapterId") + "\n" + e.getMessage();
+                    args.get(CHAPTER_ID) + "\n" + e.getMessage();
             logger.info(errMsg);
         }
         return Optional.ofNullable(result);
@@ -151,7 +155,7 @@ public class NoteDao implements UpdatableDao<Note> {
 
     @Override
     public List<Note> getAll() {
-        return null;
+        return new ArrayList<>();
     }
 
     static Note mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -161,10 +165,10 @@ public class NoteDao implements UpdatableDao<Note> {
         note.setUserId(rs.getInt("user_id"));
         note.setBookId(rs.getInt("book_id"));
         note.setChapterId(rs.getInt("chapter_id"));
-        note.setVerse(rs.getInt("verse"));
+        note.setVerse(rs.getInt(VERSE));
         note.setRanking(rs.getInt("ranking"));
         note.setPriv(rs.getBoolean("priv"));
-        note.setNote(rs.getString("note"));
+        note.setNoteText(rs.getString("note"));
         note.setLang(rs.getString("lang"));
         note.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
         var lastModified = rs.getTimestamp("last_modified");

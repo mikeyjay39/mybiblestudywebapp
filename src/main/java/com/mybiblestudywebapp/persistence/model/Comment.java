@@ -14,7 +14,7 @@ public class Comment {
     private long userId;
     private long noteId;
     private LocalDateTime createdAt;
-    private String comment;
+    private String commentText;
 
     @Override
     public boolean equals(Object o) {
@@ -61,11 +61,11 @@ public class Comment {
         this.createdAt = createdAt;
     }
 
-    public String getComment() {
-        return comment;
+    public String getCommentText() {
+        return commentText;
     }
 
-    public void setComment(String comment) {
-        this.comment = comment;
+    public void setCommentText(String commentText) {
+        this.commentText = commentText;
     }
 }

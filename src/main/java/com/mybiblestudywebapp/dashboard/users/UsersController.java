@@ -2,8 +2,6 @@ package com.mybiblestudywebapp.dashboard.users;
 
 import com.mybiblestudywebapp.main.MainService;
 import com.mybiblestudywebapp.main.Response;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,14 +18,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("users")
 public class UsersController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(UsersController.class);
 
     @Autowired
     private MainService mainService;
 
-    @RequestMapping("/signup")
-    @PostMapping(consumes = "application/json", produces = "application/json")
-    public ResponseEntity<? extends Response> create(
+    @PostMapping(path = "/signup", consumes = "application/json", produces = "application/json")
+    public ResponseEntity<Response> create(
             @RequestBody CreateUserRequest request) {
         return mainService.createUserAccount(request);
     }

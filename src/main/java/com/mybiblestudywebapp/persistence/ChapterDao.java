@@ -63,7 +63,7 @@ public class ChapterDao implements Dao<Chapter> {
         } catch (DataAccessException e) {
             String errMsg = "Could not get chapters for book_id = " + args.get("bookId") +
                     "\n " + e.getMessage();
-            logger.info(e.getMessage());
+            logger.error(errMsg);
         }
 
         return Optional.ofNullable(result);
@@ -76,8 +76,7 @@ public class ChapterDao implements Dao<Chapter> {
     @Override
     public List<Chapter> getAll() {
         String sql = "SELECT * FROM chapters";
-        List<Chapter> results = jdbcTemplate.query(sql, ChapterDao::mapRow);
-        return results;
+        return jdbcTemplate.query(sql, ChapterDao::mapRow);
     }
 
     /**
@@ -157,13 +156,13 @@ public class ChapterDao implements Dao<Chapter> {
 
         long totalRows = 0;
         for (int i = 0; i < args.size(); i++) {
-            int book_id = i + 1;
-            int chapters = args.get(book_id);
+            int bookId = i + 1;
+            int chapters = args.get(bookId);
             for (int j = 0; j < chapters; j ++) {
-                int chapter_no = j + 1;
+                int chapterNo = j + 1;
                 String sql = "INSERT INTO chapters (book_id, chapter_no) " +
                         "VALUES (?, ?)";
-                jdbcTemplate.update(sql, book_id, chapter_no);
+                jdbcTemplate.update(sql, bookId, chapterNo);
                 totalRows++;
             }
         }
@@ -174,7 +173,7 @@ public class ChapterDao implements Dao<Chapter> {
         Chapter chapter = new Chapter();
         chapter.setChapterId(rs.getInt("chapter_id"));
         chapter.setBookId(rs.getInt("book_id"));
-        chapter.setChapter_no(rs.getInt("chapter_no"));
+        chapter.setChapterNo(rs.getInt("chapter_no"));
         return chapter;
     }
 }

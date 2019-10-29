@@ -44,15 +44,12 @@ public class GetBibleImpl implements GetBible {
      */
     @Override
     public GetBibleResponse getVersesForChapter(String book, int chapter) {
-        /*MultiValueMap<String, String> args = new LinkedMultiValueMap<>();
-        args.add("p", book + String.valueOf(chapter));*/
         ResponseEntity<String> response = null;
         HttpHeaders headers = new HttpHeaders();
         List<MediaType> acceptTypes = new ArrayList<>();
         acceptTypes.add(MediaType.APPLICATION_JSON_UTF8);
         acceptTypes.add(MediaType.TEXT_XML);
         headers.setAccept(acceptTypes);
-        //headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         headers.add("User-Agent",
                 "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/77.0.3865.90 Chrome/77.0.3865.90 Safari/537.36");
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(null, headers);
@@ -69,18 +66,21 @@ public class GetBibleImpl implements GetBible {
             logger.error(errMsg);
         }
 
-        String stringResponse = response.getBody();
+        String stringResponse = "";
+
+        if (response != null) {
+            stringResponse = response.getBody();
+        }
+
         logger.debug(stringResponse);
         stringResponse = stringResponse.replace("(", "").replace(")", "");
         ObjectMapper mapper = new ObjectMapper();
-        //mapper.configure(JsonGenerator.Feature.IGNORE_UNKNOWN, true);
         GetBibleChapterResponseImpl objectResponse = null;
         try {
             objectResponse = mapper.readValue(stringResponse, GetBibleChapterResponseImpl.class);
         } catch (Exception e) {
             logger.error(e.getMessage());
         }
-
 
         return objectResponse;
     }

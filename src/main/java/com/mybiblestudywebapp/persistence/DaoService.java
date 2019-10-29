@@ -30,14 +30,15 @@ public interface DaoService {
      * @param chapterNo
      * @return
      */
-    CompletableFuture<List<Note>> getStudyNotesForChapter(String viewCode, String book, long chapterNo);
+    CompletableFuture<List<Note>> getStudyNotesForChapter(String viewCode, String book, long chapterNo)
+    throws DaoServiceException;
 
     /**
      * Creates a new user account. Hashes the password if encoder is present.
      * @param user
      * @return
      */
-    CompletableFuture<User> createUserAccount(User user);
+    CompletableFuture<User> createUserAccount(User user) throws DaoServiceException;
 
     JdbcTemplate getJdbcTemplate();
     void setJdbcTemplate(JdbcTemplate jdbcTemplate);

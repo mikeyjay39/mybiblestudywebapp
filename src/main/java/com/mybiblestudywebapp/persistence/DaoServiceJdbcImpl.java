@@ -92,7 +92,7 @@ public class DaoServiceJdbcImpl implements DaoService {
         List<Note> results = null;
         try {
             results = namedParameterJdbcTemplate.query(sql, params, NoteDao::mapRow);
-            if (results.size() <= 0) {
+            if (results.isEmpty()) {
                 return CompletableFuture.completedFuture((long)results.size());
             }
         } catch (DataAccessException e) {
@@ -128,27 +128,43 @@ public class DaoServiceJdbcImpl implements DaoService {
      * @return
      */
     @Override
-    public CompletableFuture<List<Note>> getStudyNotesForChapter(String viewCode, String book, long chapterNo) {
-        Map<String, Object> viewArgs = new HashMap<String, Object>();
-        Map<String, Object> bookArgs = new HashMap<String, Object>();
-        Map<String, Object> chapterArgs = new HashMap<String, Object>();
+    public CompletableFuture<List<Note>> getStudyNotesForChapter(String viewCode, String book, long chapterNo)
+    throws DaoServiceException {
+        Map<String, Object> viewArgs = new HashMap<>();
+        Map<String, Object> bookArgs = new HashMap<>();
+        Map<String, Object> chapterArgs = new HashMap<>();
 
         viewArgs.put("viewCode", viewCode);
         bookArgs.put("title", book);
 
         // get view_id
-        List<View> viewList = (List<View>) viewDao.get(viewArgs).get();
+        Optional<List<View>> viewOpt = viewDao.get(viewArgs);
+
+        List<View> viewList = viewOpt.orElseThrow(
+                () -> new DaoServiceException("No views returned for view: " + viewCode)
+        );
+
         View view = viewList.get(0);
         long viewId = view.getViewId();
 
         // get book_id
-        List<Book> bookResults = (List<Book>)bookDao.get(bookArgs).get();
+        Optional<List<Book>> bookIdOpt = bookDao.get(bookArgs);
+
+        List<Book> bookResults = bookIdOpt.orElseThrow(
+                () -> new DaoServiceException("No books returned for: " + book)
+        );
+
         Book bookResult = bookResults.get(0);
 
         // get chapter_id
         chapterArgs.put("bookId", bookResult.getBookId());
         chapterArgs.put("chapterNo", chapterNo);
-        List<Chapter> chapterIds = (List<Chapter>)chapterDao.get(chapterArgs).get();
+        Optional<List<Chapter>> chaptersOpt = chapterDao.get(chapterArgs);
+
+        List<Chapter> chapterIds = chaptersOpt.orElseThrow(
+                () -> new DaoServiceException("No chapters returned for: " + book + " " + chapterNo)
+        );
+
         Chapter chapter = chapterIds.get(0);
         long chapterId = chapter.getChapterId();
 
@@ -174,9 +190,15 @@ public class DaoServiceJdbcImpl implements DaoService {
      */
     @Async
     @Override
-    public CompletableFuture<User> createUserAccount(User user) {
+    public CompletableFuture<User> createUserAccount(User user)
+            throws DaoServiceException {
         user.setPassword(encoder.encode(user.getPassword()));
-        long userId = userDao.save(user);
+
+        Long userId = userDao.save(user);
+
+        if (userId == null) {
+            throw new DaoServiceException("Could not create user: " + user.getEmail());
+        }
         user.setUserId(userId);
         return CompletableFuture.completedFuture(user);
     }
