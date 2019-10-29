@@ -1,11 +1,9 @@
-package com.mybiblestudywebapp.persistence;
+package com.mybiblestudywebapp.main;
 
 /**
  * Created by Michael Jeszenka.
  * <a href="mailto:michael@jeszenka.com">michael@jeszenka.com</a>
- * 10/20/19
+ * 10/28/19
  */
-public interface PersistenceService {
-
-
+public interface Response {
 }

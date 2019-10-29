@@ -1263,3 +1263,4 @@ INSERT INTO public.view_note (view_id, note_id) VALUES (1, 1);
 INSERT INTO public.view_note (view_id, note_id) VALUES (1, 2);
 INSERT INTO public.view_note (view_id, note_id) VALUES (1, 3);
 INSERT INTO public.comments (user_id, note_id, created_at, comment) VALUES (2, 1, '2019-10-20 22:09:41.976445', 'This is a comment on note_id 1');
+INSERT INTO public.user_authorities (email, authority) VALUES ('admin@admin.com', 'USER');

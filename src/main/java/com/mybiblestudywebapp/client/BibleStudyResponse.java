@@ -1,5 +1,7 @@
-package com.mybiblestudywebapp.main;
+package com.mybiblestudywebapp.client;
 
+import com.mybiblestudywebapp.main.ErrorResponse;
+import com.mybiblestudywebapp.main.Response;
 import com.mybiblestudywebapp.persistence.model.Note;
 
 import java.util.List;
@@ -10,13 +12,19 @@ import java.util.Map;
  * <a href="mailto:michael@jeszenka.com">michael@jeszenka.com</a>
  * 10/21/19
  */
-public class BibleStudyResponse {
+public class BibleStudyResponse implements Response {
 
     private String book;
+
     private int chapter;
+
     private List<Map<String, String>> verses;
+
     private List<Note> notes;
+
     private String errMsg;
+
+    private ErrorResponse errorResponse;
 
     public String getBook() {
         return book;
@@ -56,5 +64,13 @@ public class BibleStudyResponse {
 
     public void setErrMsg(String errMsg) {
         this.errMsg = errMsg;
+    }
+
+    public ErrorResponse getErrorResponse() {
+        return errorResponse;
+    }
+
+    public void setErrorResponse(ErrorResponse errorResponse) {
+        this.errorResponse = errorResponse;
     }
 }

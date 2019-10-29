@@ -43,3 +43,6 @@ Hit API with curl:
 ```
 curl -X POST -H "Content-Type: application/json" -d '{"viewCode":"6e9e6366-f386-11e9-b633-0242ac110002","book":"Genesis","chapterNo":1}' localhost:8080/biblestudy
 ```
+
+```
+curl -v -X POST -H "Content-Type: application/json" -d '{"email":"testingemail@testing.com","firstname":"Abe","lastname":"Lincoln","password","testingpassword"}' localhost:8080/users

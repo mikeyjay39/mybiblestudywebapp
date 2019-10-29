@@ -37,6 +37,11 @@ import static org.springframework.http.HttpStatus.FORBIDDEN;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    private static final String[] PUBLIC_URLS = {
+            "/biblestudy/**",
+            "/test/**",
+            "/users/**"
+    };
 
     @Autowired
     private DataSource dataSource;
@@ -61,7 +66,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public PasswordEncoder  encoder() {
+    public PasswordEncoder encoder() {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12, new SecureRandom(SALT.getBytes()));
         return encoder;
     }
@@ -75,6 +80,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .cors()
                 .and()
                 .httpBasic().authenticationEntryPoint(new HttpStatusEntryPoint(FORBIDDEN))
+                .and()
+                .authorizeRequests()
+                .antMatchers(PUBLIC_URLS)
+                .permitAll()
                 .and()
                 .authorizeRequests()
                 .anyRequest().authenticated()

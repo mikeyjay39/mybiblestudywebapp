@@ -5,13 +5,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.NonTransientDataAccessException;
+import org.springframework.dao.NonTransientDataAccessResourceException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -96,21 +100,30 @@ public class UserDao implements UpdatableDao<User> {
      * @param user
      * @return user_id or -1 on failure
      */
+    @Transactional
     @Override
     public long save(User user) {
         String sql = "INSERT INTO users (email, firstname, lastname, password) " +
                 "VALUES (:email, :firstname, :lastname, :password) " +
                 "RETURNING user_id";
 
+        String userAuthoritiesSql = "INSERT INTO user_authorities (email, authority) "
+                + "VALUES (:email, :authority)";
+
         SqlParameterSource params = new MapSqlParameterSource()
                 .addValue("email", user.getEmail())
                 .addValue("firstname", user.getFirstname())
                 .addValue("lastname", user.getLastname())
-                .addValue("password", user.getPassword());
+                .addValue("password", user.getPassword())
+                .addValue("authority", "USER");
 
         long userId = -1;
         try {
             userId = namedParameterJdbcTemplate.queryForObject(sql, params, Long.class);
+            int rows = namedParameterJdbcTemplate.update(userAuthoritiesSql, params);
+            if (rows < 1) {
+                throw new NonTransientDataAccessResourceException("Could not insert into user_authorities table");
+            }
         } catch (DataAccessException e) {
             String errMsg = "Could not add user for email: " + user.getEmail() +
                     "\n" + e.getMessage();

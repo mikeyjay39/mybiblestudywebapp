@@ -1,5 +1,7 @@
-package com.mybiblestudywebapp.main;
+package com.mybiblestudywebapp.client;
 
+import com.mybiblestudywebapp.main.MainService;
+import com.mybiblestudywebapp.main.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +25,7 @@ public class BibleStudyController {
      * @return
      */
     @PostMapping
-    public ResponseEntity<BibleStudyResponse> getChapterAndNotes(
+    public ResponseEntity<? extends Response> getChapterAndNotes(
             @RequestBody BibleStudyRequest request) {
         return mainService.getChapterAndNotes(request);
     }
@@ -36,7 +38,7 @@ public class BibleStudyController {
      * @return
      */
     @GetMapping("/{viewCode}/{book}/{chapterNo}")
-    public ResponseEntity<BibleStudyResponse> getChapterAndNotes(
+    public ResponseEntity<? extends Response> getChapterAndNotes(
             @PathVariable String viewCode, @PathVariable String book, @PathVariable int chapterNo) {
         BibleStudyRequest request = new BibleStudyRequest();
         request.setViewCode(viewCode);
