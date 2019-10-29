@@ -2,6 +2,7 @@ package com.mybiblestudywebapp.main;
 
 import com.mybiblestudywebapp.client.BibleStudyRequest;
 import com.mybiblestudywebapp.client.BibleStudyResponse;
+import com.mybiblestudywebapp.error.ErrorTitle;
 import com.mybiblestudywebapp.getbible.GetBibleService;
 import com.mybiblestudywebapp.persistence.DaoService;
 import com.mybiblestudywebapp.persistence.model.User;
@@ -37,7 +38,7 @@ public class MainServiceImpl implements MainService {
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<? extends Response> getChapterAndNotes(BibleStudyRequest request) {
+    public ResponseEntity<Response> getChapterAndNotes(BibleStudyRequest request) {
 
         String viewCode = request.getViewCode();
         String book = request.getBook();
@@ -55,7 +56,7 @@ public class MainServiceImpl implements MainService {
             String errMsg = "Could not get Bible verses. Thread interrupted\n"
                     + e.getMessage();
             LOGGER.error(errMsg);
-            response.getErrorResponse().setTitle("Interrupted Exception")
+            response.getErrorResponse().setTitle(ErrorTitle.INTERRUPTED_EXECPTION)
                     .setStatus(409)
                     .setDetail(errMsg);
             return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
@@ -63,7 +64,7 @@ public class MainServiceImpl implements MainService {
         } catch (ExecutionException e) {
             String errMsg = "Could not get Bible verses. \n"
                     + e.getMessage();
-            response.getErrorResponse().setTitle("Execution Exception")
+            response.getErrorResponse().setTitle(ErrorTitle.EXECUTION_EXCEPTION)
                     .setStatus(409)
                     .setDetail(errMsg);
             return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
@@ -76,7 +77,7 @@ public class MainServiceImpl implements MainService {
             String errMsg = "Could not get Notes. Thread interrupted\n"
                     + e.getMessage();
             LOGGER.error(errMsg);
-            response.getErrorResponse().setTitle("Interrupted Exception")
+            response.getErrorResponse().setTitle(ErrorTitle.INTERRUPTED_EXECPTION)
                     .setStatus(409)
                     .setDetail(errMsg);
             return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
@@ -84,7 +85,7 @@ public class MainServiceImpl implements MainService {
         } catch (ExecutionException e) {
             String errMsg = "Could not get Notes. \n"
                     + e.getMessage();
-            response.getErrorResponse().setTitle("Execution Exception")
+            response.getErrorResponse().setTitle(ErrorTitle.EXECUTION_EXCEPTION)
                     .setStatus(409)
                     .setDetail(errMsg);
             return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
@@ -99,7 +100,7 @@ public class MainServiceImpl implements MainService {
      * @return
      */
     @Override
-    public ResponseEntity<? extends Response> createUserAccount(CreateUserRequest request) {
+    public ResponseEntity<Response> createUserAccount(CreateUserRequest request) {
         CreateUserResponse response = new CreateUserResponse();
         User requestUser = new User();
         requestUser.setEmail(request.getEmail());

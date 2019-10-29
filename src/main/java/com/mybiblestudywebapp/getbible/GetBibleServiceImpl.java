@@ -1,7 +1,5 @@
 package com.mybiblestudywebapp.getbible;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -17,10 +15,7 @@ import java.util.concurrent.CompletableFuture;
 @Service
 public class GetBibleServiceImpl implements GetBibleService {
 
-    private static final Logger logger = LoggerFactory.getLogger(GetBibleServiceImpl.class);
-
     private GetBible getBible = new GetBibleImpl();
-
 
     /**
      * {@inheritDoc}
