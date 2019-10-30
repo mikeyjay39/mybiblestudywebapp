@@ -3,6 +3,7 @@ package com.mybiblestudywebapp.main;
 import com.mybiblestudywebapp.client.BibleStudyRequest;
 import com.mybiblestudywebapp.client.BibleStudyResponse;
 import com.mybiblestudywebapp.dashboard.notes.AddNoteResponse;
+import com.mybiblestudywebapp.dashboard.notes.RankNoteRequest;
 import com.mybiblestudywebapp.getbible.GetBibleService;
 import com.mybiblestudywebapp.persistence.DaoService;
 import com.mybiblestudywebapp.persistence.DaoServiceException;
@@ -131,6 +132,16 @@ public class MainServiceImpl implements MainService {
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    /**
+     * {@inheritDoc}
+     * @param request
+     * @return
+     */
+    @Override
+    public ResponseEntity<Response> rankNote(RankNoteRequest request) {
+        return null;
     }
 
     /**

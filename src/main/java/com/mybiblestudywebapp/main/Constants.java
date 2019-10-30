@@ -19,15 +19,21 @@ public class Constants {
 
     public static final String TITLE = "title";
 
+    public static final String USER_ID = "userId";
+
     public static final String COMMENT_ID = "commentId";
 
     public static final String CHAPTER_ID = "chapterId";
+
+    public static final String NOTE_ID = "noteId";
 
     public static final String VERSE = "verse";
 
     public static final String VIEW_ID = "viewId";
 
     public static final String VIEW_CODE = "viewCode";
+
+    public static final String RANKING_VALUE = "rankingValue";
 
     private Constants(){}
 

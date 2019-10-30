@@ -1,6 +1,7 @@
 package com.mybiblestudywebapp.main;
 
 import com.mybiblestudywebapp.client.BibleStudyRequest;
+import com.mybiblestudywebapp.dashboard.notes.RankNoteRequest;
 import com.mybiblestudywebapp.dashboard.users.CreateUserRequest;
 import com.mybiblestudywebapp.persistence.model.Note;
 import org.springframework.http.ResponseEntity;
@@ -36,5 +37,13 @@ public interface MainService {
      * @return
      */
     ResponseEntity<Response> addNote(Note request);
+
+    /**
+     * Ranks a note. increaseRanking field should be set to true if we are increasing the ranking
+     * otherwise it decrements it.
+     * @param request
+     * @return
+     */
+    ResponseEntity<Response> rankNote(RankNoteRequest request);
 
 }
