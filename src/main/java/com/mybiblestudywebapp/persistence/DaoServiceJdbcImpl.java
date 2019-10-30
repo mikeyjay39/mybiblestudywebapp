@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -240,11 +239,14 @@ public class DaoServiceJdbcImpl implements DaoService {
     public CompletableFuture<RankNoteResponse> rankNote(RankNoteRequest request) throws DaoServiceException {
 
         RankNoteResponse response = new RankNoteResponse();
-        String checkRankingSql = "SELECT ranking_value, ranked FROM rank_note " +
+        String checkRankingSql = "SELECT ranking_value FROM rank_note " +
                 "WHERE note_id = :noteId AND user_id = :userId";
-        String rankNoteSql = "INSERT INTO rank_note (note_id, user_id, ranking_value) " +
+        String insertRankNote = "INSERT INTO rank_note (note_id, user_id, ranking_value) " +
                 "VALUES (:noteId, :userId, :rankingValue)";
-        String sql;
+        String updateRankNote = "UPDATE rank_note SET ranking_value = ranking_value + :rankingValue " +
+                "WHERE note_id = :noteId AND user_id = :userId";
+        String updateNote = "UPDATE notes SET ranking = ranking + :rankingValue " +
+                "WHERE note_id = :noteId";
         MapSqlParameterSource params = new MapSqlParameterSource()
                 .addValue(NOTE_ID, request.getNoteId())
                 .addValue(USER_ID, request.getNoteId());
@@ -252,46 +254,65 @@ public class DaoServiceJdbcImpl implements DaoService {
         // check if ranking already exists
         boolean exists = false;
         ResultSet rs = namedParameterJdbcTemplate.query(checkRankingSql, params,
-                (r) -> r);
-        int currentValue = 0;
+                r -> r);
+        int currentRankingValue = 0;
         try {
             rs.next();
             if (rs.next()) {
-                currentValue = rs.getInt("ranking_value");
+                currentRankingValue = rs.getInt("ranking_value");
                 exists = true;
             }
         } catch (SQLException e) {
             throw new DaoServiceException(e);
         }
 
-        // increase ranking
         if (request.isIncreaseRanking()) {
-
-            if (currentValue > 0) {
+            // increase ranking case
+            if (currentRankingValue > 0) {
                 // already ranked positive so return
                 response.setResult("Already ranked positive");
                 return CompletableFuture.completedFuture(response);
             }
-
             params.addValue(RANKING_VALUE, 1);
-
-            // TODO - resume here
-            if (exists) {
-                // already exists so update note and note_ranking with increment
-            } else {
-                // does not exist so insert into note_ranking and update note table with increment
-            }
-
         } else {
-            // decrease ranking
-
-            if (exists) {
-                // already exists so update note and note_ranking with decrement
+            // decrease ranking case
+            if (currentRankingValue < 0) {
+                // already ranked negative so return
+                response.setResult("Already ranked negative");
+                return CompletableFuture.completedFuture(response);
             }
-            // does not exist so insert into note_ranking and update note table with increment
-
+            params.addValue(RANKING_VALUE, -1);
         }
-        return null;
+
+        if (exists) {
+            // already exists so update note and note_ranking with increment
+            int rows = namedParameterJdbcTemplate.update(updateRankNote, params);
+            if (rows < 1) {
+                String errMsg = "Could not update rank_note table for noteId " + request.getNoteId() + "\n";
+                logger.error(errMsg);
+                throw new DaoServiceException(errMsg);
+            }
+        } else {
+            // does not exist so insert into note_ranking and update note table with increment
+            int rows = namedParameterJdbcTemplate.update(insertRankNote, params);
+            if (rows < 1) {
+                String errMsg = "Could not insert into rank_note table for noteId " + request.getNoteId() +
+                        "\n";
+                logger.error(errMsg);
+                throw new DaoServiceException(errMsg);
+            }
+        }
+
+        // update note table
+        int rows = namedParameterJdbcTemplate.update(updateNote, params);
+        if (rows < 1) {
+            String errMsg = "Could not update note table for noteId " + request.getNoteId() + "\n";
+            logger.error(errMsg);
+            throw new DaoServiceException(errMsg);
+        }
+
+        response.setResult("success");
+        return CompletableFuture.completedFuture(response);
     }
 
     public JdbcTemplate getJdbcTemplate() {

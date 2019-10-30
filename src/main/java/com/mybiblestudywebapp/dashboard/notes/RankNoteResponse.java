@@ -1,13 +1,14 @@
 package com.mybiblestudywebapp.dashboard.notes;
 
 import com.mybiblestudywebapp.main.ErrorResponse;
+import com.mybiblestudywebapp.main.Response;
 
 /**
  * Created by Michael Jeszenka.
  * <a href="mailto:michael@jeszenka.com">michael@jeszenka.com</a>
  * 10/29/19
  */
-public class RankNoteResponse {
+public class RankNoteResponse implements Response {
 
     private ErrorResponse errorResponse;
 
