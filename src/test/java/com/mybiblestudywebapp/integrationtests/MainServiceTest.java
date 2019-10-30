@@ -4,6 +4,9 @@ import com.mybiblestudywebapp.dashboard.notes.RankNoteRequest;
 import com.mybiblestudywebapp.dashboard.users.CreateUserRequest;
 import com.mybiblestudywebapp.dashboard.users.CreateUserResponse;
 import com.mybiblestudywebapp.main.MainService;
+import com.mybiblestudywebapp.persistence.NoteDao;
+import com.mybiblestudywebapp.persistence.UpdatableDao;
+import com.mybiblestudywebapp.persistence.model.Note;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,6 +29,9 @@ public class MainServiceTest {
 
     @Autowired
     private MainService mainService;
+
+    @Autowired
+    private NoteDao noteDao;
 
     @Rollback
     @Test
@@ -51,6 +57,7 @@ public class MainServiceTest {
         request.setIncreaseRanking(false);
         var result = mainService.rankNote(request);
         Assert.assertEquals(HttpStatus.OK, result.getStatusCode());
-        //Assert.assertEquals(1, result.getBody().);
+        Note note = noteDao.get(1).get();
+        Assert.assertTrue(note.getRanking() < 1);
     }
 }

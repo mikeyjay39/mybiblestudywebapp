@@ -2,6 +2,8 @@ package com.mybiblestudywebapp.integrationtests;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mybiblestudywebapp.dashboard.notes.AddNoteResponse;
+import com.mybiblestudywebapp.dashboard.notes.RankNoteRequest;
+import com.mybiblestudywebapp.dashboard.notes.RankNoteResponse;
 import com.mybiblestudywebapp.persistence.model.Note;
 import org.junit.Assert;
 import org.junit.Test;
@@ -32,6 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
 @Transactional
+@WithMockUser(username = "admin@admin.com", password = "12345", roles = "USER")
 public class NotesControllerTest {
 
     @Autowired
@@ -39,7 +42,6 @@ public class NotesControllerTest {
 
     @Test
     @Rollback
-    @WithMockUser(username = "admin@admin.com", password = "12345", roles = "USER")
     public void addNote() throws Exception {
         Note note = new Note();
         note.setNoteText("This is a unit test note");
@@ -62,5 +64,29 @@ public class NotesControllerTest {
         String response = result.getResponse().getContentAsString();
         AddNoteResponse responseNote = mapper.readValue(response, AddNoteResponse.class);
         Assert.assertTrue(responseNote.getNoteId() > 0);
+    }
+
+    @Rollback
+    @Test
+    public void rankNote() throws Exception {
+        RankNoteRequest request = new RankNoteRequest();
+        request.setNoteId(1);
+        request.setUserId(2);
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonRequest = mapper.writeValueAsString(request);
+
+        MvcResult mvcResult = mvc.perform(post("/notes/rank")
+                .with(csrf().asHeader())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonRequest))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        RankNoteResponse response = mapper.readValue(
+                mvcResult.getResponse().getContentAsString(),
+                RankNoteResponse.class
+        );
+
+        Assert.assertEquals("success", response.getResult());
     }
 }
