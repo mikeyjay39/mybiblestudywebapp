@@ -1,5 +1,7 @@
 package com.mybiblestudywebapp.persistence;
 
+import com.mybiblestudywebapp.dashboard.notes.RankNoteRequest;
+import com.mybiblestudywebapp.dashboard.notes.RankNoteResponse;
 import com.mybiblestudywebapp.persistence.model.Note;
 import com.mybiblestudywebapp.persistence.model.User;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -46,6 +48,14 @@ public interface DaoService {
      * @return noteId
      */
     CompletableFuture<Long> addNote(Note request) throws DaoServiceException;
+
+    /**
+     * Ranks a note. increaseRanking field should be set to true if we are increasing the ranking
+     * otherwise it decrements it.
+     * @param request
+     * @return
+     */
+    CompletableFuture<RankNoteResponse> rankNote(RankNoteRequest request) throws DaoServiceException;
 
     JdbcTemplate getJdbcTemplate();
     void setJdbcTemplate(JdbcTemplate jdbcTemplate);

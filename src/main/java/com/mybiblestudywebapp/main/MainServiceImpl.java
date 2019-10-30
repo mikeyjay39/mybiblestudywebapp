@@ -3,6 +3,8 @@ package com.mybiblestudywebapp.main;
 import com.mybiblestudywebapp.client.BibleStudyRequest;
 import com.mybiblestudywebapp.client.BibleStudyResponse;
 import com.mybiblestudywebapp.dashboard.notes.AddNoteResponse;
+import com.mybiblestudywebapp.dashboard.notes.RankNoteRequest;
+import com.mybiblestudywebapp.dashboard.notes.RankNoteResponse;
 import com.mybiblestudywebapp.getbible.GetBibleService;
 import com.mybiblestudywebapp.persistence.DaoService;
 import com.mybiblestudywebapp.persistence.DaoServiceException;
@@ -44,7 +46,6 @@ public class MainServiceImpl implements MainService {
      */
     @Override
     public ResponseEntity<Response> getChapterAndNotes(BibleStudyRequest request) {
-
         String viewCode = request.getViewCode();
         String book = request.getBook();
         int chapterNo = request.getChapterNo();
@@ -134,12 +135,33 @@ public class MainServiceImpl implements MainService {
     }
 
     /**
+     * {@inheritDoc}
+     * @param request
+     * @return
+     */
+    @Override
+    public ResponseEntity<Response> rankNote(RankNoteRequest request) {
+        RankNoteResponse response = new RankNoteResponse();
+        try {
+            var future = daoService.rankNote(request);
+            return ResponseEntity.status(HttpStatus.OK).body(future.get());
+        } catch (DaoServiceException e) {
+            return daoServiceExceptionHandler(e, response);
+        } catch (InterruptedException e) {
+            return interruptedExceptionHandler(e, e.getMessage(), response);
+        } catch (ExecutionException e) {
+            return executionExceptionHandler(e, e.getMessage(), response);
+        }
+    }
+
+    /**
      * Handler for DaoService Exceptions. Sets HTTP status to 400
      * @param e
      * @param response
      * @return
      */
     private ResponseEntity<Response> daoServiceExceptionHandler(DaoServiceException e, Response response) {
+        LOGGER.error(e.getMessage());
         response.getErrorResponse()
                 .setTitle(e.getClass().getName())
                 .setStatus(400)

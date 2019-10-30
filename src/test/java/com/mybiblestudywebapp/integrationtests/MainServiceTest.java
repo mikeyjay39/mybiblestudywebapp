@@ -1,8 +1,12 @@
 package com.mybiblestudywebapp.integrationtests;
 
+import com.mybiblestudywebapp.dashboard.notes.RankNoteRequest;
 import com.mybiblestudywebapp.dashboard.users.CreateUserRequest;
 import com.mybiblestudywebapp.dashboard.users.CreateUserResponse;
 import com.mybiblestudywebapp.main.MainService;
+import com.mybiblestudywebapp.persistence.NoteDao;
+import com.mybiblestudywebapp.persistence.UpdatableDao;
+import com.mybiblestudywebapp.persistence.model.Note;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,6 +30,9 @@ public class MainServiceTest {
     @Autowired
     private MainService mainService;
 
+    @Autowired
+    private NoteDao noteDao;
+
     @Rollback
     @Test
     public void createUserAccount() throws Exception {
@@ -39,5 +46,18 @@ public class MainServiceTest {
         CreateUserResponse body = (CreateUserResponse) result.getBody();
         Assert.assertEquals(HttpStatus.OK, result.getStatusCode());
         Assert.assertNotNull(body.getUserId());
+    }
+
+    @Rollback
+    @Test
+    public void rankNote() {
+        RankNoteRequest request = new RankNoteRequest();
+        request.setNoteId(1);
+        request.setUserId(2);
+        request.setIncreaseRanking(false);
+        var result = mainService.rankNote(request);
+        Assert.assertEquals(HttpStatus.OK, result.getStatusCode());
+        Note note = noteDao.get(1).get();
+        Assert.assertTrue(note.getRanking() < 1);
     }
 }
