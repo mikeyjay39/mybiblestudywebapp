@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -247,25 +248,32 @@ public class DaoServiceJdbcImpl implements DaoService {
                 "WHERE note_id = :noteId AND user_id = :userId";
         String updateNote = "UPDATE notes SET ranking = ranking + :rankingValue " +
                 "WHERE note_id = :noteId";
-        MapSqlParameterSource params = new MapSqlParameterSource()
+        SqlParameterSource params = new MapSqlParameterSource()
                 .addValue(NOTE_ID, request.getNoteId())
-                .addValue(USER_ID, request.getNoteId());
+                .addValue(USER_ID, request.getUserId())
+                .addValue("rankingValue", request.isIncreaseRanking() ? 1 : -1);
 
         // check if ranking already exists
         boolean exists = false;
-        ResultSet rs = namedParameterJdbcTemplate.query(checkRankingSql, params,
-                r -> r);
-        int currentRankingValue = 0;
+        Integer rankingValueResult = null;
+
         try {
-            rs.next();
-            if (rs.next()) {
-                currentRankingValue = rs.getInt("ranking_value");
-                exists = true;
-            }
-        } catch (SQLException e) {
-            throw new DaoServiceException(e);
+        rankingValueResult = namedParameterJdbcTemplate.queryForObject(checkRankingSql, params, Integer.class);
+        } catch (EmptyResultDataAccessException e) {
+        // no results
+        } catch (DataAccessException e) {
+            throw new DaoServiceException("No note retrieved for note_id: " + request.getNoteId() + " user_id: " +
+                    request.getUserId() + "\n" + e.getMessage());
         }
 
+        int currentRankingValue = 0;
+
+        if (rankingValueResult != null) {
+            currentRankingValue = rankingValueResult;
+            exists = true;
+        }
+
+        // check if already ranked positive or negative
         if (request.isIncreaseRanking()) {
             // increase ranking case
             if (currentRankingValue > 0) {
@@ -273,7 +281,6 @@ public class DaoServiceJdbcImpl implements DaoService {
                 response.setResult("Already ranked positive");
                 return CompletableFuture.completedFuture(response);
             }
-            params.addValue(RANKING_VALUE, 1);
         } else {
             // decrease ranking case
             if (currentRankingValue < 0) {
@@ -281,11 +288,10 @@ public class DaoServiceJdbcImpl implements DaoService {
                 response.setResult("Already ranked negative");
                 return CompletableFuture.completedFuture(response);
             }
-            params.addValue(RANKING_VALUE, -1);
         }
 
         if (exists) {
-            // already exists so update note and note_ranking with increment
+            // already exists so update note and note_ranking
             int rows = namedParameterJdbcTemplate.update(updateRankNote, params);
             if (rows < 1) {
                 String errMsg = "Could not update rank_note table for noteId " + request.getNoteId() + "\n";
@@ -293,7 +299,7 @@ public class DaoServiceJdbcImpl implements DaoService {
                 throw new DaoServiceException(errMsg);
             }
         } else {
-            // does not exist so insert into note_ranking and update note table with increment
+            // does not exist so insert into note_ranking and update note table
             int rows = namedParameterJdbcTemplate.update(insertRankNote, params);
             if (rows < 1) {
                 String errMsg = "Could not insert into rank_note table for noteId " + request.getNoteId() +

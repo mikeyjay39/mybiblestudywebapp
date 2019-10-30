@@ -161,6 +161,7 @@ public class MainServiceImpl implements MainService {
      * @return
      */
     private ResponseEntity<Response> daoServiceExceptionHandler(DaoServiceException e, Response response) {
+        LOGGER.error(e.getMessage());
         response.getErrorResponse()
                 .setTitle(e.getClass().getName())
                 .setStatus(400)

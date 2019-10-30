@@ -1,5 +1,6 @@
 package com.mybiblestudywebapp.integrationtests;
 
+import com.mybiblestudywebapp.dashboard.notes.RankNoteRequest;
 import com.mybiblestudywebapp.dashboard.users.CreateUserRequest;
 import com.mybiblestudywebapp.dashboard.users.CreateUserResponse;
 import com.mybiblestudywebapp.main.MainService;
@@ -39,5 +40,17 @@ public class MainServiceTest {
         CreateUserResponse body = (CreateUserResponse) result.getBody();
         Assert.assertEquals(HttpStatus.OK, result.getStatusCode());
         Assert.assertNotNull(body.getUserId());
+    }
+
+    @Rollback
+    @Test
+    public void rankNote() {
+        RankNoteRequest request = new RankNoteRequest();
+        request.setNoteId(1);
+        request.setUserId(2);
+        request.setIncreaseRanking(false);
+        var result = mainService.rankNote(request);
+        Assert.assertEquals(HttpStatus.OK, result.getStatusCode());
+        //Assert.assertEquals(1, result.getBody().);
     }
 }
