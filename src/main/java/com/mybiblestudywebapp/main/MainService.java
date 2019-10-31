@@ -6,6 +6,8 @@ import com.mybiblestudywebapp.dashboard.users.CreateUserRequest;
 import com.mybiblestudywebapp.persistence.model.Note;
 import org.springframework.http.ResponseEntity;
 
+import java.security.Principal;
+
 /**
  * Acts as a boss thread delegating requests to async worker services and packages responses into Response Entities
  * to return to the controllers.
@@ -45,5 +47,11 @@ public interface MainService {
      * @return
      */
     ResponseEntity<Response> rankNote(RankNoteRequest request);
+
+    /**
+     * Processes a login request. Will initialize a user session bean with the user_id
+     * @return
+     */
+    ResponseEntity<Response> login();
 
 }
