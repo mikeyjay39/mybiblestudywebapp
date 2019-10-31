@@ -8,6 +8,7 @@ import org.postgresql.ds.PGPoolingDataSource;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.support.EncodedResource;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.init.ScriptUtils;
 
 import javax.sql.DataSource;
@@ -32,12 +33,16 @@ public class DbConnectionTest {
     private static Connection livePostgresConnection;
     private static DataSource liveDataSource;
     private static String sqlDir = "/home/michael/Projects/mybiblestudywebapp/sql/";
+    private static JdbcTemplate jdbcTemplate;
 
     /*@BeforeClass
     public static void beforeClass() throws Exception {*/
     static {
         try {
+            // build embedded DB
             embeddedDataSource = buildEmbeddedDataBase();
+            jdbcTemplate = new JdbcTemplate(embeddedDataSource);
+
             Properties properties = new Properties();
             properties.setProperty("user", System.getenv("PSQLDBUSER"));
             properties.setProperty("password", System.getenv("PSQLDBPASS"));
@@ -151,6 +156,12 @@ public class DbConnectionTest {
     public static DataSource getLiveDataSource() {
         return liveDataSource;
     }
+
+    public static JdbcTemplate getJdbcTemplate() {
+        return jdbcTemplate;
+    }
 }
+
+
 
 

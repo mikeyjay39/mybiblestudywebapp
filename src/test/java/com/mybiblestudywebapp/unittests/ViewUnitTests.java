@@ -7,6 +7,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,13 +28,14 @@ public class ViewUnitTests {
     public ViewUnitTests() {
         JdbcTemplate jdbcTemplate = new JdbcTemplate();
         jdbcTemplate.setDataSource(DbConnectionTest.getEmbeddedPostgres());
-        viewDao = new ViewDao(jdbcTemplate);
+        viewDao = new ViewDao(jdbcTemplate, new NamedParameterJdbcTemplate(jdbcTemplate));
     }
 
     @Before
     public void setUp() throws Exception {
         view = null;
-        viewDao = new ViewDao(new JdbcTemplate(DbConnectionTest.rebuildEmbeddedDataBase()));
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(DbConnectionTest.rebuildEmbeddedDataBase());
+        viewDao = new ViewDao(jdbcTemplate, new NamedParameterJdbcTemplate(jdbcTemplate));
     }
 
     @After

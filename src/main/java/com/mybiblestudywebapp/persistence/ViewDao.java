@@ -33,19 +33,14 @@ public class ViewDao implements UpdatableDao<View> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ViewDao.class);
 
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @Autowired
-    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-
-    public ViewDao(){}
-
-    public ViewDao(JdbcTemplate jdbcTemplate) {
+    public ViewDao(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
+        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
     }
-
 
     /**
      * Creates a View in the DB
@@ -57,11 +52,9 @@ public class ViewDao implements UpdatableDao<View> {
         String sql = "INSERT INTO views (user_id, priv) " +
                 "VALUES (:userId, :priv)" +
                 "RETURNING view_id";
-
         SqlParameterSource params = new MapSqlParameterSource()
                 .addValue("userId", view.getUserId())
                 .addValue("priv", view.isPriv());
-
         long viewId = -1;
 
         try {
@@ -71,6 +64,7 @@ public class ViewDao implements UpdatableDao<View> {
                     "\n" + e.getMessage();
             LOGGER.info(errMsg);
         }
+
         return viewId;
     }
 

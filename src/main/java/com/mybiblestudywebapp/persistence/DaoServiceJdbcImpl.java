@@ -18,8 +18,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.IntStream;
@@ -55,29 +53,30 @@ public class DaoServiceJdbcImpl implements DaoService {
     private UpdatableDao viewDao;
 
     @Autowired
-    private JdbcTemplate jdbcTemplate;
-
-    @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @Autowired
     private PasswordEncoder encoder;
 
-    public DaoServiceJdbcImpl(){}
+    public DaoServiceJdbcImpl() {
+    }
 
     /**
      * Used for unit tests. Pass the JdbcTemplate with the embedded postgres datasource as the arg.
      * @param jdbcTemplate
+     * @param namedParameterJdbcTemplate
+     * @param encoder
      */
-    public DaoServiceJdbcImpl(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+    public DaoServiceJdbcImpl(JdbcTemplate jdbcTemplate,
+                              NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
         namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
-        bookDao = new BookDao(jdbcTemplate);
-        chapterDao = new ChapterDao(jdbcTemplate);
-        commentDao = new CommentDao(jdbcTemplate);
-        noteDao = new NoteDao(jdbcTemplate);
-        userDao = new UserDao(jdbcTemplate);
-        viewDao = new ViewDao(jdbcTemplate);
+        bookDao = new BookDao(jdbcTemplate, namedParameterJdbcTemplate);
+        chapterDao = new ChapterDao(jdbcTemplate, namedParameterJdbcTemplate);
+        commentDao = new CommentDao(namedParameterJdbcTemplate);
+        noteDao = new NoteDao(jdbcTemplate, namedParameterJdbcTemplate);
+        userDao = new UserDao(jdbcTemplate, namedParameterJdbcTemplate);
+        viewDao = new ViewDao(jdbcTemplate, namedParameterJdbcTemplate);
     }
 
 
@@ -319,21 +318,5 @@ public class DaoServiceJdbcImpl implements DaoService {
 
         response.setResult("success");
         return CompletableFuture.completedFuture(response);
-    }
-
-    public JdbcTemplate getJdbcTemplate() {
-        return jdbcTemplate;
-    }
-
-    public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
-
-    public NamedParameterJdbcTemplate getNamedParameterJdbcTemplate() {
-        return namedParameterJdbcTemplate;
-    }
-
-    public void setNamedParameterJdbcTemplate(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
-        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
     }
 }

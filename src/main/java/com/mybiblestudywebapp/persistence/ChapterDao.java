@@ -26,19 +26,16 @@ import java.util.TreeMap;
 @Component
 public class ChapterDao implements Dao<Chapter> {
 
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
-
-    @Autowired
-    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     private static final Logger logger = LoggerFactory.getLogger(ChapterDao.class);
 
-    public ChapterDao(){}
-
-    public ChapterDao(JdbcTemplate jdbcTemplate) {
+    @Autowired
+    public ChapterDao(JdbcTemplate jdbcTemplate,
+                      NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
+        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
     }
 
     @Override
@@ -153,8 +150,8 @@ public class ChapterDao implements Dao<Chapter> {
         args.put(65, 1);
         args.put(66, 22);
 
-
         long totalRows = 0;
+
         for (int i = 0; i < args.size(); i++) {
             int bookId = i + 1;
             int chapters = args.get(bookId);
@@ -166,6 +163,7 @@ public class ChapterDao implements Dao<Chapter> {
                 totalRows++;
             }
         }
+
         return totalRows;
     }
 

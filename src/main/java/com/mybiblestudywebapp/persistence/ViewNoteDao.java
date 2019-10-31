@@ -27,23 +27,18 @@ public class ViewNoteDao implements Dao<ViewNote> {
 
     private static final Logger logger = LoggerFactory.getLogger(ViewNoteDao.class);
 
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @Autowired
-    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-
-    public ViewNoteDao() {
-    }
-
-    public ViewNoteDao(JdbcTemplate jdbcTemplate) {
+    public ViewNoteDao(JdbcTemplate jdbcTemplate,
+                       NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
+        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
     }
 
     @Override
     public Optional<ViewNote> get(long id) {
-
         return Optional.empty();
     }
 

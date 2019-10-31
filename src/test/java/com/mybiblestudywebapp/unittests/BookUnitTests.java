@@ -7,6 +7,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,15 +19,16 @@ import java.util.Map;
  * <a href="mailto:michael@jeszenka.com">michael@jeszenka.com</a>
  * 10/15/19
  */
+@Transactional
+@Rollback
 public class BookUnitTests {
 
     private BookDao bookDao;
     private Book book;
 
     public BookUnitTests() {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate();
-        jdbcTemplate.setDataSource(DbConnectionTest.getEmbeddedPostgres());
-        bookDao = new BookDao(jdbcTemplate);
+        JdbcTemplate jdbcTemplate = DbConnectionTest.getJdbcTemplate();
+        bookDao = new BookDao(jdbcTemplate, new NamedParameterJdbcTemplate(jdbcTemplate));
     }
 
     @Before

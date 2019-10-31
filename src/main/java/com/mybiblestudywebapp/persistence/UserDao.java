@@ -32,25 +32,18 @@ public class UserDao implements UpdatableDao<User> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserDao.class);
 
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @Autowired
-    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-
-    public UserDao(){}
-
-    public UserDao(JdbcTemplate jdbcTemplate) {
-
+    public UserDao(JdbcTemplate jdbcTemplate,
+                   NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
+        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
     }
-
-
 
     @Override
     public Optional<User> get(long id) {
-
         String sql = "SELECT * FROM users WHERE user_id = ?";
         var result = jdbcTemplate.queryForList(sql, id);
         User user = null;
@@ -145,7 +138,6 @@ public class UserDao implements UpdatableDao<User> {
         String sql = "UPDATE users SET email = :email, " +
                 "firstname = :firstname, lastname = :lastname, password = :password, " +
                 "ranking = :ranking, created_at = :createdAt WHERE user_id = :userId";
-
         KeyHolder holder = new GeneratedKeyHolder();
         SqlParameterSource params = new MapSqlParameterSource()
                 .addValue(EMAIL, user.getEmail())
@@ -155,7 +147,6 @@ public class UserDao implements UpdatableDao<User> {
                 .addValue(PASSWORD, user.getPassword())
                 .addValue(RANKING, user.getRanking())
                 .addValue("createdAt", Timestamp.valueOf(user.getCreatedAt()));
-
         int rows = 0;
         rows = namedParameterJdbcTemplate.update(sql, params, holder);
         return rows > 0;
@@ -174,6 +165,7 @@ public class UserDao implements UpdatableDao<User> {
         stringBuilder.append("UPDATE users SET ");
         int columnsSize = columns.size();
         int i = 0;
+
         for (String column : columns) {
             stringBuilder.append(column + " = '" + params.get(column) + "'");
             i++;
@@ -223,5 +215,4 @@ public class UserDao implements UpdatableDao<User> {
         user.setCreatedAt(((Timestamp)sqlrow.get("created_at")).toLocalDateTime());
         return user;
     }
-
 }

@@ -5,7 +5,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -20,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static com.mybiblestudywebapp.main.Constants.*;
+import static com.mybiblestudywebapp.main.Constants.COMMENT_ID;
 
 /**
  * Created by Michael Jeszenka.
@@ -32,17 +31,11 @@ public class CommentDao implements UpdatableDao<Comment> {
 
     private final Logger logger = LoggerFactory.getLogger(CommentDao.class);
 
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @Autowired
-    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-
-    public CommentDao(){}
-
-    public CommentDao(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-        namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
+    public CommentDao(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
     }
 
     /**
@@ -58,8 +51,8 @@ public class CommentDao implements UpdatableDao<Comment> {
         SqlParameterSource params = new MapSqlParameterSource()
                 .addValue("userId", comment.getUserId())
                 .addValue("noteId", comment.getNoteId());
-
         long commentId = -1;
+
         try {
             commentId = namedParameterJdbcTemplate.queryForObject(sql, params, Long.class);
         } catch (DataAccessException e) {
@@ -67,6 +60,7 @@ public class CommentDao implements UpdatableDao<Comment> {
                     " note_id: " + comment.getNoteId() +
                     "\n" + e.getMessage());
         }
+
         return commentId;
     }
 
@@ -98,10 +92,8 @@ public class CommentDao implements UpdatableDao<Comment> {
         String sql = "DELETE FROM comments WHERE comment_id = :commentId";
         SqlParameterSource params = new MapSqlParameterSource()
                 .addValue(COMMENT_ID, comment.getCommentId());
-
-        int rows = 0;
+        int rows;
         rows = namedParameterJdbcTemplate.update(sql, params);
-
         return rows > 0;
     }
 
@@ -116,12 +108,14 @@ public class CommentDao implements UpdatableDao<Comment> {
         SqlParameterSource params = new MapSqlParameterSource()
                 .addValue(COMMENT_ID, id);
         Comment result = null;
+
         try {
             result = namedParameterJdbcTemplate.queryForObject(sql, params, CommentDao::mapRow);
         } catch (DataAccessException e) {
             String errMsg = "Could not get comment_id: " + id + "\n" + e.getMessage();
             logger.info(errMsg);
         }
+
         return Optional.ofNullable(result);
     }
 
@@ -135,6 +129,7 @@ public class CommentDao implements UpdatableDao<Comment> {
         String sql = "SELECT * FROM comments WHERE note_id = :noteId";
         SqlParameterSource params = new MapSqlParameterSource(args);
         List<Comment> result = null;
+
         try {
             result = namedParameterJdbcTemplate.query(sql, params, CommentDao::mapRow);
         } catch (DataAccessException e) {
@@ -142,6 +137,7 @@ public class CommentDao implements UpdatableDao<Comment> {
                     e.getMessage();
             logger.info(errMsg);
         }
+
         return Optional.ofNullable(result);
     }
 
