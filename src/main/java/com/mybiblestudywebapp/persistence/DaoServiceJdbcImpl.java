@@ -337,7 +337,7 @@ public class DaoServiceJdbcImpl implements DaoService {
         SqlParameterSource params = new MapSqlParameterSource()
                 .addValue("username", username);
         long userId = namedParameterJdbcTemplate.queryForObject(sql, params, Long.class);
-        userSession.setUserId(userId);
+        userSession.userId = (String.valueOf(userId));
         loginResponse.setUserId(userId);
         return loginResponse;
     }
