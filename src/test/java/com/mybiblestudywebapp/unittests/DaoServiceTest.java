@@ -9,6 +9,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import java.util.*;
 
@@ -23,8 +24,9 @@ public class DaoServiceTest {
     private DaoService daoService;
 
     public DaoServiceTest() {
-        jdbcTemplate = new JdbcTemplate(DbConnectionTest.getEmbeddedPostgres());
-        daoService = new DaoServiceJdbcImpl(jdbcTemplate);
+        jdbcTemplate = DbConnectionTest.getJdbcTemplate();
+        daoService = new DaoServiceJdbcImpl(jdbcTemplate,
+                new NamedParameterJdbcTemplate(jdbcTemplate));
     }
 
     @Before
@@ -45,7 +47,7 @@ public class DaoServiceTest {
         Assert.assertTrue(result > 0);
 
         // test that viewNote was added
-        Dao viewNoteDao = new ViewNoteDao(jdbcTemplate);
+        Dao viewNoteDao = new ViewNoteDao(jdbcTemplate, new NamedParameterJdbcTemplate(jdbcTemplate));
         var allViewNotes = viewNoteDao.getAll();
         Map<String, Object> args = new HashMap<>();
         args.put("viewId", 1l);
@@ -62,7 +64,7 @@ public class DaoServiceTest {
         long result = completedResult.get();
         Assert.assertTrue(result > 0);
 
-        Dao viewDao = new ViewDao(jdbcTemplate);
+        Dao viewDao = new ViewDao(jdbcTemplate, new NamedParameterJdbcTemplate(jdbcTemplate));
         View view = (View)viewDao.get(1).get();
 
         List<Note> notes = daoService.getStudyNotesForChapter(view.getViewCode(), "Genesis", 1).get();
@@ -70,7 +72,7 @@ public class DaoServiceTest {
     }
 
     private List<Long> createNotes() {
-        UpdatableDao noteDao = new NoteDao(jdbcTemplate);
+        UpdatableDao noteDao = new NoteDao(jdbcTemplate, new NamedParameterJdbcTemplate(jdbcTemplate));
         List<Long> result = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
             Note note = new Note();
@@ -90,7 +92,7 @@ public class DaoServiceTest {
     }
 
     private long createView() {
-        UpdatableDao viewDao = new ViewDao(jdbcTemplate);
+        UpdatableDao viewDao = new ViewDao(jdbcTemplate, new NamedParameterJdbcTemplate(jdbcTemplate));
         View view = new View();
         view.setUserId(1);
         view.setPriv(false);

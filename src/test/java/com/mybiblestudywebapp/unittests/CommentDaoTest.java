@@ -7,6 +7,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -20,14 +23,11 @@ public class CommentDaoTest {
     private Comment comment;
     private CommentDao commentDao;
 
-    public CommentDaoTest() {
-        commentDao = new CommentDao(new JdbcTemplate(DbConnectionTest.getEmbeddedPostgres()));
-    }
-
     @Before
     public void setUp() throws Exception {
         comment = null;
-        commentDao = new CommentDao(new JdbcTemplate(DbConnectionTest.rebuildEmbeddedDataBase()));
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(DbConnectionTest.rebuildEmbeddedDataBase());
+        commentDao = new CommentDao(new NamedParameterJdbcTemplate(jdbcTemplate));
     }
 
     @After
@@ -35,12 +35,16 @@ public class CommentDaoTest {
         comment = null;
     }
 
+    @Transactional
     @Test
+    @Rollback
     public void save() {
         save1();
     }
 
+    @Transactional
     @Test
+    @Rollback
     public void update() {
         comment = getComment();
         String newCommentField = "This is the new comment text";
@@ -49,11 +53,13 @@ public class CommentDaoTest {
         comment.setCommentText(newCommentField);
         boolean result = commentDao.update(comment);
         Assert.assertTrue(result);
-        Comment updatedComment = commentDao.get(1).get();
+        Comment updatedComment = commentDao.get(id).get();
         Assert.assertEquals(newCommentField, updatedComment.getCommentText());
     }
 
+    @Transactional
     @Test
+    @Rollback
     public void delete() {
         comment = commentDao.get(1).get();
         boolean result = commentDao.delete(comment);
@@ -63,11 +69,13 @@ public class CommentDaoTest {
     }
 
     @Test
+    @Rollback
     public void get() {
         getComment();
     }
 
     @Test
+    @Rollback
     public void getAll() {
     }
 

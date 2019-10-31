@@ -7,21 +7,25 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Created by Michael Jeszenka.
  * <a href="mailto:michael@jeszenka.com">michael@jeszenka.com</a>
  * 10/17/19
  */
+@Transactional
+@Rollback
 public class ChapterUnitTests {
 
     private Chapter chapter;
     private ChapterDao chapterDao;
 
     public ChapterUnitTests() {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate();
-        jdbcTemplate.setDataSource(DbConnectionTest.getEmbeddedPostgres());
-        chapterDao = new ChapterDao(jdbcTemplate);
+        JdbcTemplate jdbcTemplate = DbConnectionTest.getJdbcTemplate();
+        chapterDao = new ChapterDao(jdbcTemplate, new NamedParameterJdbcTemplate(jdbcTemplate));
     }
 
     @Before

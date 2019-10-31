@@ -7,6 +7,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import java.util.Optional;
 
@@ -23,7 +24,9 @@ public class NoteUnitTests {
     @Before
     public void setUp() throws Exception {
         note = null;
-        noteDao = new NoteDao(new JdbcTemplate(DbConnectionTest.rebuildEmbeddedDataBase()));
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(DbConnectionTest.rebuildEmbeddedDataBase());
+        noteDao = new NoteDao(jdbcTemplate,
+                new NamedParameterJdbcTemplate(jdbcTemplate));
     }
 
     @After
@@ -32,8 +35,9 @@ public class NoteUnitTests {
     }
 
     public NoteUnitTests() {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(DbConnectionTest.getEmbeddedPostgres());
-        noteDao = new NoteDao(jdbcTemplate);
+        //JdbcTemplate jdbcTemplate = new JdbcTemplate(DbConnectionTest.getEmbeddedPostgres());
+        noteDao = new NoteDao(DbConnectionTest.getJdbcTemplate(),
+                new NamedParameterJdbcTemplate(DbConnectionTest.getJdbcTemplate()));
     }
 
     @Test

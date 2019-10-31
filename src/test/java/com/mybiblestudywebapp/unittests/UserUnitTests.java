@@ -6,6 +6,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import java.util.*;
 
@@ -22,14 +23,16 @@ public class UserUnitTests {
 
     @Before
     public void setUp() throws Exception {
-        userDao = new UserDao(new JdbcTemplate(DbConnectionTest.rebuildEmbeddedDataBase()));
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(DbConnectionTest.rebuildEmbeddedDataBase());
+        userDao = new UserDao(jdbcTemplate,
+                new NamedParameterJdbcTemplate(jdbcTemplate));
     }
 
 
     public UserUnitTests() {
         JdbcTemplate jdbcTemplate = new JdbcTemplate();
         jdbcTemplate.setDataSource(DbConnectionTest.getEmbeddedPostgres());
-        userDao = new UserDao(jdbcTemplate);
+        userDao = new UserDao(jdbcTemplate, new NamedParameterJdbcTemplate(jdbcTemplate));
         user = createTestUser();
     }
 

@@ -4,8 +4,6 @@ import com.mybiblestudywebapp.dashboard.notes.RankNoteRequest;
 import com.mybiblestudywebapp.dashboard.notes.RankNoteResponse;
 import com.mybiblestudywebapp.persistence.model.Note;
 import com.mybiblestudywebapp.persistence.model.User;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -56,10 +54,5 @@ public interface DaoService {
      * @return
      */
     CompletableFuture<RankNoteResponse> rankNote(RankNoteRequest request) throws DaoServiceException;
-
-    JdbcTemplate getJdbcTemplate();
-    void setJdbcTemplate(JdbcTemplate jdbcTemplate);
-    NamedParameterJdbcTemplate getNamedParameterJdbcTemplate();
-    void setNamedParameterJdbcTemplate(NamedParameterJdbcTemplate namedParameterJdbcTemplate);
 
     }

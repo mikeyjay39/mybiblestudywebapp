@@ -36,17 +36,13 @@ public class NoteDao implements UpdatableDao<Note> {
 
     private static final Logger logger = LoggerFactory.getLogger(NoteDao.class);
 
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @Autowired
-    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-
-    public NoteDao(){}
-
-    public NoteDao(JdbcTemplate jdbcTemplate) {
+    public NoteDao(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate.getDataSource());
+        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
     }
 
     /**

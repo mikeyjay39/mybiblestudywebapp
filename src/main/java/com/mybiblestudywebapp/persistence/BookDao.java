@@ -31,17 +31,14 @@ public class BookDao implements Dao<Book> {
 
     private static final Logger logger = LoggerFactory.getLogger(BookDao.class);
 
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @Autowired
-    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-
-    public BookDao(){}
-
-    public BookDao(JdbcTemplate jdbcTemplate) {
+    public BookDao(JdbcTemplate jdbcTemplate,
+                   NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
+        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
     }
 
     @Override
@@ -88,9 +85,11 @@ public class BookDao implements Dao<Book> {
      * @return
      */
     private Book buildBook(Map<String, Object> row) {
+
         if (row == null) {
             return null;
         }
+
         Book book = new Book();
         book.setBookId((long)row.get("book_id"));
         book.setTestament((Testament.valueOf((String)row.get("testament"))));
