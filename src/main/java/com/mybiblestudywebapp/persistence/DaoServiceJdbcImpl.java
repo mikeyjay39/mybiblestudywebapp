@@ -2,6 +2,9 @@ package com.mybiblestudywebapp.persistence;
 
 import com.mybiblestudywebapp.dashboard.notes.RankNoteRequest;
 import com.mybiblestudywebapp.dashboard.notes.RankNoteResponse;
+import com.mybiblestudywebapp.dashboard.users.LoginResponse;
+import com.mybiblestudywebapp.dashboard.users.UserSession;
+import com.mybiblestudywebapp.main.Response;
 import com.mybiblestudywebapp.persistence.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,6 +61,9 @@ public class DaoServiceJdbcImpl implements DaoService {
     @Autowired
     private PasswordEncoder encoder;
 
+    @Autowired
+    private UserSession userSession;
+
     public DaoServiceJdbcImpl() {
     }
 
@@ -65,7 +71,6 @@ public class DaoServiceJdbcImpl implements DaoService {
      * Used for unit tests. Pass the JdbcTemplate with the embedded postgres datasource as the arg.
      * @param jdbcTemplate
      * @param namedParameterJdbcTemplate
-     * @param encoder
      */
     public DaoServiceJdbcImpl(JdbcTemplate jdbcTemplate,
                               NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
@@ -318,5 +323,22 @@ public class DaoServiceJdbcImpl implements DaoService {
 
         response.setResult("success");
         return CompletableFuture.completedFuture(response);
+    }
+
+    /**
+     * {@inheritDoc}
+     * @param username
+     * @return
+     */
+    @Override
+    public Response login(String username) {
+        LoginResponse loginResponse = new LoginResponse();
+        String sql = "SELECT user_id FROM users WHERE email = :username";
+        SqlParameterSource params = new MapSqlParameterSource()
+                .addValue("username", username);
+        long userId = namedParameterJdbcTemplate.queryForObject(sql, params, Long.class);
+        userSession.userId = (String.valueOf(userId));
+        loginResponse.setUserId(userId);
+        return loginResponse;
     }
 }

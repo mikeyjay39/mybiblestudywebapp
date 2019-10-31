@@ -223,6 +223,30 @@ function createUser() {
     });
 }
 
+function login() {
+    var apiEndPoint = "http://localhost:8080/login";
+    $.ajax({
+        url: apiEndPoint,
+        type: "GET",
+        datatype: "application/json; charset=utf-8",
+        beforeSend: function (xhr){
+            xhr.setRequestHeader("Authorization", "Basic " + btoa("admin@admin.com:12345"));
+        },
+        success: function (data, status) {
+            var userId = data.userId;
+
+        },
+        error: function (xhr, ajaxOptions, thrownError) { //Add these parameters to display the required response
+            alert(xhr.status);
+            alert(xhr.responseText);
+        },
+        xhrFields: {
+            withCredentials: true
+        },
+        crossDomain: true
+    });
+}
+
 function getCsrf() {
     return getCookie('XSRF-TOKEN');
 }

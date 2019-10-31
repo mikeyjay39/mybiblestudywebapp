@@ -2,6 +2,7 @@ package com.mybiblestudywebapp.persistence;
 
 import com.mybiblestudywebapp.dashboard.notes.RankNoteRequest;
 import com.mybiblestudywebapp.dashboard.notes.RankNoteResponse;
+import com.mybiblestudywebapp.main.Response;
 import com.mybiblestudywebapp.persistence.model.Note;
 import com.mybiblestudywebapp.persistence.model.User;
 
@@ -55,4 +56,5 @@ public interface DaoService {
      */
     CompletableFuture<RankNoteResponse> rankNote(RankNoteRequest request) throws DaoServiceException;
 
-    }
+    Response login(String username);
+}
