@@ -11,6 +11,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -87,6 +88,7 @@ public class CommentDao implements UpdatableDao<Comment> {
      * @param comment
      * @return
      */
+    @Transactional
     @Override
     public boolean delete(Comment comment) {
         String sql = "DELETE FROM comments WHERE comment_id = :commentId";

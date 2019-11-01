@@ -31,13 +31,6 @@ public class ViewUnitTests {
         viewDao = new ViewDao(jdbcTemplate, new NamedParameterJdbcTemplate(jdbcTemplate));
     }
 
-    @Before
-    public void setUp() throws Exception {
-        view = null;
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(DbConnectionTest.rebuildEmbeddedDataBase());
-        viewDao = new ViewDao(jdbcTemplate, new NamedParameterJdbcTemplate(jdbcTemplate));
-    }
-
     @After
     public void tearDown() {
         view = null;
@@ -53,7 +46,7 @@ public class ViewUnitTests {
         view = addViewAndGet();
         view.setPriv(true);
         viewDao.update(view);
-        View newView = viewDao.get(1).get();
+        View newView = viewDao.get(view.getViewId()).get();
         Assert.assertTrue(newView.isPriv());
     }
 
@@ -62,7 +55,7 @@ public class ViewUnitTests {
         view = addViewAndGet();
         boolean result = viewDao.delete(view);
         Assert.assertTrue(result);
-        var returnedView = viewDao.get(1);
+        var returnedView = viewDao.get(view.getViewId());
         Assert.assertTrue(returnedView.isEmpty());
     }
 
@@ -89,7 +82,7 @@ public class ViewUnitTests {
         view.setPriv(false);
         long result = viewDao.save(view);
         Assert.assertTrue(result > -1);
-        Optional<View> optionalView = viewDao.get(1);
+        Optional<View> optionalView = viewDao.get(result);
         View newView = optionalView.get();
         Assert.assertNotNull(newView.getViewCode());
         return newView;

@@ -108,6 +108,7 @@ public class NoteDao implements UpdatableDao<Note> {
         return rows > 0;
     }
 
+    @Transactional
     @Override
     public boolean delete(Note note) {
         String sql = "DELETE FROM notes WHERE note_id = :noteId";

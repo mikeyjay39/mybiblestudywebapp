@@ -18,16 +18,15 @@ import java.util.Optional;
  * <a href="mailto:michael@jeszenka.com">michael@jeszenka.com</a>
  * 10/18/19
  */
+@Transactional
+@Rollback
 public class CommentDaoTest {
 
     private Comment comment;
     private CommentDao commentDao;
 
-    @Before
-    public void setUp() throws Exception {
-        comment = null;
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(DbConnectionTest.rebuildEmbeddedDataBase());
-        commentDao = new CommentDao(new NamedParameterJdbcTemplate(jdbcTemplate));
+    public CommentDaoTest() {
+        commentDao = new CommentDao(new NamedParameterJdbcTemplate(DbConnectionTest.getJdbcTemplate()));
     }
 
     @After
@@ -35,16 +34,12 @@ public class CommentDaoTest {
         comment = null;
     }
 
-    @Transactional
     @Test
-    @Rollback
     public void save() {
         save1();
     }
 
-    @Transactional
     @Test
-    @Rollback
     public void update() {
         comment = getComment();
         String newCommentField = "This is the new comment text";
@@ -57,9 +52,7 @@ public class CommentDaoTest {
         Assert.assertEquals(newCommentField, updatedComment.getCommentText());
     }
 
-    @Transactional
     @Test
-    @Rollback
     public void delete() {
         comment = commentDao.get(1).get();
         boolean result = commentDao.delete(comment);
@@ -69,13 +62,11 @@ public class CommentDaoTest {
     }
 
     @Test
-    @Rollback
     public void get() {
         getComment();
     }
 
     @Test
-    @Rollback
     public void getAll() {
     }
 
@@ -89,9 +80,10 @@ public class CommentDaoTest {
     }
 
     private Comment getComment() {
-        comment = commentDao.get(1).orElse(null);
+        long commentId = save1();
+        comment = commentDao.get(commentId).orElse(null);
         Assert.assertNotNull(comment);
-        Assert.assertEquals(2, comment.getUserId());
+        Assert.assertEquals(1, comment.getUserId());
         return comment;
     }
 }

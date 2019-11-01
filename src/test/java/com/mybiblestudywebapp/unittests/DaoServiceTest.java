@@ -29,16 +29,7 @@ public class DaoServiceTest {
                 new NamedParameterJdbcTemplate(jdbcTemplate));
     }
 
-    @Before
-    public void setUp() throws Exception {
-    }
-
-    @After
-    public void tearDown() throws Exception {
-    }
-
-
-    @Test
+        @Test
     public void addUserNotesToView() throws Exception {
         List<Long> noteIds = createNotes();
         long viewId = createView();

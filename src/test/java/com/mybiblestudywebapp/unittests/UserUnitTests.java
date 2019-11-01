@@ -7,7 +7,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 
 /**
@@ -15,19 +19,14 @@ import java.util.*;
  * <a href="mailto:michael@jeszenka.com">michael@jeszenka.com</a>
  * 2019. 10. 14.
  */
+@Transactional
+@Rollback
 public class UserUnitTests {
 
     private UserDao userDao;
     private User user;
     private Map<String, Object> args = new HashMap<>();
-
-    @Before
-    public void setUp() throws Exception {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(DbConnectionTest.rebuildEmbeddedDataBase());
-        userDao = new UserDao(jdbcTemplate,
-                new NamedParameterJdbcTemplate(jdbcTemplate));
-    }
-
+    private static long serial = 0;
 
     public UserUnitTests() {
         JdbcTemplate jdbcTemplate = new JdbcTemplate();
@@ -115,7 +114,7 @@ public class UserUnitTests {
 
         for (int i = 0; i < 3; i++) {
             User user = new User();
-            user.setEmail("test_" + i + "@gmail.com");
+            user.setEmail("testing_" + (++serial) + "@gmail.com");
             user.setFirstname("Han" + i);
             user.setLastname("Solo" + i);
             user.setPassword("HASH" + (i + i * i - i));
@@ -128,7 +127,7 @@ public class UserUnitTests {
 
     private User createTestUser() {
         User user = new User();
-        user.setEmail("test@gmail.com");
+        user.setEmail("testing_" + (++serial) + "@gmail.com");
         user.setFirstname("Han");
         user.setLastname("Solo");
         user.setPassword("12345");
