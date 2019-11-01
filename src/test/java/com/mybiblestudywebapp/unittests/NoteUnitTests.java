@@ -11,6 +11,9 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -58,6 +61,16 @@ public class NoteUnitTests {
         Assert.assertTrue(result);
         Optional<Note> retrievedNote = noteDao.get(noteId);
         Assert.assertTrue(retrievedNote.isEmpty());
+    }
+
+    @Test
+    public void getNotesAboveRanking() {
+        note = saveAndGet();
+        Map<String, Object> args = new HashMap<>();
+        args.put("ranking", -1);
+        List<Note> retrievedNotes = noteDao.get(args).get();
+        Assert.assertNotNull(retrievedNotes);
+        Assert.assertTrue(!retrievedNotes.isEmpty());
     }
 
     private Note saveAndGet() {
