@@ -89,7 +89,7 @@ function testGet() {
 
             // iterate through notes
             for (var i = 0; i < notes.length; i++) {
-                noteOutput += "<strong>v" + notes[i].verse + "</strong>: " + notes[i].note + "</br>";
+                noteOutput += "<strong>v" + notes[i].verse + "</strong>: " + notes[i].noteText + "</br>";
             }
 
             if (notes.length <= 0) {
@@ -165,7 +165,7 @@ function test() {
 
             // iterate through notes
             for (var i = 0; i < notes.length; i++) {
-                noteOutput += "<strong>v" + notes[i].verse + "</strong>: " + notes[i].note + "</br>";
+                noteOutput += "<strong>v" + notes[i].verse + "</strong>: " + notes[i].noteText + "</br>";
             }
 
             if (notes.length <= 0) {
