@@ -33,7 +33,9 @@ import static com.mybiblestudywebapp.main.Constants.*;
  * Used to determine which case to get used in get() with Map argument
  */
 enum GetNotesCase {
-    GET_CHAPTER_NOTES_FROM_VIEW, GET_ALL_NOTES_ABOVE_RANK
+    CHAPTER_NOTES_FROM_VIEW,
+    ALL_NOTES_ABOVE_RANK,
+    ALL_NOTES_FROM_AUTHOR
 }
 
 @Component
@@ -135,7 +137,9 @@ public class NoteDao implements UpdatableDao<Note> {
 
     /**
      * Get all notes in a chapter based on a key
-     * @param args keys can be: viewId + chapterId or ranking
+     * @param args keys can be: viewId + chapterId <br>
+     *             or ranking <br>
+     *             or userId + [priv] (priv is optional) <br>
      * @return
      */
     @Override
@@ -147,10 +151,12 @@ public class NoteDao implements UpdatableDao<Note> {
         }
 
         switch (getNotesCase) {
-            case GET_CHAPTER_NOTES_FROM_VIEW:
+            case CHAPTER_NOTES_FROM_VIEW:
                 return getChapterNotesFromView(args);
-            case GET_ALL_NOTES_ABOVE_RANK:
+            case ALL_NOTES_ABOVE_RANK:
                 return getAllNotesAboveRank(args);
+            case ALL_NOTES_FROM_AUTHOR:
+                return getAllNotesFromAuthor(args);
             default:
                 break;
         }
@@ -205,10 +211,17 @@ public class NoteDao implements UpdatableDao<Note> {
         List<String> notesRankingKeys = new ArrayList<>();
         notesRankingKeys.add(RANKING);
 
+        // Build get notes from author check
+        List<String> notesFromAuthor = new ArrayList<>();
+        notesFromAuthor.add(USER_ID);
+
+        // Build get public notes from author
         if (keys.containsAll(notesViewKeys)) {
-            result = GetNotesCase.GET_CHAPTER_NOTES_FROM_VIEW;
+            result = GetNotesCase.CHAPTER_NOTES_FROM_VIEW;
         } else if (keys.containsAll(notesRankingKeys)) {
-            result = GetNotesCase.GET_ALL_NOTES_ABOVE_RANK;
+            result = GetNotesCase.ALL_NOTES_ABOVE_RANK;
+        } else if (keys.containsAll(notesFromAuthor)) {
+            result = GetNotesCase.ALL_NOTES_FROM_AUTHOR;
         }
 
         return result;
@@ -260,4 +273,32 @@ public class NoteDao implements UpdatableDao<Note> {
 
         return Optional.ofNullable(result);
     }
+
+    /**
+     * Get all the public notes from a user
+     * @param args must contain userId key. Can have optional key of 'priv' to specify if
+     *             it should be public or private.
+     * @return
+     */
+    private Optional<List<Note>> getAllNotesFromAuthor(final Map<String, Object> args) {
+        List<Note> result = null;
+        StringBuilder sqlBuilder = new StringBuilder("SELECT * FROM notes WHERE user_id = :userID");
+
+        if (args.keySet().contains("priv")) {
+            sqlBuilder.append(" AND priv = :priv");
+        }
+
+        String sql = sqlBuilder.toString();
+        SqlParameterSource params = new MapSqlParameterSource(args);
+
+        try {
+            result = namedParameterJdbcTemplate.query(sql, params, NoteDao::mapRow);
+        } catch (DataAccessException e) {
+            String errMsg = "Could not retrieve notes for user_id: " + args.get("userId") + "\n" + e.getMessage();
+            LOGGER.error(errMsg);
+        }
+
+        return Optional.ofNullable(result);
+    }
+
 }
