@@ -15,7 +15,8 @@ public class Note {
     private long userId;
     private long bookId;
     private long chapterId;
-    private int verse;
+    private int verseStart;
+    private int verseEnd;
     private int ranking;
     private boolean priv;
     private String lang;
@@ -75,12 +76,20 @@ public class Note {
         this.chapterId = chapterId;
     }
 
-    public int getVerse() {
-        return verse;
+    public int getVerseStart() {
+        return verseStart;
     }
 
-    public void setVerse(int verse) {
-        this.verse = verse;
+    public void setVerseStart(int verseStart) {
+        this.verseStart = verseStart;
+    }
+
+    public int getVerseEnd() {
+        return verseEnd;
+    }
+
+    public void setVerseEnd(int verseEnd) {
+        this.verseEnd = verseEnd;
     }
 
     public int getRanking() {

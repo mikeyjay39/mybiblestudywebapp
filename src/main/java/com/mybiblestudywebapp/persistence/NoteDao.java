@@ -58,8 +58,8 @@ public class NoteDao implements UpdatableDao<Note> {
     @Override
     @Transactional
     public long save(Note note) {
-        String sql = "INSERT INTO notes (note, user_id, book_id, chapter_id, verse, priv, lang) " +
-                "VALUES (:note, :userId, :bookId, :chapterId, :verse, :priv, :lang) " +
+        String sql = "INSERT INTO notes (note, user_id, book_id, chapter_id, verse_start, priv, lang) " +
+                "VALUES (:note, :userId, :bookId, :chapterId, :verseStart, :priv, :lang) " +
                 "RETURNING note_id";
         Long noteId = null;
 
@@ -68,7 +68,7 @@ public class NoteDao implements UpdatableDao<Note> {
                 .addValue("userId", note.getUserId())
                 .addValue("bookId", note.getBookId())
                 .addValue(CHAPTER_ID, note.getChapterId())
-                .addValue(VERSE, note.getVerse())
+                .addValue(VERSE_START, note.getVerseStart())
                 .addValue("priv", note.isPriv())
                 .addValue("lang", note.getLang());
 
@@ -77,7 +77,7 @@ public class NoteDao implements UpdatableDao<Note> {
         } catch (DataAccessException e) {
             String errMsg = "Could note add note for user_id: " + note.getUserId() +
                     " book_id: " + note.getBookId() + " chapter_id: " + note.getChapterId() +
-                    " verse: " + note.getVerse() + "\n" + e.getMessage();
+                    " verse: " + note.getVerseStart() + "\n" + e.getMessage();
             LOGGER.error(errMsg);
         }
 
@@ -88,7 +88,7 @@ public class NoteDao implements UpdatableDao<Note> {
     public boolean update(Note note) {
         note.setLastModified(LocalDateTime.now());
         String sql = "UPDATE notes SET note = :note, book_id = :bookId, chapter_id = :chapterId," +
-                "verse = :verse, priv = :priv, lang = :lang, last_modified = :lastModified " +
+                "verse_start = :verseStart, priv = :priv, lang = :lang, last_modified = :lastModified " +
                 "WHERE note_id = :noteId";
 
         KeyHolder holder = new GeneratedKeyHolder();
@@ -97,7 +97,7 @@ public class NoteDao implements UpdatableDao<Note> {
                 .addValue("note", note.getNoteText())
                 .addValue("bookId", note.getBookId())
                 .addValue(CHAPTER_ID, note.getChapterId())
-                .addValue(VERSE, note.getVerse())
+                .addValue(VERSE_START, note.getVerseStart())
                 .addValue("priv", note.isPriv())
                 .addValue("lang", note.getLang())
                 .addValue("lastModified", Timestamp.valueOf(note.getLastModified()));
@@ -170,7 +170,8 @@ public class NoteDao implements UpdatableDao<Note> {
         note.setUserId(rs.getInt("user_id"));
         note.setBookId(rs.getInt("book_id"));
         note.setChapterId(rs.getInt("chapter_id"));
-        note.setVerse(rs.getInt(VERSE));
+        note.setVerseStart(rs.getInt("verse_start"));
+        note.setVerseEnd(rs.getInt("verse_end"));
         note.setRanking(rs.getInt("ranking"));
         note.setPriv(rs.getBoolean("priv"));
         note.setNoteText(rs.getString("note"));

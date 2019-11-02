@@ -58,7 +58,7 @@ public class DaoServiceTest {
         Dao viewDao = new ViewDao(jdbcTemplate, new NamedParameterJdbcTemplate(jdbcTemplate));
         View view = (View)viewDao.get(1).get();
 
-        List<Note> notes = daoService.getStudyNotesForChapter(view.getViewCode(), "Genesis", 1).get();
+        List<Note> notes = daoService.getStudyNotesForChapter(view.getViewCode(), "Genesis", 2).get();
         Assert.assertTrue(notes.size() > 0);
     }
 
@@ -69,8 +69,8 @@ public class DaoServiceTest {
             Note note = new Note();
             note.setUserId(1);
             note.setBookId(1);
-            note.setChapterId(1);
-            //note.setVerse(1);
+            note.setChapterId(2);
+            note.setVerseStart(i);
             note.setPriv(false);
             note.setLang("en");
             note.setNoteText("this is note #" + i);

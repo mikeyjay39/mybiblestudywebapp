@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -21,6 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.BatchUpdateException;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.IntStream;
@@ -96,7 +98,10 @@ public class DaoServiceJdbcImpl implements DaoService {
     @Transactional
     @Async
     public CompletableFuture<Long> addUserNotesToView(long userId, long viewId) {
-        String sql = "SELECT * FROM notes WHERE user_id = :userId AND priv = false";
+        String sql = "SELECT * FROM notes WHERE user_id = :userId AND priv = false " +
+                "AND NOT EXISTS (" +
+                " SELECT * FROM view_note AS vn " +
+                "WHERE vn.view_id = :viewId AND vn.note_id = notes.note_id)";
         SqlParameterSource params = new MapSqlParameterSource()
                 .addValue("userId", userId)
                 .addValue("viewId", viewId);
@@ -124,9 +129,16 @@ public class DaoServiceJdbcImpl implements DaoService {
                 "VALUES (:viewId, :noteId)";
 
         SqlParameterSource[] batch = SqlParameterSourceUtils.createBatch(viewNotes.toArray());
-        int[] updateCounts = namedParameterJdbcTemplate.batchUpdate(sqlInsert, batch);
+        int[] updateCounts = null;
 
-        int total = IntStream.of(updateCounts).reduce(0, (a, b) -> a + b);
+        try {
+            updateCounts = namedParameterJdbcTemplate.batchUpdate(sqlInsert, batch);
+        } catch (DuplicateKeyException e) {
+            logger.error(e.getMessage());
+        }
+
+        int total = IntStream.of(updateCounts == null ? new int[]{0} : updateCounts)
+                .reduce(0, (a, b) -> a + b);
 
         return CompletableFuture.completedFuture((long)total);
     }
