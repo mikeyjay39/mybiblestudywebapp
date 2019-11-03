@@ -225,16 +225,19 @@ function createUser() {
 
 function login() {
     var apiEndPoint = "http://localhost:8080/login";
+    var email = $("#emailLoginField").val();
+    var pass = $("#passwordField").val();
     $.ajax({
         url: apiEndPoint,
         type: "GET",
         datatype: "application/json; charset=utf-8",
         beforeSend: function (xhr){
-            xhr.setRequestHeader("Authorization", "Basic " + btoa("admin@admin.com:12345"));
+            xhr.setRequestHeader("Authorization", "Basic " + btoa(email + ":" + pass));
+            //xhr.setRequestHeader("Authorization", "Basic " + btoa("admin@admin.com:12345"));
         },
         success: function (data, status) {
             var userId = data.userId;
-
+            successfulLogin();
         },
         error: function (xhr, ajaxOptions, thrownError) { //Add these parameters to display the required response
             alert(xhr.status);
@@ -280,4 +283,49 @@ function getCookie(cname) {
         }
     }
     return "";
+}
+
+/**
+ * Use to hide all body elements. Will not hide the sub navbar
+ */
+function hideAllBody() {
+    $("#loginDiv").hide();
+    $("#getChapterForm").hide();
+    $("#verses").hide();
+    $("#notes").hide();
+}
+
+/**
+ * Hides sub navbar and all body elements
+ */
+function hideAll() {
+    $("#secondaryNavbar").hide();
+    hideAllBody();
+}
+
+/**
+ * Used to show the login form
+ */
+function showLoginForm() {
+    hideAll();
+    $("#loginDiv").show();
+}
+
+/**
+ * Call this after successfully logging in
+ */
+function successfulLogin() {
+    hideAll();
+    $("#secondaryNavbar").show();
+    $("#login").text("Logout");
+    $("#login").attr("onclick","logoutHandler()");
+}
+
+/**
+ * Call this after logging out or received an unauthorized response from server
+ */
+function logoutHandler() {
+    showLoginForm();
+    $("#login").text("Login");
+    $("#login").attr("onclick","showLoginForm()");
 }
