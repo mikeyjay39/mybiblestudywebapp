@@ -5,7 +5,6 @@ import com.mybiblestudywebapp.dashboard.notes.RankNoteResponse;
 import com.mybiblestudywebapp.main.Response;
 import com.mybiblestudywebapp.persistence.model.Note;
 import com.mybiblestudywebapp.persistence.model.User;
-import com.mybiblestudywebapp.persistence.model.View;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -61,9 +60,8 @@ public interface DaoService {
 
     /**
      * Creates a new view to hold notes. Gets the request from MainService and forwards it to the ViewDao
-     * @param view
      * @return
      */
-    CompletableFuture<Long> addView(View view) throws DaoServiceException;
+    CompletableFuture<Long> addView() throws DaoServiceException;
 
 }

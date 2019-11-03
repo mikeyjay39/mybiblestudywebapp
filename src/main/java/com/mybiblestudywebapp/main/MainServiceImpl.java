@@ -18,7 +18,6 @@ import java.util.concurrent.ExecutionException;
 
 import com.mybiblestudywebapp.dashboard.users.CreateUserRequest;
 import com.mybiblestudywebapp.dashboard.users.CreateUserResponse;
-import com.mybiblestudywebapp.persistence.model.View;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -173,15 +172,14 @@ public class MainServiceImpl implements MainService {
 
     /**
      * {@inheritDoc}
-     * @param view to add
      * @return
      */
     @Override
-    public ResponseEntity<Response> addView(View view) {
+    public ResponseEntity<Response> addView() {
         AddViewResponse response = new AddViewResponse();
 
         try {
-            var future = daoService.addView(view);
+            var future = daoService.addView();
             response.setViewId(future.get());
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (DaoServiceException e) {

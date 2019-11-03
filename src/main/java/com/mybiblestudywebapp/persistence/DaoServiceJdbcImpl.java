@@ -22,7 +22,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.BatchUpdateException;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.IntStream;
@@ -356,13 +355,13 @@ public class DaoServiceJdbcImpl implements DaoService {
 
     /**
      * {@inheritDoc}
-     * @param view
      * @return
      */
     @Override
     @Async
     @Transactional
-    public CompletableFuture<Long> addView(View view) throws DaoServiceException {
+    public CompletableFuture<Long> addView() throws DaoServiceException {
+        View view = new View();
         view.setUserId(userSession.userId);
         long viewId = viewDao.save(view);
 
