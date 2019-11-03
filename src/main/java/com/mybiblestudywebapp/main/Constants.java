@@ -27,7 +27,9 @@ public class Constants {
 
     public static final String NOTE_ID = "noteId";
 
-    public static final String VERSE = "verse";
+    public static final String VERSE_START = "verseStart";
+
+    public static final String VERSE_END = "verseEnd";
 
     public static final String VIEW_ID = "viewId";
 

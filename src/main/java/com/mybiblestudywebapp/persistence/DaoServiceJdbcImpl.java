@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -96,7 +97,10 @@ public class DaoServiceJdbcImpl implements DaoService {
     @Transactional
     @Async
     public CompletableFuture<Long> addUserNotesToView(long userId, long viewId) {
-        String sql = "SELECT * FROM notes WHERE user_id = :userId AND priv = false";
+        String sql = "SELECT * FROM notes WHERE user_id = :userId AND priv = false " +
+                "AND NOT EXISTS (" +
+                " SELECT * FROM view_note AS vn " +
+                "WHERE vn.view_id = :viewId AND vn.note_id = notes.note_id)";
         SqlParameterSource params = new MapSqlParameterSource()
                 .addValue("userId", userId)
                 .addValue("viewId", viewId);
@@ -124,9 +128,16 @@ public class DaoServiceJdbcImpl implements DaoService {
                 "VALUES (:viewId, :noteId)";
 
         SqlParameterSource[] batch = SqlParameterSourceUtils.createBatch(viewNotes.toArray());
-        int[] updateCounts = namedParameterJdbcTemplate.batchUpdate(sqlInsert, batch);
+        int[] updateCounts = null;
 
-        int total = IntStream.of(updateCounts).reduce(0, (a, b) -> a + b);
+        try {
+            updateCounts = namedParameterJdbcTemplate.batchUpdate(sqlInsert, batch);
+        } catch (DuplicateKeyException e) {
+            logger.error(e.getMessage());
+        }
+
+        int total = IntStream.of(updateCounts == null ? new int[]{0} : updateCounts)
+                .reduce(0, (a, b) -> a + b);
 
         return CompletableFuture.completedFuture((long)total);
     }
@@ -340,5 +351,24 @@ public class DaoServiceJdbcImpl implements DaoService {
         userSession.userId = userId;
         loginResponse.setUserId(userId);
         return loginResponse;
+    }
+
+    /**
+     * {@inheritDoc}
+     * @return
+     */
+    @Override
+    @Async
+    @Transactional
+    public CompletableFuture<Long> addView() throws DaoServiceException {
+        View view = new View();
+        view.setUserId(userSession.userId);
+        long viewId = viewDao.save(view);
+
+        if (viewId < 0) {
+            throw new DaoServiceException("Could not add new view for user_id: " + userSession.userId);
+        }
+
+        return CompletableFuture.completedFuture(viewId);
     }
 }

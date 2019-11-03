@@ -8,7 +8,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -16,18 +21,11 @@ import java.util.Optional;
  * <a href="mailto:michael@jeszenka.com">michael@jeszenka.com</a>
  * 10/17/19
  */
+@Transactional
 public class NoteUnitTests {
 
     private Note note;
     private NoteDao noteDao;
-
-    @Before
-    public void setUp() throws Exception {
-        note = null;
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(DbConnectionTest.rebuildEmbeddedDataBase());
-        noteDao = new NoteDao(jdbcTemplate,
-                new NamedParameterJdbcTemplate(jdbcTemplate));
-    }
 
     @After
     public void tearDown() {
@@ -35,7 +33,6 @@ public class NoteUnitTests {
     }
 
     public NoteUnitTests() {
-        //JdbcTemplate jdbcTemplate = new JdbcTemplate(DbConnectionTest.getEmbeddedPostgres());
         noteDao = new NoteDao(DbConnectionTest.getJdbcTemplate(),
                 new NamedParameterJdbcTemplate(DbConnectionTest.getJdbcTemplate()));
     }
@@ -47,7 +44,7 @@ public class NoteUnitTests {
 
     @Test
     public void testUpdate() {
-        Note retrievedNote = saveAndGet();
+        note = saveAndGet();
         note.setNoteText("The note has been modified!");
         boolean result = noteDao.update(note);
         Note updatedNote = noteDao.get(note.getNoteId()).get();
@@ -55,25 +52,36 @@ public class NoteUnitTests {
         Assert.assertEquals("The note has been modified!", updatedNote.getNoteText());
     }
 
+    @Rollback
     @Test
     public void testDelete() {
         note = saveAndGet();
+        long noteId = note.getNoteId();
         boolean result = noteDao.delete(note);
         Assert.assertTrue(result);
-        Optional<Note> retrievedNote = noteDao.get(1);
+        Optional<Note> retrievedNote = noteDao.get(noteId);
         Assert.assertTrue(retrievedNote.isEmpty());
     }
 
+    @Test
+    public void getNotesAboveRanking() {
+        note = saveAndGet();
+        Map<String, Object> args = new HashMap<>();
+        args.put("ranking", -1);
+        List<Note> retrievedNotes = noteDao.get(args).get();
+        Assert.assertNotNull(retrievedNotes);
+        Assert.assertTrue(!retrievedNotes.isEmpty());
+    }
+
     private Note saveAndGet() {
-        note = saveNote();
-        note.setNoteId(1);
-        note = noteDao.get(1l).get();
-        Assert.assertEquals("This is the first note", note.getNoteText());
-        return note;
+        long noteId = saveNote();
+        Note retrievedNote = noteDao.get(noteId).get();
+        Assert.assertEquals("A new note!", retrievedNote.getNoteText());
+        return retrievedNote;
     }
 
 
-    private Note saveNote() {
+    private long saveNote() {
         note = new Note();
         note.setUserId(1);
         note.setBookId(1);
@@ -83,6 +91,6 @@ public class NoteUnitTests {
         note.setLang("en");
         long result = noteDao.save(note);
         Assert.assertTrue(result > -1);
-        return note;
+        return result;
     }
 }

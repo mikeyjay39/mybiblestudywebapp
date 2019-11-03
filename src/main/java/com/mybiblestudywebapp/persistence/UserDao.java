@@ -133,6 +133,7 @@ public class UserDao implements UpdatableDao<User> {
       * @param user
      * @return
      */
+    @Transactional
     @Override
     public boolean update(User user) {
         String sql = "UPDATE users SET email = :email, " +
@@ -180,6 +181,7 @@ public class UserDao implements UpdatableDao<User> {
         return rows > 0;
     }
 
+    @Transactional
     @Override
     public boolean delete(User user) {
         String sql = "DELETE FROM users WHERE user_id = ?";

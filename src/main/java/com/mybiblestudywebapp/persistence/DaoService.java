@@ -57,4 +57,11 @@ public interface DaoService {
     CompletableFuture<RankNoteResponse> rankNote(RankNoteRequest request) throws DaoServiceException;
 
     Response login(String username);
+
+    /**
+     * Creates a new view to hold notes. Gets the request from MainService and forwards it to the ViewDao
+     * @return
+     */
+    CompletableFuture<Long> addView() throws DaoServiceException;
+
 }

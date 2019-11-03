@@ -71,12 +71,13 @@ create table notes
     chapter_id bigint
         constraint note_chapter__fk
             references chapters,
-    verse integer not null,
+    verse_start integer not null,
     ranking integer default 0,
     priv boolean default false not null,
     lang varchar(64),
     created_at timestamp default now() not null,
-    last_modified timestamp
+    last_modified timestamp,
+    verse_end integer
 );
 
 create table view_note
@@ -91,7 +92,9 @@ create table view_note
     note_id bigint
         constraint view_note_note__fk
             references notes
-            on update cascade on delete cascade
+            on update cascade on delete cascade,
+    constraint view_note_pk_2
+        unique (view_id, note_id)
 );
 
 create table comments
@@ -130,3 +133,26 @@ create unique index user_authorities_user_authorities_id_uindex
 
 create unique index user_authorities_email_uindex
     on user_authorities (email);
+
+create table rank_note
+(
+    rank_note_id bigserial not null
+        constraint rank_note_pk
+            primary key,
+    note_id bigint not null
+        constraint rank_note_notes_note_id_fk
+            references notes
+            on update cascade on delete cascade,
+    user_id bigint not null
+        constraint rank_note_users_user_id_fk
+            references users
+            on update cascade on delete cascade,
+    ranking_value integer default 0,
+    constraint rank_note_pk_2
+        unique (note_id, user_id)
+);
+
+comment on table rank_note is 'Used to map users to notes so that they can only rank a note once';
+
+create unique index rank_note_rank_note_id_uindex
+    on rank_note (rank_note_id);

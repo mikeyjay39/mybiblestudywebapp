@@ -17,10 +17,8 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.junit.Assert.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -48,7 +46,7 @@ public class NotesControllerTest {
         note.setUserId(1);
         note.setBookId(1);
         note.setChapterId(1);
-        note.setVerse(2);
+        note.setVerseStart(2);
         note.setLang("en");
         note.setPriv(false);
         ObjectMapper mapper = new ObjectMapper();

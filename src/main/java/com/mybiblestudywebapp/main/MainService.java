@@ -6,8 +6,6 @@ import com.mybiblestudywebapp.dashboard.users.CreateUserRequest;
 import com.mybiblestudywebapp.persistence.model.Note;
 import org.springframework.http.ResponseEntity;
 
-import java.security.Principal;
-
 /**
  * Acts as a boss thread delegating requests to async worker services and packages responses into Response Entities
  * to return to the controllers.
@@ -53,5 +51,11 @@ public interface MainService {
      * @return
      */
     ResponseEntity<Response> login();
+
+    /**
+     * Creates a new view to hold notes.
+     * @return
+     */
+    ResponseEntity<Response> addView();
 
 }
