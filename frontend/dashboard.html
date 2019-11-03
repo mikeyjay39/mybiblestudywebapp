@@ -123,12 +123,21 @@
             <form id="createNoteForm" name="createNoteForm" onsubmit="" action="">
 
                 <div class="form-group text-left">
-                    <label for="verseStart">Start Verse:</label>
-                    <input id="verseStart" type="number" class="textbox" name="verseStart">
-                    <label for="verseEnd">End Verse:</label>
-                    <input id="verseEnd" class="textbox" name="verseEnd" type="number" />
-                </div>
 
+                    <label for="verseStart">Start Verse:</label>
+                    <input id="verseStart" class="form-control" type="number" name="verseStart">
+
+                    <label for="verseEnd">End Verse:</label>
+                        <input id="verseEnd" class="form-control" name="verseEnd" type="number" />
+
+
+                    <div class="form-check-inline">
+                    <label class="form-check-label" for="privNote">Private Note:</label>
+                    <input id="privNote" class="form-check-input" name="privNote" type="checkbox" />
+                    </div>
+
+
+                </div>
 
                 <div class="form-group">
                     <label for="noteText">Note text</label>

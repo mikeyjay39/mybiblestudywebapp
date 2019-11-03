@@ -398,3 +398,35 @@ function showCreateNote() {
     hideRightContentDiv();
     $("#createNote").show();
 }
+
+function createNote() {
+
+    var logoutUrl = url + "/notes/add";
+
+    var note = {
+        noteText: $("#noteText").val(),
+        bookId: "",
+        chapterId: "",
+        verseStart: $("#verseStart").val(),
+        verseEnd: $("#verseEnd").val(),
+        priv: $("#privNote").val()
+    };
+
+    $.ajax({
+        url: logoutUrl,
+        type: "POST",
+        datatype: "application/json; charset=utf-8",
+        headers: {'X-XSRF-TOKEN': getCsrf()},
+        success: function (data, status) {
+            logoutHandler();
+        },
+        error: function (xhr, ajaxOptions, thrownError) { //Add these parameters to display the required response
+            alert(xhr.status);
+            alert(xhr.responseText);
+        },
+        xhrFields: {
+            withCredentials: true
+        },
+        crossDomain: true
+    });
+}
