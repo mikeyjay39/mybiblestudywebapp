@@ -1,5 +1,7 @@
 var url = "http://localhost:8080";
 var viewCode = "6e9e6366-f386-11e9-b633-0242ac110002";
+var currentBook;
+var currentChapter;
 
 function make_base_auth(user, password) {
     var tok = user + ':' + password;
@@ -17,11 +19,11 @@ function getChapter() {
         url: apiEndPoint,
         type: "GET",
         datatype: "application/json; charset=utf-8",
-        beforeSend: function (xhr){
+        /*beforeSend: function (xhr){
             //xhr.setRequestHeader("Authorization", "Basic " + btoa("admin@admin.com:12345"));
 
             xhr.setRequestHeader("Authorization", "Basic " + btoa("testingemail@testingthis.com:testpassword"));
-        },
+        },*/
         success: function (data, status) {
 
             var returnedBook = data.book;
@@ -31,6 +33,8 @@ function getChapter() {
             var verses = data.verses;
             var notes = data.notes;
             var size = verses.length;
+            currentBook = data.book;
+            currentChapter = data.chapter;
 
             // iterate through verses
             for (var i = 0; i < size; i++) {
@@ -250,6 +254,33 @@ function login() {
     });
 }
 
+function autoLogin() {
+    var apiEndPoint = "http://localhost:8080/login";
+    var email = $("#emailLoginField").val();
+    var pass = $("#passwordField").val();
+    $.ajax({
+        url: apiEndPoint,
+        type: "GET",
+        datatype: "application/json; charset=utf-8",
+        beforeSend: function (xhr){
+            //xhr.setRequestHeader("Authorization", "Basic " + btoa(email + ":" + pass));
+            xhr.setRequestHeader("Authorization", "Basic " + btoa("admin@admin.com:12345"));
+        },
+        success: function (data, status) {
+            var userId = data.userId;
+            successfulLogin();
+        },
+        error: function (xhr, ajaxOptions, thrownError) { //Add these parameters to display the required response
+            alert(xhr.status);
+            alert(xhr.responseText);
+        },
+        xhrFields: {
+            withCredentials: true
+        },
+        crossDomain: true
+    });
+}
+
 function logout() {
 
     var logoutUrl = url + "/perform_logout";
@@ -315,7 +346,15 @@ function hideAllBody() {
     $("#loginDiv").hide();
     $("#getChapterForm").hide();
     $("#verses").hide();
+    hideRightContentDiv()
+}
+
+/**
+ * Hide the column next to verses
+ */
+function hideRightContentDiv() {
     $("#notes").hide();
+    $("#createNote").hide();
 }
 
 /**
@@ -340,6 +379,7 @@ function showLoginForm() {
 function successfulLogin() {
     hideAll();
     $("#secondaryNavbar").show();
+    $("#getChapterForm").show();
     $("#verses").show();
     $("#login").text("Logout");
     $("#login").attr("onclick","logout()");
@@ -352,4 +392,9 @@ function logoutHandler() {
     showLoginForm();
     $("#login").text("Login");
     $("#login").attr("onclick","showLoginForm()");
+}
+
+function showCreateNote() {
+    hideRightContentDiv();
+    $("#createNote").show();
 }

@@ -17,7 +17,7 @@
 
 <!-- Navigation -->
 <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
-    <a class="navbar-brand" href="#">DASHBOARD - My Bible Study Web App</a>
+    <a class="navbar-brand" href="dashboard.html">DASHBOARD - My Bible Study Web App</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -40,11 +40,11 @@
 
 
     <!-- sub navbar -->
-    <div id="secondaryNavbar" class="row">
+    <div id="secondaryNavbar" class="row" style="display:none;">
         <div class="col-sm-offset-1 col-sm-10">
 
             <ul class="list-inline text-center">
-                <li class="list-inline-item" onclick="showCreateNote()" onmouseover="" style="cursor: pointer;"><strong><u>Create Note</u></strong></li>
+                <li class="list-inline-item" onclick="showCreateNote()" onmouseover="this.style.cursor='pointer';"><strong><u>Create Note</u></strong></li>
                 <li class="list-inline-item" onclick="showCreateView()" onmouseover="" style="cursor: pointer;"><strong><u>Create View</u></strong></li>
                 <li class="list-inline-item" onclick="showManageNotes()" onmouseover="" style="cursor: pointer;"><strong><u>Manage Notes</u></strong></li>
                 <li class="list-inline-item" onclick="showManageViews()" onmouseover="" style="cursor: pointer;"><strong><u>Manage Views</u></strong></li>
@@ -82,6 +82,8 @@
             </div>
             <br>
                 <button type="button" class="btn btn-primary" onclick="login()">Login</button>
+            <!-- remove this after building -->
+            <button type="button" class="btn btn-primary" onclick="autoLogin()">Auto Login</button>
         </form>
         </div>
     </div>
@@ -95,8 +97,7 @@
                     <input id="book" type="text" class="textbox" name="book" pattern="[A-Za-z1-9]*">
                     Chapter:
                     <input id="chapter" class="textbox" name="chapter" type="number" />
-                    <button type="button" class="btn btn-primary" onclick="getChapter()">Go!(GET)</button>
-                    <button type="button" class="btn btn-primary" onclick="login()">Login</button>
+                    <button type="button" class="btn btn-primary" onclick="getChapter()">Go!</button>
                 </p>
             </form>
         </div>
@@ -110,16 +111,41 @@
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. 1
             </p>
         </div>
-        <div id="notes" class="col-sm-6">
+        <div id="notes" style="display:none;" class="col-sm-6">
             <p>
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. 1
-            </p>    </div>
+            </p>
+        </div>
+        <div id="createNote"  class="col-sm-6">
+            <h4 class="text-center">
+        Create note
+            </h4>
+            <form id="createNoteForm" name="createNoteForm" onsubmit="" action="">
+
+                <div class="form-group text-left">
+                    <label for="verseStart">Start Verse:</label>
+                    <input id="verseStart" type="number" class="textbox" name="verseStart">
+                    <label for="verseEnd">End Verse:</label>
+                    <input id="verseEnd" class="textbox" name="verseEnd" type="number" />
+                </div>
+
+
+                <div class="form-group">
+                    <label for="noteText">Note text</label>
+                <textarea id="noteText" class="form-control" name="noteText" rows="8"></textarea>
+                </div>
+                <button type="button" class="btn btn-primary" onclick="createNote()">Save</button>
+            </form>
+        </div>
     </div>
     <!-- end verses and notes -->
 
 
-
+    <!-- end of container -->
 </div>
+
+
+
 
 </body>
 
