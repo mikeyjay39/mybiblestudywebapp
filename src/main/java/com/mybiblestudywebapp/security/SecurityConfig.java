@@ -78,6 +78,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()) // use this if we want to enable csrf protection
                 .and()
                 .logout()
+                .logoutUrl("/perform_logout")
                 .invalidateHttpSession(true)
                 .deleteCookies("JSESSIONID")
         ;

@@ -1,4 +1,4 @@
-var url = "http://localhost:8080/biblestudy";
+var url = "http://localhost:8080";
 var viewCode = "6e9e6366-f386-11e9-b633-0242ac110002";
 
 function make_base_auth(user, password) {
@@ -11,7 +11,7 @@ function getChapter() {
 
     var book = $("#book").val();
     var chapterNo = $("#chapter").val();
-    var apiEndPoint = url + "/" + viewCode + "/" + book + "/" + chapterNo;
+    var apiEndPoint = url + "/biblestudy/" + viewCode + "/" + book + "/" + chapterNo;
 
     $.ajax({
         url: apiEndPoint,
@@ -250,6 +250,29 @@ function login() {
     });
 }
 
+function logout() {
+
+    var logoutUrl = url + "/perform_logout";
+
+    $.ajax({
+        url: logoutUrl,
+        type: "POST",
+        datatype: "application/json; charset=utf-8",
+        headers: {'X-XSRF-TOKEN': getCsrf()},
+        success: function (data, status) {
+            logoutHandler();
+        },
+        error: function (xhr, ajaxOptions, thrownError) { //Add these parameters to display the required response
+            alert(xhr.status);
+            alert(xhr.responseText);
+        },
+        xhrFields: {
+            withCredentials: true
+        },
+        crossDomain: true
+    });
+}
+
 function getCsrf() {
     return getCookie('XSRF-TOKEN');
 }
@@ -317,8 +340,9 @@ function showLoginForm() {
 function successfulLogin() {
     hideAll();
     $("#secondaryNavbar").show();
+    $("#verses").show();
     $("#login").text("Logout");
-    $("#login").attr("onclick","logoutHandler()");
+    $("#login").attr("onclick","logout()");
 }
 
 /**
