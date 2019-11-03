@@ -353,4 +353,23 @@ public class DaoServiceJdbcImpl implements DaoService {
         loginResponse.setUserId(userId);
         return loginResponse;
     }
+
+    /**
+     * {@inheritDoc}
+     * @param view
+     * @return
+     */
+    @Override
+    @Async
+    @Transactional
+    public CompletableFuture<Long> addView(View view) throws DaoServiceException {
+        view.setUserId(userSession.userId);
+        long viewId = viewDao.save(view);
+
+        if (viewId < 0) {
+            throw new DaoServiceException("Could not add new view for user_id: " + userSession.userId);
+        }
+
+        return CompletableFuture.completedFuture(viewId);
+    }
 }

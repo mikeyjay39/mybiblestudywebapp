@@ -4,6 +4,7 @@ import com.mybiblestudywebapp.client.BibleStudyRequest;
 import com.mybiblestudywebapp.dashboard.notes.RankNoteRequest;
 import com.mybiblestudywebapp.dashboard.users.CreateUserRequest;
 import com.mybiblestudywebapp.persistence.model.Note;
+import com.mybiblestudywebapp.persistence.model.View;
 import org.springframework.http.ResponseEntity;
 
 import java.security.Principal;
@@ -53,5 +54,12 @@ public interface MainService {
      * @return
      */
     ResponseEntity<Response> login();
+
+    /**
+     * Creates a new view to hold notes.
+     * @param view
+     * @return
+     */
+    ResponseEntity<Response> addView(View view);
 
 }

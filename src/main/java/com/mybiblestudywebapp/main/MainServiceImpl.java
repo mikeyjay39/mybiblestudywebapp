@@ -5,6 +5,7 @@ import com.mybiblestudywebapp.client.BibleStudyResponse;
 import com.mybiblestudywebapp.dashboard.notes.AddNoteResponse;
 import com.mybiblestudywebapp.dashboard.notes.RankNoteRequest;
 import com.mybiblestudywebapp.dashboard.notes.RankNoteResponse;
+import com.mybiblestudywebapp.dashboard.views.AddViewResponse;
 import com.mybiblestudywebapp.getbible.GetBibleService;
 import com.mybiblestudywebapp.persistence.DaoService;
 import com.mybiblestudywebapp.persistence.DaoServiceException;
@@ -17,6 +18,7 @@ import java.util.concurrent.ExecutionException;
 
 import com.mybiblestudywebapp.dashboard.users.CreateUserRequest;
 import com.mybiblestudywebapp.dashboard.users.CreateUserResponse;
+import com.mybiblestudywebapp.persistence.model.View;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -121,6 +123,7 @@ public class MainServiceImpl implements MainService {
     @Override
     public ResponseEntity<Response> addNote(Note request) {
         AddNoteResponse response = new AddNoteResponse();
+
         try {
             var futureResult = daoService.addNote(request);
             long result = futureResult.get();
@@ -144,6 +147,7 @@ public class MainServiceImpl implements MainService {
     @Override
     public ResponseEntity<Response> rankNote(RankNoteRequest request) {
         RankNoteResponse response = new RankNoteResponse();
+
         try {
             var future = daoService.rankNote(request);
             return ResponseEntity.status(HttpStatus.OK).body(future.get());
@@ -156,11 +160,37 @@ public class MainServiceImpl implements MainService {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * @return
+     */
     @Override
     public ResponseEntity<Response> login() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName(); //get logged in username
         return ResponseEntity.ok(daoService.login(username));
+    }
+
+    /**
+     * {@inheritDoc}
+     * @param view to add
+     * @return
+     */
+    @Override
+    public ResponseEntity<Response> addView(View view) {
+        AddViewResponse response = new AddViewResponse();
+
+        try {
+            var future = daoService.addView(view);
+            response.setViewId(future.get());
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch (DaoServiceException e) {
+            return daoServiceExceptionHandler(e, response);
+        } catch (InterruptedException e) {
+            return interruptedExceptionHandler(e, e.getMessage(), response);
+        } catch (ExecutionException e) {
+            return executionExceptionHandler(e, e.getMessage(), response);
+        }
     }
 
     /**
