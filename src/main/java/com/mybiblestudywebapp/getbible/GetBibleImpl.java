@@ -5,17 +5,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.*;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Created by Michael Jeszenka.
  * <a href="mailto:michael@jeszenka.com">michael@jeszenka.com</a>
  * 10/21/19
  */
+@Component
 public class GetBibleImpl implements GetBible {
 
     private static final Logger logger = LoggerFactory.getLogger(GetBibleImpl.class);
@@ -43,6 +47,7 @@ public class GetBibleImpl implements GetBible {
      * @return GetBibleResponse
      */
     @Override
+    @Async
     public GetBibleResponse getVersesForChapter(String book, int chapter) {
         ResponseEntity<String> response = null;
         HttpHeaders headers = new HttpHeaders();

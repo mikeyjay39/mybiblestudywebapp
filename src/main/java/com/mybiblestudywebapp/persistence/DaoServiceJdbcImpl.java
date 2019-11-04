@@ -1,5 +1,6 @@
 package com.mybiblestudywebapp.persistence;
 
+import com.mybiblestudywebapp.bible.GetChapterResponse;
 import com.mybiblestudywebapp.dashboard.notes.RankNoteRequest;
 import com.mybiblestudywebapp.dashboard.notes.RankNoteResponse;
 import com.mybiblestudywebapp.dashboard.users.LoginResponse;
@@ -17,11 +18,15 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
+import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.sql.RowSet;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.IntStream;
@@ -70,6 +75,7 @@ public class DaoServiceJdbcImpl implements DaoService {
 
     /**
      * Used for unit tests. Pass the JdbcTemplate with the embedded postgres datasource as the arg.
+     *
      * @param jdbcTemplate
      * @param namedParameterJdbcTemplate
      */
@@ -108,7 +114,7 @@ public class DaoServiceJdbcImpl implements DaoService {
         try {
             results = namedParameterJdbcTemplate.query(sql, params, NoteDao::mapRow);
             if (results.isEmpty()) {
-                return CompletableFuture.completedFuture((long)results.size());
+                return CompletableFuture.completedFuture((long) results.size());
             }
         } catch (DataAccessException e) {
             String errMsg = "Could not find notes for user_id: " + userId + "\n" + e.getMessage();
@@ -139,11 +145,12 @@ public class DaoServiceJdbcImpl implements DaoService {
         int total = IntStream.of(updateCounts == null ? new int[]{0} : updateCounts)
                 .reduce(0, (a, b) -> a + b);
 
-        return CompletableFuture.completedFuture((long)total);
+        return CompletableFuture.completedFuture((long) total);
     }
 
     /**
      * {@inheritDoc}
+     *
      * @param viewCode
      * @param book
      * @param chapterNo
@@ -151,7 +158,7 @@ public class DaoServiceJdbcImpl implements DaoService {
      */
     @Override
     public CompletableFuture<List<Note>> getStudyNotesForChapter(String viewCode, String book, long chapterNo)
-    throws DaoServiceException {
+            throws DaoServiceException {
         Map<String, Object> viewArgs = new HashMap<>();
         Map<String, Object> bookArgs = new HashMap<>();
         Map<String, Object> chapterArgs = new HashMap<>();
@@ -207,6 +214,7 @@ public class DaoServiceJdbcImpl implements DaoService {
 
     /**
      * {@inheritDoc}
+     *
      * @param user
      * @return
      */
@@ -227,6 +235,7 @@ public class DaoServiceJdbcImpl implements DaoService {
 
     /**
      * {@inheritDoc}
+     *
      * @param request
      * @return
      * @throws DaoServiceException
@@ -245,6 +254,7 @@ public class DaoServiceJdbcImpl implements DaoService {
 
     /**
      * {@inheritDoc}
+     *
      * @param request
      * @return
      * @throws DaoServiceException
@@ -273,9 +283,9 @@ public class DaoServiceJdbcImpl implements DaoService {
         Integer rankingValueResult = null;
 
         try {
-        rankingValueResult = namedParameterJdbcTemplate.queryForObject(checkRankingSql, params, Integer.class);
+            rankingValueResult = namedParameterJdbcTemplate.queryForObject(checkRankingSql, params, Integer.class);
         } catch (EmptyResultDataAccessException e) {
-        // no results
+            // no results
         } catch (DataAccessException e) {
             throw new DaoServiceException("No note retrieved for note_id: " + request.getNoteId() + " user_id: " +
                     request.getUserId() + "\n" + e.getMessage());
@@ -338,6 +348,7 @@ public class DaoServiceJdbcImpl implements DaoService {
 
     /**
      * {@inheritDoc}
+     *
      * @param username
      * @return
      */
@@ -355,6 +366,7 @@ public class DaoServiceJdbcImpl implements DaoService {
 
     /**
      * {@inheritDoc}
+     *
      * @return
      */
     @Override
@@ -370,5 +382,48 @@ public class DaoServiceJdbcImpl implements DaoService {
         }
 
         return CompletableFuture.completedFuture(viewId);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Async
+    public CompletableFuture<Map<String, Integer>> getChapter(String book, int chapterNo)
+            throws DaoServiceException {
+        String sql = "SELECT b.book_id, c.chapter_id FROM books AS b " +
+                "JOIN chapters AS c ON b.book_id = c.book_id " +
+                "WHERE b.title = :title AND c.chapter_no = :chapterNo";
+        SqlParameterSource params = new MapSqlParameterSource()
+                .addValue("title", book)
+                .addValue("chapterNo", chapterNo);
+        Map<String, Integer> queryResult = new HashMap<>();
+
+        try {
+            SqlRowSet rs = namedParameterJdbcTemplate.queryForRowSet(sql, params);
+                    /*rs -> {
+                        if (rs.next()) {
+                            queryResult.put("bookId", rs.getInt("b.book_id"));
+                            queryResult.put("chapterId", rs.getInt("c.chapter_id"));
+                        }
+                    }*/
+                    if (rs.next()) {
+                        queryResult.put("bookId", rs.getInt("book_id"));
+                        queryResult.put("chapterId", rs.getInt("chapter_id"));
+                    }
+
+            /*if (rs.next()) {
+                queryResult.put("bookId", rs.getInt("b.book_id"));
+                queryResult.put("chapterId", rs.getInt("c.chapter_id"));
+            }*/
+        } catch (DataAccessException e) {
+            throw new DaoServiceException("Could not find IDs for book: " + book + " and chapter: " + chapterNo +
+                    "\n" + e.getMessage());
+        /*} catch (SQLException e) {
+            throw new DaoServiceException(e);
+        }*/
+        }
+
+            return CompletableFuture.completedFuture(queryResult);
     }
 }

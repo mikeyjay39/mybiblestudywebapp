@@ -1,4 +1,4 @@
-package com.mybiblestudywebapp.client;
+package com.mybiblestudywebapp.bible;
 
 import com.mybiblestudywebapp.main.ErrorResponse;
 import com.mybiblestudywebapp.main.Response;

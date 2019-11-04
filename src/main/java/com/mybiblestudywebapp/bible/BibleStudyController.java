@@ -1,4 +1,4 @@
-package com.mybiblestudywebapp.client;
+package com.mybiblestudywebapp.bible;
 
 import com.mybiblestudywebapp.main.MainService;
 import com.mybiblestudywebapp.main.Response;
@@ -45,5 +45,17 @@ public class BibleStudyController {
         request.setBook(book);
         request.setChapterNo(chapterNo);
         return mainService.getChapterAndNotes(request);
+    }
+
+    /**
+     * Get only the text of a chapter.
+     * @param book
+     * @param chapterNo
+     * @return response that contains the text and book_id, and chapter_id
+     */
+    @GetMapping("/{book}/{chapterNo}")
+    public ResponseEntity<Response> getChapter(
+            @PathVariable String book, @PathVariable int chapterNo) {
+        return mainService.getChapter(book, chapterNo);
     }
 }

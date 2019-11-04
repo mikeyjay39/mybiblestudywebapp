@@ -1,7 +1,8 @@
 package com.mybiblestudywebapp.main;
 
-import com.mybiblestudywebapp.client.BibleStudyRequest;
-import com.mybiblestudywebapp.client.BibleStudyResponse;
+import com.mybiblestudywebapp.bible.BibleStudyRequest;
+import com.mybiblestudywebapp.bible.BibleStudyResponse;
+import com.mybiblestudywebapp.bible.GetChapterResponse;
 import com.mybiblestudywebapp.dashboard.notes.AddNoteResponse;
 import com.mybiblestudywebapp.dashboard.notes.RankNoteRequest;
 import com.mybiblestudywebapp.dashboard.notes.RankNoteResponse;
@@ -182,6 +183,32 @@ public class MainServiceImpl implements MainService {
             var future = daoService.addView();
             response.setViewId(future.get());
             return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch (DaoServiceException e) {
+            return daoServiceExceptionHandler(e, response);
+        } catch (InterruptedException e) {
+            return interruptedExceptionHandler(e, e.getMessage(), response);
+        } catch (ExecutionException e) {
+            return executionExceptionHandler(e, e.getMessage(), response);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ResponseEntity<Response> getChapter(String book, int chapterNo) {
+        GetChapterResponse response = new GetChapterResponse();
+        var futureVerses = getBibleService.getVersesForChapter(book, chapterNo);
+
+        try {
+            var futureChapters = daoService.getChapter(book, chapterNo);
+            response.setVerses(futureVerses.get());
+            var chapters = futureChapters.get();
+            response.setBookId(chapters.get("bookId"));
+            response.setChapterId(chapters.get("chapterId"));
+            response.setBook(book);
+            response.setChapter(chapterNo);
+            return ResponseEntity.ok(response);
         } catch (DaoServiceException e) {
             return daoServiceExceptionHandler(e, response);
         } catch (InterruptedException e) {

@@ -1,7 +1,7 @@
 package com.mybiblestudywebapp.integrationtests;
 
-import com.mybiblestudywebapp.client.BibleStudyRequest;
-import com.mybiblestudywebapp.client.BibleStudyResponse;
+import com.mybiblestudywebapp.bible.BibleStudyRequest;
+import com.mybiblestudywebapp.bible.BibleStudyResponse;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
