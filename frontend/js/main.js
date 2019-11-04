@@ -318,24 +318,29 @@ function showCreateNote() {
 
 function createNote() {
 
-    var logoutUrl = url + "/notes/add";
+    var endpoint = url + "/notes/add";
 
     var note = {
         noteText: $("#noteText").val(),
-        bookId: "",
-        chapterId: "",
+        bookId: currentBookId,
+        chapterId: currentChapterId,
         verseStart: $("#verseStart").val(),
         verseEnd: $("#verseEnd").val(),
         priv: $("#privNote").val()
     };
 
+    var data = JSON.stringify(note);
+    var token = getCsrf();
+
     $.ajax({
-        url: logoutUrl,
+        url: endpoint,
         type: "POST",
-        datatype: "application/json; charset=utf-8",
-        headers: {'X-XSRF-TOKEN': getCsrf()},
+        datatype: "json",
+        contentType: "application/json",
+        headers: {'X-XSRF-TOKEN': token},
+        data: data,
         success: function (data, status) {
-            logoutHandler();
+            alert("note added");
         },
         error: function (xhr, ajaxOptions, thrownError) { //Add these parameters to display the required response
             alert(xhr.status);

@@ -243,6 +243,7 @@ public class DaoServiceJdbcImpl implements DaoService {
     @Override
     @Async
     public CompletableFuture<Long> addNote(Note request) throws DaoServiceException {
+        request.setUserId(userSession.userId);
         long result = noteDao.save(request);
 
         if (result < 0) {
