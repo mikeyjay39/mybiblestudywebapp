@@ -1,4 +1,4 @@
-package com.mybiblestudywebapp.client;
+package com.mybiblestudywebapp.bible;
 
 /**
  * Created by Michael Jeszenka.

@@ -1,5 +1,6 @@
 package com.mybiblestudywebapp.persistence;
 
+import com.mybiblestudywebapp.bible.GetChapterResponse;
 import com.mybiblestudywebapp.dashboard.notes.RankNoteRequest;
 import com.mybiblestudywebapp.dashboard.notes.RankNoteResponse;
 import com.mybiblestudywebapp.main.Response;
@@ -7,6 +8,7 @@ import com.mybiblestudywebapp.persistence.model.Note;
 import com.mybiblestudywebapp.persistence.model.User;
 
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -63,5 +65,13 @@ public interface DaoService {
      * @return
      */
     CompletableFuture<Long> addView() throws DaoServiceException;
+
+    /**
+     * Get only the text of a chapter.
+     * @param book
+     * @param chapterNo
+     * @return response that contains the book_id, and chapter_id
+     */
+    CompletableFuture<Map<String, Integer>> getChapter(String book, int chapterNo) throws DaoServiceException;
 
 }

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html" xmlns="">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>DASHBOARD - My Bible Study Web App</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+
+
+
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+    <a class="navbar-brand" href="dashboard.html">DASHBOARD - My Bible Study Web App</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="collapsibleNavbar">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" id="login" href="#" onclick="showLoginForm()">Login</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Link</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Link</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<div class="container" style="margin-top:30px">
+
+
+    <!-- sub navbar -->
+    <div id="secondaryNavbar" class="row" style="display:none;">
+        <div class="col-sm-offset-1 col-sm-10">
+
+            <ul class="list-inline text-center">
+                <li class="list-inline-item" onclick="showCreateNote()" onmouseover="this.style.cursor='pointer';"><strong><u>Create Note</u></strong></li>
+                <li class="list-inline-item" onclick="showCreateView()" onmouseover="" style="cursor: pointer;"><strong><u>Create View</u></strong></li>
+                <li class="list-inline-item" onclick="showManageNotes()" onmouseover="" style="cursor: pointer;"><strong><u>Manage Notes</u></strong></li>
+                <li class="list-inline-item" onclick="showManageViews()" onmouseover="" style="cursor: pointer;"><strong><u>Manage Views</u></strong></li>
+            </ul>
+            <hr>
+        </div>
+    </div>
+    <!-- end sub navbar -->
+
+    <!-- login -->
+    <div id="loginDiv" style="display:none;" class="row">
+        <div class="col-sm-12 text-center">
+            <h4 class="mt-5" >
+                <p class="text-center">LOGIN</p>
+            </h4>
+            <p>Please enter your email and password to login</p>
+
+        <form id="loginForm" name="getChapterForm" onsubmit="" action="">
+
+            <div class="row">
+                <div class="col-sm-6 text-right">
+                    <label class="control-label" for="emailLoginField">Email</label>
+                </div>
+                <div class="col-sm-6 text-left">
+                <input id="emailLoginField" type="text" class="textbox" placeholder="Enter email">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6 text-right">
+                    <label class="control-label" for="passwordField">Password</label>
+                </div>
+                <div class="col-sm-6 text-left">
+                    <input id="passwordField" class="text" type="password" placeholder="Enter password">
+                </div>
+            </div>
+            <br>
+                <button type="button" class="btn btn-primary" onclick="login()">Login</button>
+            <!-- remove this after building -->
+            <button type="button" class="btn btn-primary" onclick="autoLogin()">Auto Login</button>
+        </form>
+        </div>
+    </div>
+
+    <!-- chapter lookup -->
+    <div class="row">
+        <div class="col-sm-12 text-center">
+            <form id="getChapterForm" name="getChapterForm" onsubmit="" action="">
+                <p>
+                    Book:
+                    <input id="book" type="text" class="textbox" name="book" pattern="[A-Za-z1-9]*">
+                    Chapter:
+                    <input id="chapter" class="textbox" name="chapter" type="number" />
+                    <button type="button" class="btn btn-primary" onclick="getChapterId()">Go!</button>
+                </p>
+            </form>
+        </div>
+    </div>
+    <!-- end chapter lookup -->
+
+    <!-- verses and notes -->
+    <div class="row">
+        <div id="verses" class="col-sm-6">
+            <p>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. 1
+            </p>
+        </div>
+        <div id="notes" style="display:none;" class="col-sm-6">
+            <p>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. 1
+            </p>
+        </div>
+        <div id="createNote"  class="col-sm-6">
+            <h4 class="text-center">
+        Create note
+            </h4>
+            <form id="createNoteForm" name="createNoteForm" onsubmit="" action="">
+
+                <div class="form-group text-left">
+
+                    <label for="verseStart">Start Verse:</label>
+                    <input id="verseStart" class="form-control" type="number" name="verseStart">
+
+                    <label for="verseEnd">End Verse:</label>
+                        <input id="verseEnd" class="form-control" name="verseEnd" type="number" />
+
+
+                    <div class="form-check-inline">
+                    <label class="form-check-label" for="privNote">Private Note:</label>
+                    <input id="privNote" class="form-check-input" name="privNote" type="checkbox" value="false">
+                    </div>
+
+
+                </div>
+
+                <div class="form-group">
+                    <label for="noteText">Note text</label>
+                <textarea id="noteText" class="form-control" name="noteText" rows="8"></textarea>
+                </div>
+                <button type="button" class="btn btn-primary" onclick="createNote()">Save</button>
+            </form>
+        </div>
+    </div>
+    <!-- end verses and notes -->
+
+
+    <!-- end of container -->
+</div>
+
+
+
+
+</body>
+
+<script crossorigin="anonymous" src="js/main.js"></script>
+
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+<!-- Popper JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+
+<!-- Latest compiled JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+
+
+</html>

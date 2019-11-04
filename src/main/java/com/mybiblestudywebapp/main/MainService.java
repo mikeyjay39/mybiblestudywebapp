@@ -1,6 +1,6 @@
 package com.mybiblestudywebapp.main;
 
-import com.mybiblestudywebapp.client.BibleStudyRequest;
+import com.mybiblestudywebapp.bible.BibleStudyRequest;
 import com.mybiblestudywebapp.dashboard.notes.RankNoteRequest;
 import com.mybiblestudywebapp.dashboard.users.CreateUserRequest;
 import com.mybiblestudywebapp.persistence.model.Note;
@@ -57,5 +57,13 @@ public interface MainService {
      * @return
      */
     ResponseEntity<Response> addView();
+
+    /**
+     * Get only the text of a chapter.
+     * @param book
+     * @param chapterNo
+     * @return response that contains the text and book_id, and chapter_id
+     */
+    ResponseEntity<Response> getChapter(String book, int chapterNo);
 
 }
