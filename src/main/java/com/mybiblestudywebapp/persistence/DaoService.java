@@ -6,6 +6,7 @@ import com.mybiblestudywebapp.dashboard.notes.RankNoteResponse;
 import com.mybiblestudywebapp.main.Response;
 import com.mybiblestudywebapp.persistence.model.Note;
 import com.mybiblestudywebapp.persistence.model.User;
+import com.mybiblestudywebapp.persistence.model.View;
 
 import java.util.List;
 import java.util.Map;
@@ -73,5 +74,12 @@ public interface DaoService {
      * @return response that contains the book_id, and chapter_id
      */
     CompletableFuture<Map<String, Integer>> getChapter(String book, int chapterNo) throws DaoServiceException;
+
+    /**
+     * Get all the view codes for the currently logged in user.
+     * @return
+     * @throws DaoServiceException
+     */
+    List<String> getViews() throws DaoServiceException;
 
 }

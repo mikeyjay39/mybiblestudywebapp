@@ -267,11 +267,12 @@ function hideAllBody() {
 }
 
 /**
- * Hide the column next to verses
+ * Hide the content column next to verses
  */
 function hideRightContentDiv() {
     $("#notes").hide();
     $("#createNote").hide();
+    $("#manageViews").hide();
 }
 
 /**
@@ -316,6 +317,15 @@ function showCreateNote() {
     $("#createNote").show();
 }
 
+function showManageViews() {
+    hideRightContentDiv();
+    getViewsForLoggedInUser();
+    $("#manageViews").show();
+}
+
+/**
+ * Call this when adding a new note
+ */
 function createNote() {
 
     var endpoint = url + "/notes/add";
@@ -352,6 +362,22 @@ function createNote() {
         crossDomain: true
     });
 }
+
+/**
+ * Call this to get the logged in user's views
+ */
+function getViewsForLoggedInUser() {
+
+}
+
+/**
+ * Call this to add a new view
+ */
+function addView() {
+
+}
+
+
 
 
 

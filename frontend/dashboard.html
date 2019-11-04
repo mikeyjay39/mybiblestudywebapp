@@ -104,19 +104,21 @@
     </div>
     <!-- end chapter lookup -->
 
-    <!-- verses and notes -->
+    <!-- main content row-->
     <div class="row">
+        <!-- verses column-->
         <div id="verses" class="col-sm-6">
             <p>
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. 1
             </p>
         </div>
+        <!-- end of verses column -->
         <div id="notes" style="display:none;" class="col-sm-6">
             <p>
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. 1
             </p>
         </div>
-        <div id="createNote"  class="col-sm-6">
+        <div id="createNote" style="display:none;" class="col-sm-6">
             <h4 class="text-center">
         Create note
             </h4>
@@ -146,8 +148,22 @@
                 <button type="button" class="btn btn-primary" onclick="createNote()">Save</button>
             </form>
         </div>
+
+        <div id="manageViews" class="col-sm-6">
+            <h5 class="text-center">
+                My Views
+            </h5>
+            <ul class="list-group">
+                <li class="list-group-item">Cras justo odio</li>
+                <li class="list-group-item">Dapibus ac facilisis in</li>
+                <li class="list-group-item">Morbi leo risus</li>
+                <li class="list-group-item">Porta ac consectetur ac</li>
+                <li class="list-group-item">Vestibulum at eros</li>
+            </ul>
+            <button type="button" class="btn btn-primary" onclick="createView()">Create new view</button>
+        </div>
     </div>
-    <!-- end verses and notes -->
+    <!-- end main content row -->
 
 
     <!-- end of container -->

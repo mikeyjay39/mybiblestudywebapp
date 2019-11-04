@@ -66,4 +66,10 @@ public interface MainService {
      */
     ResponseEntity<Response> getChapter(String book, int chapterNo);
 
+    /**
+     * Get view codes for currently logged in user.
+     * @return
+     */
+    ResponseEntity<Response> getViews();
+
 }

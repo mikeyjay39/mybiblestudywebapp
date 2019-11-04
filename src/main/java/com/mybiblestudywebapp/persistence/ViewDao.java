@@ -146,6 +146,20 @@ public class ViewDao implements UpdatableDao<View> {
         return jdbcTemplate.query(sql, ViewDao::mapRow);
     }
 
+    /**
+     * Get all the view codes for a user
+     * @param userId
+     * @return
+     */
+    public List<String> getAllCodesForUser(long userId) {
+        String sql = "Select view_code FROM views " +
+                "WHERE user_id = :userId";
+        SqlParameterSource params = new MapSqlParameterSource()
+                .addValue("userId", userId);
+
+        return namedParameterJdbcTemplate.queryForList(sql, params, String.class);
+    }
+
     private static View mapRow(ResultSet rs, int rowNum) throws SQLException {
         View view = new View();
         view.setViewId(rs.getInt("view_id"));

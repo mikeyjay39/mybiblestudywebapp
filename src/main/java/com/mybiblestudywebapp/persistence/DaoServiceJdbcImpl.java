@@ -427,4 +427,12 @@ public class DaoServiceJdbcImpl implements DaoService {
 
             return CompletableFuture.completedFuture(queryResult);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<String> getViews() throws DaoServiceException {
+        return ((ViewDao)viewDao).getAllCodesForUser(userSession.userId);
+    }
 }
