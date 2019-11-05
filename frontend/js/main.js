@@ -418,7 +418,30 @@ function setCurrentViewCode(i) {
 }
 
 function removeNote(i) {
-    $("#note" + i).hide();
+
+    var endpoint = url + "/views/" + currentViewCode + "/" + currentNotes[i].noteId;
+    var token = getCsrf();
+
+    $.ajax({
+        url: endpoint,
+        type: "DELETE",
+        headers: {'X-XSRF-TOKEN': token},
+        success: function (data, status) {
+
+            alert('success');
+            $("#note" + i).hide();
+
+        },
+        error: function (xhr, ajaxOptions, thrownError) { //Add these parameters to display the required response
+            alert(xhr.status);
+            alert(xhr.responseText);
+            alert('did not remove note from view')
+        },
+        xhrFields: {
+            withCredentials: true
+        },
+        crossDomain: true
+    });
 }
 
 

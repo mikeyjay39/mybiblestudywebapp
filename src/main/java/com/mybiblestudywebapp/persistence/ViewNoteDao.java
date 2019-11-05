@@ -77,7 +77,7 @@ public class ViewNoteDao implements UpdatableDao<ViewNote> {
     @Override
     public boolean delete(ViewNote viewNote) {
         String sql = "DELETE FROM view_note WHERE view_id = :viewId AND " +
-                "note_id = noteId";
+                "note_id = :noteId";
         SqlParameterSource params = new MapSqlParameterSource()
                 .addValue("viewId", viewNote.getViewId())
                 .addValue("noteId", viewNote.getNoteId());
