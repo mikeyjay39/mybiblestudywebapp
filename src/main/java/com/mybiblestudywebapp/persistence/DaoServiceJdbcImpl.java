@@ -62,6 +62,9 @@ public class DaoServiceJdbcImpl implements DaoService {
     private UpdatableDao viewDao;
 
     @Autowired
+    private UpdatableDao viewNoteDao;
+
+    @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @Autowired
@@ -434,5 +437,24 @@ public class DaoServiceJdbcImpl implements DaoService {
     @Override
     public List<String> getViews() throws DaoServiceException {
         return ((ViewDao)viewDao).getAllCodesForUser(userSession.userId);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String removeNoteFromView(String viewcode, long noteId) {
+        Map<String, Object> args = new HashMap<>();
+        args.put("viewCode", viewcode);
+        List<View> viewList = (List<View>)viewDao.get(args).get();
+        ViewNote viewNote = new ViewNote();
+        viewNote.setViewId(viewList.get(0).getViewId());
+        viewNote.setNoteId(noteId);
+
+        if (viewNoteDao.delete(viewNote)) {
+            return "success";
+        } else {
+            return "failure";
+        }
     }
 }

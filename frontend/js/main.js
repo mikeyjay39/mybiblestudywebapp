@@ -51,6 +51,7 @@ function getChapter() {
             currentChapter = data.chapter;
             currentBookId = data.bookId;
             currentChapterId = data.chapterId;
+            currentNotes = data.notes;
 
             // iterate through verses
             for (var i = 0; i < size; i++) {
@@ -59,8 +60,9 @@ function getChapter() {
 
             // iterate through notes
             for (var i = 0; i < notes.length; i++) {
-                noteOutput += "<strong>" + notes[i].verseStart + "-" + notes[i].verseEnd + "</strong>: " +
-                    notes[i].noteText + "</br>";
+                noteOutput += '<div id="note' + i + '"<strong>' + notes[i].verseStart + '-' + notes[i].verseEnd + '</strong>: ' +
+                    notes[i].noteText + '</br><button type="button" class="btn btn-sm btn-danger" ' +
+                    'onclick="removeNote(' + i + ')">Remove</button><hr></br>';
             }
 
             if (notes.length <= 0) {
@@ -415,6 +417,9 @@ function setCurrentViewCode(i) {
     $("#notes").show();
 }
 
+function removeNote(i) {
+    $("#note" + i).hide();
+}
 
 
 

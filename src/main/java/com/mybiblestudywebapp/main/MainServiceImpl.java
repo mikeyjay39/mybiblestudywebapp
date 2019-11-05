@@ -250,6 +250,19 @@ public class MainServiceImpl implements MainService {
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ResponseEntity<String> removeNoteFromView(String viewcode, long noteId) {
+        String result = daoService.removeNoteFromView(viewcode, noteId);
+
+        if ("success".equals(result)) {
+            return ResponseEntity.ok(result);
+        } else
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
+    }
+
+    /**
      * Handler for DaoService Exceptions. Sets HTTP status to 400
      * @param e
      * @param response

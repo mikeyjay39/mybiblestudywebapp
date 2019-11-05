@@ -82,4 +82,13 @@ public interface DaoService {
      */
     List<String> getViews() throws DaoServiceException;
 
+    /**
+     * Remove a note from a view
+     * @param viewcode
+     * @param noteId
+     * @return
+     * @throws DaoServiceException
+     */
+    String removeNoteFromView(String viewcode, long noteId);
+
 }

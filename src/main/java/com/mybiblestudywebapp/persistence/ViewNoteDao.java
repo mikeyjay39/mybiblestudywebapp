@@ -23,7 +23,7 @@ import java.util.Optional;
  * 10/19/19
  */
 @Component
-public class ViewNoteDao implements Dao<ViewNote> {
+public class ViewNoteDao implements UpdatableDao<ViewNote> {
 
     private static final Logger logger = LoggerFactory.getLogger(ViewNoteDao.class);
 
@@ -62,6 +62,27 @@ public class ViewNoteDao implements Dao<ViewNote> {
             logger.info(errMsg);
         }
         return Optional.ofNullable(result);
+    }
+
+    @Override
+    public long save(ViewNote viewNote) {
+        return 0;
+    }
+
+    @Override
+    public boolean update(ViewNote viewNote) {
+        return false;
+    }
+
+    @Override
+    public boolean delete(ViewNote viewNote) {
+        String sql = "DELETE FROM view_note WHERE view_id = :viewId AND " +
+                "note_id = noteId";
+        SqlParameterSource params = new MapSqlParameterSource()
+                .addValue("viewId", viewNote.getViewId())
+                .addValue("noteId", viewNote.getNoteId());
+        int rows = namedParameterJdbcTemplate.update(sql, params);
+        return rows > 0;
     }
 
     @Override

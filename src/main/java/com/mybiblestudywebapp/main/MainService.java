@@ -72,4 +72,12 @@ public interface MainService {
      */
     ResponseEntity<Response> getViews();
 
+    /**
+     * Remove a note from a view
+     * @param viewcode
+     * @param noteId
+     * @return
+     */
+    ResponseEntity<String> removeNoteFromView(String viewcode, long noteId);
+
 }

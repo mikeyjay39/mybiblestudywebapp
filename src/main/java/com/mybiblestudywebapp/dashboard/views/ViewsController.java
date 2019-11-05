@@ -4,10 +4,7 @@ import com.mybiblestudywebapp.main.MainService;
 import com.mybiblestudywebapp.main.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Created by Michael Jeszenka.
@@ -29,5 +26,11 @@ public class ViewsController {
     @GetMapping(path = "/get")
     public ResponseEntity<Response> getViews() {
         return mainService.getViews();
+    }
+
+    @DeleteMapping("/{viewcode}/{noteId}")
+    public ResponseEntity<String> removeNoteFromView(
+            @PathVariable String viewcode, @PathVariable long noteId) {
+        return mainService.removeNoteFromView(viewcode, noteId);
     }
 }
