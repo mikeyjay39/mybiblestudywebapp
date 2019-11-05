@@ -4,6 +4,8 @@ var currentBook;
 var currentChapter;
 var currentBookId;
 var currentChapterId;
+var currentViewCode;
+var userViewCodes;
 var chapterSize; // the number of verses in chapter
 
 function make_base_auth(user, password) {
@@ -225,19 +227,6 @@ function getCsrf() {
     return getCookie('XSRF-TOKEN');
 }
 
-/**
- * Return Csrf cookie
- */
-function processCsrf() {
-    // get csrf token
-    var csrfToken = getCookie('XSRF-TOKEN');
-    if (csrfToken) {
-        document.cookie = "csrfToken=" + csrfToken;
-    }
-
-    return csrfToken;
-}
-
 
 // return value of cookie
 function getCookie(cname) {
@@ -367,7 +356,38 @@ function createNote() {
  * Call this to get the logged in user's views
  */
 function getViewsForLoggedInUser() {
+    var endpoint = url + "/views/get";
 
+    $.ajax({
+        url: endpoint,
+        type: "GET",
+        datatype: "application/json; charset=utf-8",
+        success: function (data, status) {
+
+            var size = data.viewCodes.length;
+            userViewCodes = data.viewCodes;
+
+            // iterate through view codes
+            for (var i = 0; i < size; i++) {
+                var vc = data.viewCodes[i];
+                $("#viewsList").append(
+                    '<li class="list-group-item" onclick="setCurrentViewCode(' + i + ')" onmouseover="" style="cursor: pointer;">' +
+                    vc + '</li>'
+                );
+            }
+
+
+            //$("#verses").html(verseOutput);
+        },
+        error: function (xhr, ajaxOptions, thrownError) { //Add these parameters to display the required response
+            alert(xhr.status);
+            alert(xhr.responseText);
+        },
+        xhrFields: {
+            withCredentials: true
+        },
+        crossDomain: true
+    });
 }
 
 /**
@@ -375,6 +395,11 @@ function getViewsForLoggedInUser() {
  */
 function addView() {
 
+}
+
+function setCurrentViewCode(i) {
+    currentViewCode = userViewCodes[i];
+    $("#currentViewCode").text(userViewCodes[i]);
 }
 
 
