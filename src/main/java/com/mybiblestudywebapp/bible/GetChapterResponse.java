@@ -2,6 +2,7 @@ package com.mybiblestudywebapp.bible;
 
 import com.mybiblestudywebapp.main.ErrorResponse;
 import com.mybiblestudywebapp.main.Response;
+import com.mybiblestudywebapp.persistence.model.Note;
 
 import java.util.List;
 import java.util.Map;
@@ -69,4 +70,5 @@ public class GetChapterResponse implements Response {
     public void setVerses(List<Map<String, String>> verses) {
         this.verses = verses;
     }
+
 }

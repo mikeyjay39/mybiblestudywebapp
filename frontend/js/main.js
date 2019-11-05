@@ -1,10 +1,11 @@
 var url = "http://localhost:8080";
-var viewCode = "6e9e6366-f386-11e9-b633-0242ac110002";
+//var viewCode = "6e9e6366-f386-11e9-b633-0242ac110002";
 var currentBook;
 var currentChapter;
 var currentBookId;
 var currentChapterId;
-var currentViewCode;
+var currentViewCode = "";
+var currentNotes;
 var userViewCodes;
 var chapterSize; // the number of verses in chapter
 
@@ -14,11 +15,19 @@ function make_base_auth(user, password) {
     return "Basic " + hash;
 }
 
+function getService() {
+    if (currentViewCode == "") {
+        getChapterId();
+    } else {
+        getChapter();
+    }
+}
+
 function getChapter() {
 
     var book = $("#book").val();
     var chapterNo = $("#chapter").val();
-    var apiEndPoint = url + "/biblestudy/" + viewCode + "/" + book + "/" + chapterNo;
+    var apiEndPoint = url + "/biblestudy/" + currentViewCode + "/" + book + "/" + chapterNo;
 
     $.ajax({
         url: apiEndPoint,
@@ -40,6 +49,8 @@ function getChapter() {
             var size = verses.length;
             currentBook = data.book;
             currentChapter = data.chapter;
+            currentBookId = data.bookId;
+            currentChapterId = data.chapterId;
 
             // iterate through verses
             for (var i = 0; i < size; i++) {
@@ -48,7 +59,8 @@ function getChapter() {
 
             // iterate through notes
             for (var i = 0; i < notes.length; i++) {
-                noteOutput += "<strong>v" + notes[i].verse + "</strong>: " + notes[i].note + "</br>";
+                noteOutput += "<strong>" + notes[i].verseStart + "-" + notes[i].verseEnd + "</strong>: " +
+                    notes[i].noteText + "</br>";
             }
 
             if (notes.length <= 0) {
@@ -400,6 +412,7 @@ function addView() {
 function setCurrentViewCode(i) {
     currentViewCode = userViewCodes[i];
     $("#currentViewCode").text(userViewCodes[i]);
+    $("#notes").show();
 }
 
 

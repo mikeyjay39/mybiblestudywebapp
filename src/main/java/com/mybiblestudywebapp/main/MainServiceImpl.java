@@ -9,6 +9,7 @@ import com.mybiblestudywebapp.dashboard.notes.RankNoteResponse;
 import com.mybiblestudywebapp.dashboard.views.AddViewResponse;
 import com.mybiblestudywebapp.dashboard.views.GetViewsResponse;
 import com.mybiblestudywebapp.getbible.GetBibleService;
+import com.mybiblestudywebapp.persistence.Dao;
 import com.mybiblestudywebapp.persistence.DaoService;
 import com.mybiblestudywebapp.persistence.DaoServiceException;
 import com.mybiblestudywebapp.persistence.model.Note;
@@ -44,6 +45,9 @@ public class MainServiceImpl implements MainService {
     @Autowired
     private DaoService daoService;
 
+    @Autowired
+    private Dao bookDao;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(MainServiceImpl.class);
 
     /**
@@ -60,10 +64,20 @@ public class MainServiceImpl implements MainService {
 
         try {
             futureNotes = daoService.getStudyNotesForChapter(viewCode, book, chapterNo);
+            List<Note> notes = futureNotes.get();
             response.setBook(book);
             response.setChapter(chapterNo);
             response.setVerses(verses.get());
-            response.setNotes(futureNotes.get());
+            response.setNotes(notes);
+
+            if (notes.isEmpty()) {
+                var bookChapter = daoService.getChapter(book, chapterNo).get();
+                response.setBookId(bookChapter.get("bookId"));
+                response.setChapterId(bookChapter.get("chapterId"));
+            } else {
+                response.setBookId(notes.get(0).getBookId());
+                response.setChapterId(notes.get(0).getChapterId());
+            }
         } catch (DaoServiceException e) {
             return daoServiceExceptionHandler(e, response);
         } catch (InterruptedException e) {

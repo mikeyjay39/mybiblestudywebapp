@@ -88,6 +88,22 @@
         </div>
     </div>
 
+    <!-- Manage views row -->
+    <div class="row">
+    <div id="manageViews" class="col-sm-12 text-center">
+        <h5 class="text-center">
+            My Views
+        </h5>
+        <p>Current view:</p><strong>
+        <div id="currentViewCode"></div></strong>
+        <ul id="viewsList" class="list-group">
+        </ul>
+        <button type="button" class="btn btn-primary" onclick="createView()">Create new view</button>
+        <hr>
+    </div>
+    </div>
+    <!-- end manage views row -->
+
     <!-- chapter lookup -->
     <div class="row">
         <div class="col-sm-12 text-center">
@@ -97,7 +113,7 @@
                     <input id="book" type="text" class="textbox" name="book" pattern="[A-Za-z1-9]*">
                     Chapter:
                     <input id="chapter" class="textbox" name="chapter" type="number" />
-                    <button type="button" class="btn btn-primary" onclick="getChapterId()">Go!</button>
+                    <button type="button" class="btn btn-primary" onclick="getService()">Go!</button>
                 </p>
             </form>
         </div>
@@ -149,16 +165,6 @@
             </form>
         </div>
 
-        <div id="manageViews" class="col-sm-6">
-            <h5 class="text-center">
-                My Views
-            </h5>
-            <p>Current view:</p><strong>
-            <div id="currentViewCode"></div></strong>
-            <ul id="viewsList" class="list-group">
-            </ul>
-            <button type="button" class="btn btn-primary" onclick="createView()">Create new view</button>
-        </div>
     </div>
     <!-- end main content row -->
 
