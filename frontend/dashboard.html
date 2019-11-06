@@ -41,7 +41,7 @@
 
     <!-- sub navbar -->
     <div id="secondaryNavbar" class="row" style="display:none;">
-        <div class="col-sm-offset-1 col-sm-10">
+        <div class="col-sm-12 text-center">
 
             <ul class="list-inline text-center">
                 <li class="list-inline-item" onclick="showCreateNote()" onmouseover="this.style.cursor='pointer';"><strong><u>Create Note</u></strong></li>
@@ -91,17 +91,33 @@
     <!-- Manage views row -->
     <div class="row">
     <div id="manageViews" class="col-sm-12 text-center">
-        <h5 class="text-center">
-            My Views
-        </h5>
-        <p>Current view:</p><strong>
-        <div id="currentViewCode"></div></strong>
-        <ul id="viewsList" class="list-group">
-        </ul>
-        <button type="button" class="btn btn-primary" onclick="createView()">Create new view</button>
-        <button type="button" class="btn btn-danger" onclick="deleteView()">Delete current view</button>
+
+        <button type="button" class="btn btn-success" onclick="createView()">Create new view</button>
+        <button type="button" class="btn btn-secondary" onclick="showAddNotes()">Add notes</button>
 
         <hr>
+        <h4 class="text-center">
+            My Views
+        </h4>
+        <ul id="viewsList" class="list-group">
+        </ul>
+        <div>Current view:</div>
+            <strong>
+        <div id="currentViewCode"></div></strong>
+        <button type="button" class="btn btn-danger btn-sm" onclick="deleteView()">Delete current view</button>
+        <hr>
+
+        <div id="addNotes" class="text-center">
+            <h5>
+                Add Notes
+            </h5>
+            <p>Select authors</p>
+            <ul id="authorsList" class="list-group list-group-horizontal">
+            </ul>
+            <p>Set minimum ranking</p>
+        </div>
+
+
     </div>
     </div>
     <!-- end manage views row -->
@@ -170,6 +186,9 @@
     </div>
     <!-- end main content row -->
 
+<br>
+    <br>
+    <hr>
 
     <!-- end of container -->
 </div>
