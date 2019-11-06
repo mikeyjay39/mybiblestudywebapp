@@ -80,4 +80,11 @@ public interface MainService {
      */
     ResponseEntity<String> removeNoteFromView(String viewcode, long noteId);
 
+    /**
+     * Deletes a View based on viewcode
+     * @param viewcode
+     * @return response success or failure
+     */
+    ResponseEntity<Response> deleteView(String viewcode);
+
 }

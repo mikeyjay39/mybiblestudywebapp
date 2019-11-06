@@ -33,4 +33,10 @@ public class ViewsController {
             @PathVariable String viewcode, @PathVariable long noteId) {
         return mainService.removeNoteFromView(viewcode, noteId);
     }
+
+    @DeleteMapping("/{viewcode}/delete")
+    public ResponseEntity<Response> deleteView(@PathVariable String viewcode) {
+        return mainService.deleteView(viewcode);
+    }
+
 }

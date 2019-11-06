@@ -469,6 +469,39 @@ function removeNote(i) {
     });
 }
 
+/**
+ * Called when user clicks on delete current view
+ */
+function deleteView() {
+    var endpoint = url + "/views/" + currentViewCode + "/delete";
+    var token = getCsrf();
+
+    $.ajax({
+        url: endpoint,
+        type: "DELETE",
+        datatype: "application/json; charset=utf-8",
+        headers: {'X-XSRF-TOKEN': token},
+        success: function (data, status) {
+
+            alert('success');
+            $("#viewsList").empty();
+            currentViewCode = "";
+            $("#currentViewCode").text("");
+            getViewsForLoggedInUser();
+
+        },
+        error: function (xhr, ajaxOptions, thrownError) { //Add these parameters to display the required response
+            alert(xhr.status);
+            alert(xhr.responseText);
+            alert('did not remove view')
+        },
+        xhrFields: {
+            withCredentials: true
+        },
+        crossDomain: true
+    });
+}
+
 
 
 

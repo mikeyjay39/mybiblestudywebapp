@@ -7,6 +7,7 @@ import com.mybiblestudywebapp.main.Response;
 import com.mybiblestudywebapp.persistence.model.Note;
 import com.mybiblestudywebapp.persistence.model.User;
 import com.mybiblestudywebapp.persistence.model.View;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 import java.util.Map;
@@ -91,4 +92,10 @@ public interface DaoService {
      */
     String removeNoteFromView(String viewcode, long noteId);
 
+    /**
+     * Deletes a View based on viewcode
+     * @param viewcode
+     * @return response success or failure
+     */
+    CompletableFuture<String> deleteView(String viewcode) throws DaoServiceException;
 }

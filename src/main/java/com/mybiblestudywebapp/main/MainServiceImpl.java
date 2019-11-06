@@ -7,6 +7,7 @@ import com.mybiblestudywebapp.dashboard.notes.AddNoteResponse;
 import com.mybiblestudywebapp.dashboard.notes.RankNoteRequest;
 import com.mybiblestudywebapp.dashboard.notes.RankNoteResponse;
 import com.mybiblestudywebapp.dashboard.views.AddViewResponse;
+import com.mybiblestudywebapp.dashboard.views.DeleteViewResponse;
 import com.mybiblestudywebapp.dashboard.views.GetViewsResponse;
 import com.mybiblestudywebapp.getbible.GetBibleService;
 import com.mybiblestudywebapp.persistence.Dao;
@@ -260,6 +261,27 @@ public class MainServiceImpl implements MainService {
             return ResponseEntity.ok(result);
         } else
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ResponseEntity<Response> deleteView(String viewcode) {
+
+        DeleteViewResponse response = new DeleteViewResponse();
+
+        try {
+            String result = daoService.deleteView(viewcode).get();
+            response.setResult(result);
+            return ResponseEntity.ok(response);
+        } catch (DaoServiceException e) {
+            return daoServiceExceptionHandler(e, response);
+        } catch (InterruptedException e) {
+            return interruptedExceptionHandler(e, e.getMessage(), response);
+        } catch (ExecutionException e) {
+            return executionExceptionHandler(e, e.getMessage(), response);
+        }
     }
 
     /**

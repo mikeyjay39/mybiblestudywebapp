@@ -92,10 +92,20 @@ public class ViewDao implements UpdatableDao<View> {
      */
     @Override
     public boolean delete(View view) {
-        String sql = "DELETE FROM views WHERE view_id = :viewId";
+        String sql = "";
+        SqlParameterSource parameterSource;
+
+        if (view.getViewCode() == null) {
+            sql = "DELETE FROM views WHERE view_id = :viewId";
+            parameterSource = new MapSqlParameterSource()
+                    .addValue(VIEW_ID, view.getViewId());
+        } else {
+            sql = "DELETE FROM views WHERE view_code = :viewCode";
+            parameterSource = new MapSqlParameterSource()
+                    .addValue(VIEW_CODE, view.getViewCode(), Types.OTHER);
+        }
+
         KeyHolder holder = new GeneratedKeyHolder();
-        SqlParameterSource parameterSource = new MapSqlParameterSource()
-                .addValue(VIEW_ID, view.getViewId());
         int rows = 0;
         rows = namedParameterJdbcTemplate.update(sql, parameterSource, holder);
         return rows > 0;

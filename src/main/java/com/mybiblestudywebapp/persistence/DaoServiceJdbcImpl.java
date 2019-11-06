@@ -1,6 +1,5 @@
 package com.mybiblestudywebapp.persistence;
 
-import com.mybiblestudywebapp.bible.GetChapterResponse;
 import com.mybiblestudywebapp.dashboard.notes.RankNoteRequest;
 import com.mybiblestudywebapp.dashboard.notes.RankNoteResponse;
 import com.mybiblestudywebapp.dashboard.users.LoginResponse;
@@ -24,9 +23,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.sql.RowSet;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.Types;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.IntStream;
@@ -398,9 +395,11 @@ public class DaoServiceJdbcImpl implements DaoService {
         String sql = "SELECT b.book_id, c.chapter_id FROM books AS b " +
                 "JOIN chapters AS c ON b.book_id = c.book_id " +
                 "WHERE b.title = :title AND c.chapter_no = :chapterNo";
+
         SqlParameterSource params = new MapSqlParameterSource()
                 .addValue("title", book)
                 .addValue("chapterNo", chapterNo);
+
         Map<String, Integer> queryResult = new HashMap<>();
 
         try {
@@ -455,6 +454,38 @@ public class DaoServiceJdbcImpl implements DaoService {
             return "success";
         } else {
             return "failure";
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Async
+    @Transactional
+    public CompletableFuture<String> deleteView(String viewcode) throws DaoServiceException {
+        String sql = "SELECT v.view_id FROM views AS v JOIN " +
+                "users AS u on u.user_id = v.user_id " +
+                "WHERE u.user_id = :userId AND v.view_code = :viewCode";
+
+        SqlParameterSource params = new MapSqlParameterSource()
+                .addValue("viewCode", viewcode, Types.OTHER)
+                .addValue("userId", userSession.userId);
+
+        Long viewId = namedParameterJdbcTemplate.queryForObject(sql, params, Long.class);
+
+        if (viewId == null) {
+            throw new DaoServiceException("Could not match viewcode: " + viewcode + " to " +
+                    "user_id: " + userSession.userId);
+        }
+
+        View view = new View();
+        view.setViewId(viewId);
+
+        if (viewDao.delete(view)) {
+            return CompletableFuture.completedFuture("success");
+        } else {
+            throw new DaoServiceException("Could not delete viewCode: " + viewcode);
         }
     }
 }
