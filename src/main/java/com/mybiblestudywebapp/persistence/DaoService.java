@@ -98,4 +98,11 @@ public interface DaoService {
      * @return response success or failure
      */
     CompletableFuture<String> deleteView(String viewcode) throws DaoServiceException;
+
+    /**
+     * Returns all users
+     * @return
+     * @throws DaoServiceException
+     */
+    CompletableFuture<List<User>> getUsers() throws DaoServiceException;
 }

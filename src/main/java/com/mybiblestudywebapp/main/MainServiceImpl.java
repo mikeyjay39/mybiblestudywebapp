@@ -6,6 +6,7 @@ import com.mybiblestudywebapp.bible.GetChapterResponse;
 import com.mybiblestudywebapp.dashboard.notes.AddNoteResponse;
 import com.mybiblestudywebapp.dashboard.notes.RankNoteRequest;
 import com.mybiblestudywebapp.dashboard.notes.RankNoteResponse;
+import com.mybiblestudywebapp.dashboard.users.GetUsersResponse;
 import com.mybiblestudywebapp.dashboard.views.AddViewResponse;
 import com.mybiblestudywebapp.dashboard.views.DeleteViewResponse;
 import com.mybiblestudywebapp.dashboard.views.GetViewsResponse;
@@ -16,7 +17,10 @@ import com.mybiblestudywebapp.persistence.DaoServiceException;
 import com.mybiblestudywebapp.persistence.model.Note;
 import com.mybiblestudywebapp.persistence.model.User;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
@@ -274,6 +278,35 @@ public class MainServiceImpl implements MainService {
         try {
             String result = daoService.deleteView(viewcode).get();
             response.setResult(result);
+            return ResponseEntity.ok(response);
+        } catch (DaoServiceException e) {
+            return daoServiceExceptionHandler(e, response);
+        } catch (InterruptedException e) {
+            return interruptedExceptionHandler(e, e.getMessage(), response);
+        } catch (ExecutionException e) {
+            return executionExceptionHandler(e, e.getMessage(), response);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ResponseEntity<Response> getUsers() {
+        GetUsersResponse response = new GetUsersResponse();
+
+        try {
+            List<User> usersList = daoService.getUsers().get();
+            List<Map<String, Object>> users = new ArrayList<>();
+
+            for (User user : usersList) {
+                Map<String, Object> userRow = new HashMap<>();
+                userRow.put("name", user.getFirstname() + " " + user.getLastname());
+                userRow.put("userId", user.getUserId());
+                users.add(userRow);
+            }
+
+            response.setUsers(users);
             return ResponseEntity.ok(response);
         } catch (DaoServiceException e) {
             return daoServiceExceptionHandler(e, response);

@@ -6,6 +6,7 @@ var currentBookId;
 var currentChapterId;
 var currentViewCode = "";
 var currentNotes;
+var users;
 var userViewCodes;
 var chapterSize; // the number of verses in chapter
 
@@ -502,6 +503,40 @@ function deleteView() {
     });
 }
 
+function showAddNotes() {
+    var endpoint = url + "/users";
+    var token = getCsrf();
+
+    $.ajax({
+        url: endpoint,
+        type: "GET",
+        datatype: "application/json; charset=utf-8",
+        headers: {'X-XSRF-TOKEN': token},
+        success: function (data, status) {
+
+            users = data.users;
+            usersSize = users.length;
+
+            alert('success');
+            $("#authorsList").empty();
+
+            $("#viewsList").append(
+                '<li class="list-group-item" onclick="setCurrentViewCode(' + i + ')" onmouseover="" style="cursor: pointer;">' +
+                vc + '</li>'
+            );
+
+        },
+        error: function (xhr, ajaxOptions, thrownError) { //Add these parameters to display the required response
+            alert(xhr.status);
+            alert(xhr.responseText);
+            alert('cannot get users')
+        },
+        xhrFields: {
+            withCredentials: true
+        },
+        crossDomain: true
+    });
+}
 
 
 

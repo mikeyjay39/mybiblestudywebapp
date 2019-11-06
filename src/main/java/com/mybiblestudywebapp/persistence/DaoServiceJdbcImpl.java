@@ -488,4 +488,19 @@ public class DaoServiceJdbcImpl implements DaoService {
             throw new DaoServiceException("Could not delete viewCode: " + viewcode);
         }
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Async
+    public CompletableFuture<List<User>> getUsers() throws DaoServiceException {
+        var result = userDao.getAll();
+
+        if (result.isEmpty()) {
+            throw new DaoServiceException("No users returned by query");
+        }
+
+        return CompletableFuture.completedFuture(result);
+    }
 }

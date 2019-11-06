@@ -87,4 +87,10 @@ public interface MainService {
      */
     ResponseEntity<Response> deleteView(String viewcode);
 
+    /**
+     * Get a list of all the users. Response contains their whole name and their user_id.
+     * @return
+     */
+    ResponseEntity<Response> getUsers();
+
 }
