@@ -321,6 +321,7 @@ function showCreateNote() {
 }
 
 function showManageViews() {
+    $("#viewsList").empty();
     hideRightContentDiv();
     getViewsForLoggedInUser();
     $("#manageViews").show();
@@ -407,8 +408,32 @@ function getViewsForLoggedInUser() {
 /**
  * Call this to add a new view
  */
-function addView() {
+function createView() {
 
+    var endpoint = url + "/views/add";
+    var token = getCsrf();
+
+    $.ajax({
+        url: endpoint,
+        type: "POST",
+        headers: {'X-XSRF-TOKEN': token},
+        success: function (data, status) {
+
+            alert('view added');
+            $("#viewsList").empty();
+            getViewsForLoggedInUser();
+
+        },
+        error: function (xhr, ajaxOptions, thrownError) { //Add these parameters to display the required response
+            alert(xhr.status);
+            alert(xhr.responseText);
+            alert('did not create view')
+        },
+        xhrFields: {
+            withCredentials: true
+        },
+        crossDomain: true
+    });
 }
 
 function setCurrentViewCode(i) {
