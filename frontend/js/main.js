@@ -157,9 +157,14 @@ function getChapterUserNotes() {
 
                 // iterate through notes
                 for (var i = 0; i < notes.length; i++) {
-                    noteOutput += '<div id="note' + i + '"<strong>' + notes[i].verseStart + '-' + notes[i].verseEnd + '</strong>: ' +
-                        notes[i].noteText + '</br><button type="button" class="btn btn-sm btn-danger" ' +
-                        'onclick="removeNote(' + i + ')">Remove</button><hr></br>';
+                    noteOutput += '<hr><div id="note' + i + '"><strong>' + notes[i].verseStart + '-' + notes[i].verseEnd + '</strong>: ' +
+                        notes[i].noteText + '<br><div class ="btn-group">' +
+                        '<button type="button" class="btn btn-sm btn-primary" ' +
+                        'onclick="editNote(' + i + ')">Edit</button>' +
+                        '<button type="button" class="btn btn-sm btn-primary" ' +
+                        'onclick="viewComments(' + i + ')">View comments</button>' +
+                        '<button type="button" class="btn btn-sm btn-danger" ' +
+                        'onclick="removeNote(' + i + ')">Remove</button></div></div>';
                 }
 
                 if (notes.length <= 0) {
