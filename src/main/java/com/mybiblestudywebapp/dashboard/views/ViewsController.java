@@ -36,10 +36,10 @@ public class ViewsController {
      * @return
      */
     @PostMapping(path = "/add/{viewcode}/{author}/{ranking}")
-    public ResponseEntity<Response> addNotesToView(@RequestParam String viewcode,
-                                                   @RequestParam long authorId,
-                                                   @RequestParam int ranking) {
-        return mainService.addNotesToView(viewcode, authorId, ranking);
+    public ResponseEntity<Response> addNotesToView(@PathVariable String viewcode,
+                                                   @PathVariable long author,
+                                                   @PathVariable int ranking) {
+        return mainService.addNotesToView(viewcode, author, ranking);
     }
 
     @DeleteMapping("/{viewcode}/{noteId}")

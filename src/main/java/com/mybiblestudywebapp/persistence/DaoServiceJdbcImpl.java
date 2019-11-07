@@ -526,7 +526,8 @@ public class DaoServiceJdbcImpl implements DaoService {
                 "WHERE vn.view_id = :viewId AND vn.note_id = notes.note_id)";
         SqlParameterSource params = new MapSqlParameterSource()
                 .addValue("authorId", authorId)
-                .addValue("viewId", view.getViewId());
+                .addValue("viewId", view.getViewId())
+                .addValue("ranking", ranking);
         List<Note> results;
 
         try {

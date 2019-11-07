@@ -457,7 +457,7 @@ function removeNote(i) {
         headers: {'X-XSRF-TOKEN': token},
         success: function (data, status) {
 
-            alert('success');
+            alert('note removed from view');
             $("#note" + i).hide();
 
         },
@@ -519,8 +519,6 @@ function showAddNotes() {
 
             users = data.users;
             usersSize = users.length;
-
-            alert('success');
             $("#authorsList").empty();
 
             // add users to list
@@ -545,6 +543,42 @@ function showAddNotes() {
 
 function setCurrentAuthor(id) {
     selectedUser = id;
+}
+
+/**
+ * Called from manage view screen to add notes from an author with a minimum rank to the currently selected view.
+ */
+function addNotesToView() {
+    var minimumValue = $("#minimumRanking").val();
+
+    if (minimumValue == "") {
+        minimumValue = 0;
+    }
+
+    var endpoint = url + "/views/add/" + currentViewCode + "/" + selectedUser + "/" + minimumValue;
+    var token = getCsrf();
+
+    $.ajax({
+        url: endpoint,
+        type: "POST",
+        datatype: "application/json; charset=utf-8",
+        headers: {'X-XSRF-TOKEN': token},
+        success: function (data, status) {
+
+            alert('notes added to view');
+            getChapter();
+
+        },
+        error: function (xhr, ajaxOptions, thrownError) { //Add these parameters to display the required response
+            alert(xhr.status);
+            alert(xhr.responseText);
+            alert('cannot add notes to view')
+        },
+        xhrFields: {
+            withCredentials: true
+        },
+        crossDomain: true
+    });
 }
 
 
