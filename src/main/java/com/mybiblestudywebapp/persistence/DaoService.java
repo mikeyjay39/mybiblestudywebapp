@@ -3,6 +3,7 @@ package com.mybiblestudywebapp.persistence;
 import com.mybiblestudywebapp.bible.GetChapterResponse;
 import com.mybiblestudywebapp.dashboard.notes.RankNoteRequest;
 import com.mybiblestudywebapp.dashboard.notes.RankNoteResponse;
+import com.mybiblestudywebapp.dashboard.views.AddNotesToViewResponse;
 import com.mybiblestudywebapp.main.Response;
 import com.mybiblestudywebapp.persistence.model.Note;
 import com.mybiblestudywebapp.persistence.model.User;
@@ -105,4 +106,14 @@ public interface DaoService {
      * @throws DaoServiceException
      */
     CompletableFuture<List<User>> getUsers() throws DaoServiceException;
+
+    /**
+     * Add all notes from an author above a certain ranking to the target viewcode.
+     * @param viewcode target viewcode
+     * @param authorId author's notes to add
+     * @param ranking all notes above this ranking
+     * @return
+     */
+    CompletableFuture<String> addNotesToView(String viewcode, long authorId, int ranking)
+        throws DaoServiceException;
 }

@@ -4,6 +4,7 @@ import com.mybiblestudywebapp.dashboard.notes.RankNoteRequest;
 import com.mybiblestudywebapp.dashboard.notes.RankNoteResponse;
 import com.mybiblestudywebapp.dashboard.users.LoginResponse;
 import com.mybiblestudywebapp.dashboard.users.UserSession;
+import com.mybiblestudywebapp.dashboard.views.AddNotesToViewResponse;
 import com.mybiblestudywebapp.main.Response;
 import com.mybiblestudywebapp.persistence.model.*;
 import org.slf4j.Logger;
@@ -111,6 +112,7 @@ public class DaoServiceJdbcImpl implements DaoService {
                 .addValue("userId", userId)
                 .addValue("viewId", viewId);
         List<Note> results = null;
+
         try {
             results = namedParameterJdbcTemplate.query(sql, params, NoteDao::mapRow);
             if (results.isEmpty()) {
@@ -121,6 +123,7 @@ public class DaoServiceJdbcImpl implements DaoService {
             logger.info(errMsg);
             return CompletableFuture.completedFuture(0l);
         }
+
         List<ViewNote> viewNotes = new ArrayList<>();
 
         for (Note note : results) {
@@ -502,5 +505,65 @@ public class DaoServiceJdbcImpl implements DaoService {
         }
 
         return CompletableFuture.completedFuture(result);
+    }
+
+    /**
+     *
+     * {@inheritDoc}
+     */
+    @Override
+    @Async
+    public CompletableFuture<String> addNotesToView(String viewcode, long authorId, int ranking) throws DaoServiceException {
+        Map<String, Object> args = new HashMap<>();
+        args.put("viewCode", viewcode);
+        List<View> viewList = (List<View>)viewDao.get(args).get();
+        View view = viewList.get(0);
+
+        String sql = "SELECT * FROM notes WHERE user_id = :authorId " +
+                "AND priv = false AND ranking >= :ranking " +
+                "AND NOT EXISTS (" +
+                " SELECT * FROM view_note AS vn " +
+                "WHERE vn.view_id = :viewId AND vn.note_id = notes.note_id)";
+        SqlParameterSource params = new MapSqlParameterSource()
+                .addValue("authorId", authorId)
+                .addValue("viewId", view.getViewId());
+        List<Note> results;
+
+        try {
+            results = namedParameterJdbcTemplate.query(sql, params, NoteDao::mapRow);
+            if (results.isEmpty()) {
+                throw new DaoServiceException("No notes found to be added to view");
+            }
+        } catch (DataAccessException e) {
+            String errMsg = "Could not find notes from author: " + authorId + "\n" + e.getMessage();
+            logger.info(errMsg);
+            throw new DaoServiceException(errMsg);
+        }
+
+        List<ViewNote> viewNotes = new ArrayList<>();
+
+        for (Note note : results) {
+            ViewNote viewNote = new ViewNote();
+            viewNote.setViewId(view.getViewId());
+            viewNote.setNoteId(note.getNoteId());
+            viewNotes.add(viewNote);
+        }
+
+        String sqlInsert = "INSERT INTO view_note (view_id, note_id) " +
+                "VALUES (:viewId, :noteId)";
+
+        SqlParameterSource[] batch = SqlParameterSourceUtils.createBatch(viewNotes.toArray());
+        int[] updateCounts = null;
+
+        try {
+            updateCounts = namedParameterJdbcTemplate.batchUpdate(sqlInsert, batch);
+        } catch (DuplicateKeyException e) {
+            logger.error(e.getMessage());
+        }
+
+        int total = IntStream.of(updateCounts == null ? new int[]{0} : updateCounts)
+                .reduce(0, (a, b) -> a + b);
+
+        return CompletableFuture.completedFuture(total > 0 ? "success" : "no notes added");
     }
 }

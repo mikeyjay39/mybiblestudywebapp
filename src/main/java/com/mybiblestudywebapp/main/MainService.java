@@ -93,4 +93,13 @@ public interface MainService {
      */
     ResponseEntity<Response> getUsers();
 
+    /**
+     * Add all notes from an author above a certain ranking to the target viewcode.
+     * @param viewcode target viewcode
+     * @param authorId author's notes to add
+     * @param ranking all notes above this ranking
+     * @return
+     */
+    ResponseEntity<Response> addNotesToView(String viewcode, long authorId, int ranking);
+
 }

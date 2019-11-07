@@ -28,6 +28,20 @@ public class ViewsController {
         return mainService.getViews();
     }
 
+    /**
+     * Endpoint to add all notes from an author above a certain ranking to the target viewcode.
+     * @param viewcode target viewcode
+     * @param authorId author's notes to add
+     * @param ranking all notes above this ranking
+     * @return
+     */
+    @PostMapping(path = "/add/{viewcode}/{author}/{ranking}")
+    public ResponseEntity<Response> addNotesToView(@RequestParam String viewcode,
+                                                   @RequestParam long authorId,
+                                                   @RequestParam int ranking) {
+        return mainService.addNotesToView(viewcode, authorId, ranking);
+    }
+
     @DeleteMapping("/{viewcode}/{noteId}")
     public ResponseEntity<String> removeNoteFromView(
             @PathVariable String viewcode, @PathVariable long noteId) {
