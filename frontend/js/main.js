@@ -331,6 +331,12 @@ function showManageViews() {
     $("#manageViews").show();
 }
 
+function showManageNotes() {
+    hideRightContentDiv();
+    getAllUserNotes();
+    $("#notes").show();
+}
+
 /**
  * Call this when adding a new note
  */

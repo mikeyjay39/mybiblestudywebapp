@@ -116,4 +116,12 @@ public interface DaoService {
      */
     CompletableFuture<String> addNotesToView(String viewcode, long authorId, int ranking)
         throws DaoServiceException;
+
+    /**
+     * Gets all notes for the logged in user
+     * @return
+     * @throws DaoServiceException
+     */
+    CompletableFuture<List<Note>> getAllChapterNotesForUser(String book, long chapterNo, long userId)
+            throws DaoServiceException;
 }

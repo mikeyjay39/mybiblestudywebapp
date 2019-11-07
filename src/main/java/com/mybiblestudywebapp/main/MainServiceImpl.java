@@ -340,6 +340,41 @@ public class MainServiceImpl implements MainService {
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ResponseEntity<Response> getChapterNotesForUser(String book, int chapterNo, long userId) {
+        BibleStudyResponse response = new BibleStudyResponse();
+
+        try {
+            // Get Bible text
+            var getBibleTextFuture = getBibleService.getVersesForChapter(book, chapterNo);
+
+            // Get Notes
+            var getNotesFuture = daoService.getAllChapterNotesForUser(book, chapterNo, userId);
+
+            // Get future values
+            List<Note> notes = getNotesFuture.get();
+            var bibleText = getBibleTextFuture.get();
+
+            // Set response
+            response.setBook(book);
+            response.setChapter(chapterNo);
+            response.setBookId(notes.get(0).getBookId());
+            response.setChapterId(notes.get(0).getChapterId());
+            response.setVerses(bibleText);
+            response.setNotes(notes);
+            return ResponseEntity.ok(response);
+        } catch (DaoServiceException e) {
+            return daoServiceExceptionHandler(e, response);
+        } catch (InterruptedException e) {
+            return interruptedExceptionHandler(e, e.getMessage(), response);
+        } catch (ExecutionException e) {
+            return executionExceptionHandler(e, e.getMessage(), response);
+        }
+    }
+
+    /**
      * Handler for DaoService Exceptions. Sets HTTP status to 400
      * @param e
      * @param response

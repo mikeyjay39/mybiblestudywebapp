@@ -4,7 +4,6 @@ import com.mybiblestudywebapp.dashboard.notes.RankNoteRequest;
 import com.mybiblestudywebapp.dashboard.notes.RankNoteResponse;
 import com.mybiblestudywebapp.dashboard.users.LoginResponse;
 import com.mybiblestudywebapp.dashboard.users.UserSession;
-import com.mybiblestudywebapp.dashboard.views.AddNotesToViewResponse;
 import com.mybiblestudywebapp.main.Response;
 import com.mybiblestudywebapp.persistence.model.*;
 import org.slf4j.Logger;
@@ -109,8 +108,8 @@ public class DaoServiceJdbcImpl implements DaoService {
                 " SELECT * FROM view_note AS vn " +
                 "WHERE vn.view_id = :viewId AND vn.note_id = notes.note_id)";
         SqlParameterSource params = new MapSqlParameterSource()
-                .addValue("userId", userId)
-                .addValue("viewId", viewId);
+                .addValue(USER_ID, userId)
+                .addValue(VIEW_ID, viewId);
         List<Note> results = null;
 
         try {
@@ -407,27 +406,14 @@ public class DaoServiceJdbcImpl implements DaoService {
 
         try {
             SqlRowSet rs = namedParameterJdbcTemplate.queryForRowSet(sql, params);
-                    /*rs -> {
-                        if (rs.next()) {
-                            queryResult.put("bookId", rs.getInt("b.book_id"));
-                            queryResult.put("chapterId", rs.getInt("c.chapter_id"));
-                        }
-                    }*/
+
                     if (rs.next()) {
                         queryResult.put("bookId", rs.getInt("book_id"));
                         queryResult.put("chapterId", rs.getInt("chapter_id"));
                     }
-
-            /*if (rs.next()) {
-                queryResult.put("bookId", rs.getInt("b.book_id"));
-                queryResult.put("chapterId", rs.getInt("c.chapter_id"));
-            }*/
         } catch (DataAccessException e) {
             throw new DaoServiceException("Could not find IDs for book: " + book + " and chapter: " + chapterNo +
                     "\n" + e.getMessage());
-        /*} catch (SQLException e) {
-            throw new DaoServiceException(e);
-        }*/
         }
 
             return CompletableFuture.completedFuture(queryResult);
@@ -566,5 +552,29 @@ public class DaoServiceJdbcImpl implements DaoService {
                 .reduce(0, (a, b) -> a + b);
 
         return CompletableFuture.completedFuture(total > 0 ? "success" : "no notes added");
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Async
+    public CompletableFuture<List<Note>> getAllChapterNotesForUser(String book, long chapterNo, long userId)
+            throws DaoServiceException {
+        Map<String, Object> args = new HashMap<>();
+        args.put("userId", userId);
+        args.put("book", book);
+        args.put("chapterNo", chapterNo);
+        // make sure only private notes are selected if this comes from the logged in user
+        args.put("priv", userId != userSession.userId);
+        var opt = noteDao.get(args);
+
+        if (opt.isPresent()) {
+            return CompletableFuture.completedFuture((List<Note>) opt.get());
+        } else {
+            throw new DaoServiceException(
+                    "No notes found for user: " + userId + " book: " + book + " chapter: " + chapterNo
+            );
+        }
     }
 }

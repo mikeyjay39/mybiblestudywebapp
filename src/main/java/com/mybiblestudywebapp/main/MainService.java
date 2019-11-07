@@ -102,4 +102,13 @@ public interface MainService {
      */
     ResponseEntity<Response> addNotesToView(String viewcode, long authorId, int ranking);
 
+    /**
+     * Get all the chapter notes for the logged in user
+     * @param book
+     * @param chapterNo
+     * @param userId
+     * @return
+     */
+    ResponseEntity<Response> getChapterNotesForUser(String book, int chapterNo, long userId);
+
 }

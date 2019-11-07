@@ -35,7 +35,8 @@ import static com.mybiblestudywebapp.main.Constants.*;
 enum GetNotesCase {
     CHAPTER_NOTES_FROM_VIEW,
     ALL_NOTES_ABOVE_RANK,
-    ALL_NOTES_FROM_AUTHOR
+    ALL_NOTES_FROM_AUTHOR,
+    CHAPTER_NOTES_FROM_AUTHOR
 }
 
 @Component
@@ -157,6 +158,8 @@ public class NoteDao implements UpdatableDao<Note> {
                 return getAllNotesAboveRank(args);
             case ALL_NOTES_FROM_AUTHOR:
                 return getAllNotesFromAuthor(args);
+            case CHAPTER_NOTES_FROM_AUTHOR:
+                return getChapterNotesFromAuthor(args);
             default:
                 break;
         }
@@ -215,9 +218,17 @@ public class NoteDao implements UpdatableDao<Note> {
         List<String> notesFromAuthor = new ArrayList<>();
         notesFromAuthor.add(USER_ID);
 
+        // Build get notes from user and chapter
+        List<String> chapterNotesForUser = new ArrayList<>();
+        chapterNotesForUser.add(USER_ID);
+        chapterNotesForUser.add("book");
+        chapterNotesForUser.add("chapterNo");
+
         // Build get public notes from author
         if (keys.containsAll(notesViewKeys)) {
             result = GetNotesCase.CHAPTER_NOTES_FROM_VIEW;
+        } else if (keys.containsAll(chapterNotesForUser)) {
+            result = GetNotesCase.CHAPTER_NOTES_FROM_AUTHOR;
         } else if (keys.containsAll(notesRankingKeys)) {
             result = GetNotesCase.ALL_NOTES_ABOVE_RANK;
         } else if (keys.containsAll(notesFromAuthor)) {
@@ -301,4 +312,32 @@ public class NoteDao implements UpdatableDao<Note> {
         return Optional.ofNullable(result);
     }
 
-}
+    /**
+     *
+     * @param args keys are "userId", "book", "chapterNo" and "priv"
+     * @return
+     */
+    private Optional<List<Note>> getChapterNotesFromAuthor(final Map<String, Object> args) {
+        List<Note> result = null;
+        StringBuilder sqlBuilder = new StringBuilder("SELECT * FROM notes as n " +
+                "JOIN books AS b ON b.book_id = n.book_id " +
+                "JOIN chapters AS c ON c.chapter_id = n.chapter_id " +
+                "WHERE n.user_id = :userId AND b.title = :book AND c.chapter_no = :chapterNo");
+
+        if ((boolean)args.get("priv")) {
+            sqlBuilder.append(" AND n.priv = false");
+        }
+
+        String sql = sqlBuilder.toString();
+
+        try {
+            result = namedParameterJdbcTemplate.query(sql, args, NoteDao::mapRow);
+        } catch (DataAccessException e) {
+            String errMsg = "Could not retrieve notes for user_id: " + args.get("userId") + "\n" + e.getMessage();
+            LOGGER.error(errMsg);
+        }
+
+        return Optional.ofNullable(result);
+    }
+
+    }

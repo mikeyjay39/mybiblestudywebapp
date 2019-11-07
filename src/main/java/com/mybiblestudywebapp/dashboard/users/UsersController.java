@@ -29,4 +29,17 @@ public class UsersController {
     public ResponseEntity<Response> getUsers() {
         return mainService.getUsers();
     }
+
+    /**
+     * Get all the chapter notes for the logged in user along with the Bible text
+     * @param book
+     * @param chapterNo
+     * @return
+     */
+    @GetMapping(path = "/mynotes/{book}/{chapterNo}")
+    public ResponseEntity<Response> getMyNotes(@PathVariable String book,
+                                               @PathVariable int chapterNo,
+                                               @PathVariable long userId) {
+        return mainService.getChapterNotesForUser(book, chapterNo, userId);
+    }
 }
