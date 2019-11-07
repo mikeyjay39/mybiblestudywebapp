@@ -20,6 +20,19 @@ public class NotesController {
     private MainService mainService;
 
     /**
+     * Get all the chapter notes for the logged in user along with the Bible text
+     * @param book
+     * @param chapterNo
+     * @return
+     */
+    @GetMapping(path = "/mynotes/{book}/{chapterNo}/{userId}")
+    public ResponseEntity<Response> getMyNotes(@PathVariable String book,
+                                               @PathVariable int chapterNo,
+                                               @PathVariable long userId) {
+        return mainService.getChapterNotesForUser(book, chapterNo, userId);
+    }
+
+    /**
      * Endpoint for adding new notes
      * @param request
      * @return

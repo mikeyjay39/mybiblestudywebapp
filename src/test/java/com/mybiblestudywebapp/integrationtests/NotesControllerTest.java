@@ -1,6 +1,8 @@
 package com.mybiblestudywebapp.integrationtests;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.mybiblestudywebapp.bible.BibleStudyResponse;
 import com.mybiblestudywebapp.dashboard.notes.AddNoteResponse;
 import com.mybiblestudywebapp.dashboard.notes.RankNoteRequest;
 import com.mybiblestudywebapp.dashboard.notes.RankNoteResponse;
@@ -20,6 +22,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -86,5 +89,15 @@ public class NotesControllerTest {
         );
 
         Assert.assertEquals("success", response.getResult());
+    }
+
+    @Test
+    public void getChapterNotesForUser() throws Exception {
+
+        MvcResult result = mvc.perform(get("/notes/mynotes/Genesis/1/1")
+                .with(csrf().asHeader()))
+                .andExpect(status().isOk())
+                .andReturn();
+
     }
 }
