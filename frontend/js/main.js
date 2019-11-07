@@ -6,7 +6,9 @@ var currentBookId;
 var currentChapterId;
 var currentViewCode = "";
 var currentNotes;
-var users;
+var currentUserId; // id of the currently logged in user
+var selectedUser; // id of the selected user
+var users; // list of user objects
 var userViewCodes;
 var chapterSize; // the number of verses in chapter
 
@@ -201,7 +203,7 @@ function autoLogin() {
             xhr.setRequestHeader("Authorization", "Basic " + btoa("admin@admin.com:12345"));
         },
         success: function (data, status) {
-            var userId = data.userId;
+            currentUserId = data.userId;
             successfulLogin();
         },
         error: function (xhr, ajaxOptions, thrownError) { //Add these parameters to display the required response
@@ -312,6 +314,7 @@ function successfulLogin() {
  */
 function logoutHandler() {
     showLoginForm();
+    currentUserId = "";
     $("#login").text("Login");
     $("#login").attr("onclick","showLoginForm()");
 }
@@ -520,11 +523,13 @@ function showAddNotes() {
             alert('success');
             $("#authorsList").empty();
 
-            $("#viewsList").append(
-                '<li class="list-group-item" onclick="setCurrentViewCode(' + i + ')" onmouseover="" style="cursor: pointer;">' +
-                vc + '</li>'
-            );
-
+            // add users to list
+            for (var i = 0; i < usersSize; i++) {
+                $("#authorsList").append(
+                    '<button type="button" class="list-group-item list-group-item-action list-group-item-primary" onclick="setCurrentAuthor(' + users[i].userId + ')" onmouseover="" style="cursor: pointer;">' +
+                    users[i].name + '</button>'
+                )
+            }
         },
         error: function (xhr, ajaxOptions, thrownError) { //Add these parameters to display the required response
             alert(xhr.status);
@@ -536,6 +541,10 @@ function showAddNotes() {
         },
         crossDomain: true
     });
+}
+
+function setCurrentAuthor(id) {
+    selectedUser = id;
 }
 
 
