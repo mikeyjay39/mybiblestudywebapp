@@ -360,8 +360,12 @@ public class MainServiceImpl implements MainService {
             // Set response
             response.setBook(book);
             response.setChapter(chapterNo);
-            response.setBookId(notes.get(0).getBookId());
-            response.setChapterId(notes.get(0).getChapterId());
+
+            if (!notes.isEmpty()) {
+                response.setBookId(notes.get(0).getBookId());
+                response.setChapterId(notes.get(0).getChapterId());
+            }
+
             response.setVerses(bibleText);
             response.setNotes(notes);
             return ResponseEntity.ok(response);

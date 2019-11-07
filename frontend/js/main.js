@@ -36,11 +36,6 @@ function getChapter() {
         url: apiEndPoint,
         type: "GET",
         datatype: "application/json; charset=utf-8",
-        /*beforeSend: function (xhr){
-            //xhr.setRequestHeader("Authorization", "Basic " + btoa("admin@admin.com:12345"));
-
-            xhr.setRequestHeader("Authorization", "Basic " + btoa("testingemail@testingthis.com:testpassword"));
-        },*/
         success: function (data, status) {
 
             var returnedBook = data.book;
@@ -124,6 +119,66 @@ function getChapterId() {
         },
         crossDomain: true
     });
+}
+
+/**
+ * Used to get Bible text and notes for the currently logged in user
+ */
+function getChapterUserNotes() {
+
+    var book = $("#book").val();
+    var chapterNo = $("#chapter").val();
+    var endpoint = url + "/notes/mynotes/" + book + "/" + chapterNo + "/" + currentUserId;
+
+    if (book != "" && chapterNo != "") {
+        $.ajax({
+            url: endpoint,
+            type: "GET",
+            datatype: "application/json; charset=utf-8",
+            success: function (data, status) {
+
+                var returnedBook = data.book;
+                var verseOutput = "";
+                var noteOutput = "";
+                var versesId = $("#verses");
+                var verses = data.verses;
+                var notes = data.notes;
+                var size = verses.length;
+                currentBook = data.book;
+                currentChapter = data.chapter;
+                currentBookId = data.bookId;
+                currentChapterId = data.chapterId;
+                currentNotes = data.notes;
+
+                // iterate through verses
+                for (var i = 0; i < size; i++) {
+                    verseOutput += "<sup>" + verses[i].verseNr + "</sup>" + verses[i].verse;
+                }
+
+                // iterate through notes
+                for (var i = 0; i < notes.length; i++) {
+                    noteOutput += '<div id="note' + i + '"<strong>' + notes[i].verseStart + '-' + notes[i].verseEnd + '</strong>: ' +
+                        notes[i].noteText + '</br><button type="button" class="btn btn-sm btn-danger" ' +
+                        'onclick="removeNote(' + i + ')">Remove</button><hr></br>';
+                }
+
+                if (notes.length <= 0) {
+                    noteOutput = "<em>No notes available for this chapter</em>"
+                }
+
+                versesId.html(verseOutput);
+                $("#notes").html(noteOutput);
+            },
+            error: function (xhr, ajaxOptions, thrownError) { //Add these parameters to display the required response
+                alert(xhr.status);
+                alert(xhr.responseText);
+            },
+            xhrFields: {
+                withCredentials: true
+            },
+            crossDomain: true
+        });
+    }
 }
 
 function createUser() {
@@ -276,6 +331,7 @@ function hideAllBody() {
  * Hide the content column next to verses
  */
 function hideRightContentDiv() {
+    $("#goButton").attr("onclick","getService()");
     $("#notes").hide();
     $("#createNote").hide();
     $("#manageViews").hide();
@@ -333,8 +389,9 @@ function showManageViews() {
 
 function showManageNotes() {
     hideRightContentDiv();
-    getAllUserNotes();
+    getChapterUserNotes();
     $("#notes").show();
+    $("#goButton").attr("onclick","getChapterUserNotes()");
 }
 
 /**
