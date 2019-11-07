@@ -92,10 +92,20 @@ public class ViewDao implements UpdatableDao<View> {
      */
     @Override
     public boolean delete(View view) {
-        String sql = "DELETE FROM views WHERE view_id = :viewId";
+        String sql = "";
+        SqlParameterSource parameterSource;
+
+        if (view.getViewCode() == null) {
+            sql = "DELETE FROM views WHERE view_id = :viewId";
+            parameterSource = new MapSqlParameterSource()
+                    .addValue(VIEW_ID, view.getViewId());
+        } else {
+            sql = "DELETE FROM views WHERE view_code = :viewCode";
+            parameterSource = new MapSqlParameterSource()
+                    .addValue(VIEW_CODE, view.getViewCode(), Types.OTHER);
+        }
+
         KeyHolder holder = new GeneratedKeyHolder();
-        SqlParameterSource parameterSource = new MapSqlParameterSource()
-                .addValue(VIEW_ID, view.getViewId());
         int rows = 0;
         rows = namedParameterJdbcTemplate.update(sql, parameterSource, holder);
         return rows > 0;
@@ -144,6 +154,20 @@ public class ViewDao implements UpdatableDao<View> {
     public List<View> getAll() {
         String sql = "SELECT * FROM views";
         return jdbcTemplate.query(sql, ViewDao::mapRow);
+    }
+
+    /**
+     * Get all the view codes for a user
+     * @param userId
+     * @return
+     */
+    public List<String> getAllCodesForUser(long userId) {
+        String sql = "Select view_code FROM views " +
+                "WHERE user_id = :userId";
+        SqlParameterSource params = new MapSqlParameterSource()
+                .addValue("userId", userId);
+
+        return namedParameterJdbcTemplate.queryForList(sql, params, String.class);
     }
 
     private static View mapRow(ResultSet rs, int rowNum) throws SQLException {

@@ -6,14 +6,22 @@ import com.mybiblestudywebapp.bible.GetChapterResponse;
 import com.mybiblestudywebapp.dashboard.notes.AddNoteResponse;
 import com.mybiblestudywebapp.dashboard.notes.RankNoteRequest;
 import com.mybiblestudywebapp.dashboard.notes.RankNoteResponse;
+import com.mybiblestudywebapp.dashboard.users.GetUsersResponse;
+import com.mybiblestudywebapp.dashboard.views.AddNotesToViewResponse;
 import com.mybiblestudywebapp.dashboard.views.AddViewResponse;
+import com.mybiblestudywebapp.dashboard.views.DeleteViewResponse;
+import com.mybiblestudywebapp.dashboard.views.GetViewsResponse;
 import com.mybiblestudywebapp.getbible.GetBibleService;
+import com.mybiblestudywebapp.persistence.Dao;
 import com.mybiblestudywebapp.persistence.DaoService;
 import com.mybiblestudywebapp.persistence.DaoServiceException;
 import com.mybiblestudywebapp.persistence.model.Note;
 import com.mybiblestudywebapp.persistence.model.User;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
@@ -43,6 +51,9 @@ public class MainServiceImpl implements MainService {
     @Autowired
     private DaoService daoService;
 
+    @Autowired
+    private Dao bookDao;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(MainServiceImpl.class);
 
     /**
@@ -59,10 +70,20 @@ public class MainServiceImpl implements MainService {
 
         try {
             futureNotes = daoService.getStudyNotesForChapter(viewCode, book, chapterNo);
+            List<Note> notes = futureNotes.get();
             response.setBook(book);
             response.setChapter(chapterNo);
             response.setVerses(verses.get());
-            response.setNotes(futureNotes.get());
+            response.setNotes(notes);
+
+            if (notes.isEmpty()) {
+                var bookChapter = daoService.getChapter(book, chapterNo).get();
+                response.setBookId(bookChapter.get("bookId"));
+                response.setChapterId(bookChapter.get("chapterId"));
+            } else {
+                response.setBookId(notes.get(0).getBookId());
+                response.setChapterId(notes.get(0).getChapterId());
+            }
         } catch (DaoServiceException e) {
             return daoServiceExceptionHandler(e, response);
         } catch (InterruptedException e) {
@@ -208,6 +229,106 @@ public class MainServiceImpl implements MainService {
             response.setChapterId(chapters.get("chapterId"));
             response.setBook(book);
             response.setChapter(chapterNo);
+            return ResponseEntity.ok(response);
+        } catch (DaoServiceException e) {
+            return daoServiceExceptionHandler(e, response);
+        } catch (InterruptedException e) {
+            return interruptedExceptionHandler(e, e.getMessage(), response);
+        } catch (ExecutionException e) {
+            return executionExceptionHandler(e, e.getMessage(), response);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ResponseEntity<Response> getViews() {
+        GetViewsResponse response = new GetViewsResponse();
+
+        try {
+            var views = daoService.getViews();
+            response.setViewCodes(views);
+            return ResponseEntity.ok(response);
+        } catch (DaoServiceException e) {
+            return daoServiceExceptionHandler(e, response);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ResponseEntity<String> removeNoteFromView(String viewcode, long noteId) {
+        String result = daoService.removeNoteFromView(viewcode, noteId);
+
+        if ("success".equals(result)) {
+            return ResponseEntity.ok(result);
+        } else
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ResponseEntity<Response> deleteView(String viewcode) {
+
+        DeleteViewResponse response = new DeleteViewResponse();
+
+        try {
+            String result = daoService.deleteView(viewcode).get();
+            response.setResult(result);
+            return ResponseEntity.ok(response);
+        } catch (DaoServiceException e) {
+            return daoServiceExceptionHandler(e, response);
+        } catch (InterruptedException e) {
+            return interruptedExceptionHandler(e, e.getMessage(), response);
+        } catch (ExecutionException e) {
+            return executionExceptionHandler(e, e.getMessage(), response);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ResponseEntity<Response> getUsers() {
+        GetUsersResponse response = new GetUsersResponse();
+
+        try {
+            List<User> usersList = daoService.getUsers().get();
+            List<Map<String, Object>> users = new ArrayList<>();
+
+            for (User user : usersList) {
+                Map<String, Object> userRow = new HashMap<>();
+                userRow.put("name", user.getFirstname() + " " + user.getLastname());
+                userRow.put("userId", user.getUserId());
+                users.add(userRow);
+            }
+
+            response.setUsers(users);
+            return ResponseEntity.ok(response);
+        } catch (DaoServiceException e) {
+            return daoServiceExceptionHandler(e, response);
+        } catch (InterruptedException e) {
+            return interruptedExceptionHandler(e, e.getMessage(), response);
+        } catch (ExecutionException e) {
+            return executionExceptionHandler(e, e.getMessage(), response);
+        }
+    }
+
+    /**
+     *
+     * {@inheritDoc}
+     */
+    @Override
+    public ResponseEntity<Response> addNotesToView(String viewcode, long authorId, int ranking) {
+        AddNotesToViewResponse response = new AddNotesToViewResponse();
+
+        try {
+            String result = daoService.addNotesToView(viewcode, authorId, ranking).get();
+            response.setResult(result);
             return ResponseEntity.ok(response);
         } catch (DaoServiceException e) {
             return daoServiceExceptionHandler(e, response);

@@ -66,4 +66,40 @@ public interface MainService {
      */
     ResponseEntity<Response> getChapter(String book, int chapterNo);
 
+    /**
+     * Get view codes for currently logged in user.
+     * @return
+     */
+    ResponseEntity<Response> getViews();
+
+    /**
+     * Remove a note from a view
+     * @param viewcode
+     * @param noteId
+     * @return
+     */
+    ResponseEntity<String> removeNoteFromView(String viewcode, long noteId);
+
+    /**
+     * Deletes a View based on viewcode
+     * @param viewcode
+     * @return response success or failure
+     */
+    ResponseEntity<Response> deleteView(String viewcode);
+
+    /**
+     * Get a list of all the users. Response contains their whole name and their user_id.
+     * @return
+     */
+    ResponseEntity<Response> getUsers();
+
+    /**
+     * Add all notes from an author above a certain ranking to the target viewcode.
+     * @param viewcode target viewcode
+     * @param authorId author's notes to add
+     * @param ranking all notes above this ranking
+     * @return
+     */
+    ResponseEntity<Response> addNotesToView(String viewcode, long authorId, int ranking);
+
 }

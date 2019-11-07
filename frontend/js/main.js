@@ -1,9 +1,15 @@
 var url = "http://localhost:8080";
-var viewCode = "6e9e6366-f386-11e9-b633-0242ac110002";
+//var viewCode = "6e9e6366-f386-11e9-b633-0242ac110002";
 var currentBook;
 var currentChapter;
 var currentBookId;
 var currentChapterId;
+var currentViewCode = "";
+var currentNotes;
+var currentUserId; // id of the currently logged in user
+var selectedUser; // id of the selected user
+var users; // list of user objects
+var userViewCodes;
 var chapterSize; // the number of verses in chapter
 
 function make_base_auth(user, password) {
@@ -12,11 +18,19 @@ function make_base_auth(user, password) {
     return "Basic " + hash;
 }
 
+function getService() {
+    if (currentViewCode == "") {
+        getChapterId();
+    } else {
+        getChapter();
+    }
+}
+
 function getChapter() {
 
     var book = $("#book").val();
     var chapterNo = $("#chapter").val();
-    var apiEndPoint = url + "/biblestudy/" + viewCode + "/" + book + "/" + chapterNo;
+    var apiEndPoint = url + "/biblestudy/" + currentViewCode + "/" + book + "/" + chapterNo;
 
     $.ajax({
         url: apiEndPoint,
@@ -38,6 +52,9 @@ function getChapter() {
             var size = verses.length;
             currentBook = data.book;
             currentChapter = data.chapter;
+            currentBookId = data.bookId;
+            currentChapterId = data.chapterId;
+            currentNotes = data.notes;
 
             // iterate through verses
             for (var i = 0; i < size; i++) {
@@ -46,7 +63,9 @@ function getChapter() {
 
             // iterate through notes
             for (var i = 0; i < notes.length; i++) {
-                noteOutput += "<strong>v" + notes[i].verse + "</strong>: " + notes[i].note + "</br>";
+                noteOutput += '<div id="note' + i + '"<strong>' + notes[i].verseStart + '-' + notes[i].verseEnd + '</strong>: ' +
+                    notes[i].noteText + '</br><button type="button" class="btn btn-sm btn-danger" ' +
+                    'onclick="removeNote(' + i + ')">Remove</button><hr></br>';
             }
 
             if (notes.length <= 0) {
@@ -184,7 +203,7 @@ function autoLogin() {
             xhr.setRequestHeader("Authorization", "Basic " + btoa("admin@admin.com:12345"));
         },
         success: function (data, status) {
-            var userId = data.userId;
+            currentUserId = data.userId;
             successfulLogin();
         },
         error: function (xhr, ajaxOptions, thrownError) { //Add these parameters to display the required response
@@ -225,19 +244,6 @@ function getCsrf() {
     return getCookie('XSRF-TOKEN');
 }
 
-/**
- * Return Csrf cookie
- */
-function processCsrf() {
-    // get csrf token
-    var csrfToken = getCookie('XSRF-TOKEN');
-    if (csrfToken) {
-        document.cookie = "csrfToken=" + csrfToken;
-    }
-
-    return csrfToken;
-}
-
 
 // return value of cookie
 function getCookie(cname) {
@@ -267,11 +273,12 @@ function hideAllBody() {
 }
 
 /**
- * Hide the column next to verses
+ * Hide the content column next to verses
  */
 function hideRightContentDiv() {
     $("#notes").hide();
     $("#createNote").hide();
+    $("#manageViews").hide();
 }
 
 /**
@@ -307,6 +314,7 @@ function successfulLogin() {
  */
 function logoutHandler() {
     showLoginForm();
+    currentUserId = "";
     $("#login").text("Login");
     $("#login").attr("onclick","showLoginForm()");
 }
@@ -316,6 +324,16 @@ function showCreateNote() {
     $("#createNote").show();
 }
 
+function showManageViews() {
+    $("#viewsList").empty();
+    hideRightContentDiv();
+    getViewsForLoggedInUser();
+    $("#manageViews").show();
+}
+
+/**
+ * Call this when adding a new note
+ */
 function createNote() {
 
     var endpoint = url + "/notes/add";
@@ -345,6 +363,216 @@ function createNote() {
         error: function (xhr, ajaxOptions, thrownError) { //Add these parameters to display the required response
             alert(xhr.status);
             alert(xhr.responseText);
+        },
+        xhrFields: {
+            withCredentials: true
+        },
+        crossDomain: true
+    });
+}
+
+/**
+ * Call this to get the logged in user's views
+ */
+function getViewsForLoggedInUser() {
+    var endpoint = url + "/views/get";
+
+    $.ajax({
+        url: endpoint,
+        type: "GET",
+        datatype: "application/json; charset=utf-8",
+        success: function (data, status) {
+
+            var size = data.viewCodes.length;
+            userViewCodes = data.viewCodes;
+
+            // iterate through view codes
+            for (var i = 0; i < size; i++) {
+                var vc = data.viewCodes[i];
+                $("#viewsList").append(
+                    '<li class="list-group-item" onclick="setCurrentViewCode(' + i + ')" onmouseover="" style="cursor: pointer;">' +
+                    vc + '</li>'
+                );
+            }
+
+
+            //$("#verses").html(verseOutput);
+        },
+        error: function (xhr, ajaxOptions, thrownError) { //Add these parameters to display the required response
+            alert(xhr.status);
+            alert(xhr.responseText);
+        },
+        xhrFields: {
+            withCredentials: true
+        },
+        crossDomain: true
+    });
+}
+
+/**
+ * Call this to add a new view
+ */
+function createView() {
+
+    var endpoint = url + "/views/add";
+    var token = getCsrf();
+
+    $.ajax({
+        url: endpoint,
+        type: "POST",
+        headers: {'X-XSRF-TOKEN': token},
+        success: function (data, status) {
+
+            alert('view added');
+            $("#viewsList").empty();
+            getViewsForLoggedInUser();
+
+        },
+        error: function (xhr, ajaxOptions, thrownError) { //Add these parameters to display the required response
+            alert(xhr.status);
+            alert(xhr.responseText);
+            alert('did not create view')
+        },
+        xhrFields: {
+            withCredentials: true
+        },
+        crossDomain: true
+    });
+}
+
+function setCurrentViewCode(i) {
+    currentViewCode = userViewCodes[i];
+    $("#currentViewCode").text(userViewCodes[i]);
+    $("#notes").show();
+}
+
+function removeNote(i) {
+
+    var endpoint = url + "/views/" + currentViewCode + "/" + currentNotes[i].noteId;
+    var token = getCsrf();
+
+    $.ajax({
+        url: endpoint,
+        type: "DELETE",
+        headers: {'X-XSRF-TOKEN': token},
+        success: function (data, status) {
+
+            alert('note removed from view');
+            $("#note" + i).hide();
+
+        },
+        error: function (xhr, ajaxOptions, thrownError) { //Add these parameters to display the required response
+            alert(xhr.status);
+            alert(xhr.responseText);
+            alert('did not remove note from view')
+        },
+        xhrFields: {
+            withCredentials: true
+        },
+        crossDomain: true
+    });
+}
+
+/**
+ * Called when user clicks on delete current view
+ */
+function deleteView() {
+    var endpoint = url + "/views/" + currentViewCode + "/delete";
+    var token = getCsrf();
+
+    $.ajax({
+        url: endpoint,
+        type: "DELETE",
+        datatype: "application/json; charset=utf-8",
+        headers: {'X-XSRF-TOKEN': token},
+        success: function (data, status) {
+
+            alert('success');
+            $("#viewsList").empty();
+            currentViewCode = "";
+            $("#currentViewCode").text("");
+            getViewsForLoggedInUser();
+
+        },
+        error: function (xhr, ajaxOptions, thrownError) { //Add these parameters to display the required response
+            alert(xhr.status);
+            alert(xhr.responseText);
+            alert('did not remove view')
+        },
+        xhrFields: {
+            withCredentials: true
+        },
+        crossDomain: true
+    });
+}
+
+function showAddNotes() {
+    var endpoint = url + "/users";
+    var token = getCsrf();
+
+    $.ajax({
+        url: endpoint,
+        type: "GET",
+        datatype: "application/json; charset=utf-8",
+        headers: {'X-XSRF-TOKEN': token},
+        success: function (data, status) {
+
+            users = data.users;
+            usersSize = users.length;
+            $("#authorsList").empty();
+
+            // add users to list
+            for (var i = 0; i < usersSize; i++) {
+                $("#authorsList").append(
+                    '<button type="button" class="list-group-item list-group-item-action list-group-item-primary" onclick="setCurrentAuthor(' + users[i].userId + ')" onmouseover="" style="cursor: pointer;">' +
+                    users[i].name + '</button>'
+                )
+            }
+        },
+        error: function (xhr, ajaxOptions, thrownError) { //Add these parameters to display the required response
+            alert(xhr.status);
+            alert(xhr.responseText);
+            alert('cannot get users')
+        },
+        xhrFields: {
+            withCredentials: true
+        },
+        crossDomain: true
+    });
+}
+
+function setCurrentAuthor(id) {
+    selectedUser = id;
+}
+
+/**
+ * Called from manage view screen to add notes from an author with a minimum rank to the currently selected view.
+ */
+function addNotesToView() {
+    var minimumValue = $("#minimumRanking").val();
+
+    if (minimumValue == "") {
+        minimumValue = 0;
+    }
+
+    var endpoint = url + "/views/add/" + currentViewCode + "/" + selectedUser + "/" + minimumValue;
+    var token = getCsrf();
+
+    $.ajax({
+        url: endpoint,
+        type: "POST",
+        datatype: "application/json; charset=utf-8",
+        headers: {'X-XSRF-TOKEN': token},
+        success: function (data, status) {
+
+            alert('notes added to view');
+            getChapter();
+
+        },
+        error: function (xhr, ajaxOptions, thrownError) { //Add these parameters to display the required response
+            alert(xhr.status);
+            alert(xhr.responseText);
+            alert('cannot add notes to view')
         },
         xhrFields: {
             withCredentials: true

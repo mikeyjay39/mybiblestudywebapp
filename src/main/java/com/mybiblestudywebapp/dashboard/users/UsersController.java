@@ -4,10 +4,7 @@ import com.mybiblestudywebapp.main.MainService;
 import com.mybiblestudywebapp.main.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Created by Michael Jeszenka.
@@ -26,5 +23,10 @@ public class UsersController {
     public ResponseEntity<Response> create(
             @RequestBody CreateUserRequest request) {
         return mainService.createUserAccount(request);
+    }
+
+    @GetMapping
+    public ResponseEntity<Response> getUsers() {
+        return mainService.getUsers();
     }
 }

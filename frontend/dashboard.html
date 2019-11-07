@@ -41,7 +41,7 @@
 
     <!-- sub navbar -->
     <div id="secondaryNavbar" class="row" style="display:none;">
-        <div class="col-sm-offset-1 col-sm-10">
+        <div class="col-sm-12 text-center">
 
             <ul class="list-inline text-center">
                 <li class="list-inline-item" onclick="showCreateNote()" onmouseover="this.style.cursor='pointer';"><strong><u>Create Note</u></strong></li>
@@ -88,6 +88,44 @@
         </div>
     </div>
 
+    <!-- Manage views row -->
+    <div class="row">
+    <div id="manageViews" class="col-sm-12 text-center">
+
+        <button type="button" class="btn btn-success" onclick="createView()">Create new view</button>
+        <button type="button" class="btn btn-secondary" onclick="showAddNotes()">Add notes</button>
+
+        <hr>
+        <h4 class="text-center">
+            My Views
+        </h4>
+        <ul id="viewsList" class="list-group">
+        </ul>
+        <div>Current view:</div>
+            <strong>
+        <div id="currentViewCode"></div></strong>
+        <button type="button" class="btn btn-danger btn-sm" onclick="deleteView()">Delete current view</button>
+        <hr>
+
+        <div id="addNotes" class="text-center">
+            <h5>
+                Add Notes
+            </h5>
+            <p>Select authors</p>
+            <div id="authorsList" class="list-group list-group-horizontal">
+            </div>
+            <div class="form-group text-center">
+            <p>Set minimum ranking</p>
+            <input id="minimumRanking" type="number" class="form-control col-sm-2">
+                <button type="button" class="btn btn-success" onclick="addNotesToView()">Add notes to current view</button>
+            </div>
+        </div>
+
+
+    </div>
+    </div>
+    <!-- end manage views row -->
+
     <!-- chapter lookup -->
     <div class="row">
         <div class="col-sm-12 text-center">
@@ -97,26 +135,28 @@
                     <input id="book" type="text" class="textbox" name="book" pattern="[A-Za-z1-9]*">
                     Chapter:
                     <input id="chapter" class="textbox" name="chapter" type="number" />
-                    <button type="button" class="btn btn-primary" onclick="getChapterId()">Go!</button>
+                    <button type="button" class="btn btn-primary" onclick="getService()">Go!</button>
                 </p>
             </form>
         </div>
     </div>
     <!-- end chapter lookup -->
 
-    <!-- verses and notes -->
+    <!-- main content row-->
     <div class="row">
+        <!-- verses column-->
         <div id="verses" class="col-sm-6">
             <p>
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. 1
             </p>
         </div>
+        <!-- end of verses column -->
         <div id="notes" style="display:none;" class="col-sm-6">
             <p>
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. 1
             </p>
         </div>
-        <div id="createNote"  class="col-sm-6">
+        <div id="createNote" style="display:none;" class="col-sm-6">
             <h4 class="text-center">
         Create note
             </h4>
@@ -146,9 +186,13 @@
                 <button type="button" class="btn btn-primary" onclick="createNote()">Save</button>
             </form>
         </div>
-    </div>
-    <!-- end verses and notes -->
 
+    </div>
+    <!-- end main content row -->
+
+<br>
+    <br>
+    <hr>
 
     <!-- end of container -->
 </div>

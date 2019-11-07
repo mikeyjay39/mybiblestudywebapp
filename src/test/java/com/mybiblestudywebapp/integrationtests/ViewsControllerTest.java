@@ -2,6 +2,7 @@ package com.mybiblestudywebapp.integrationtests;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mybiblestudywebapp.dashboard.views.AddViewResponse;
+import com.mybiblestudywebapp.dashboard.views.GetViewsResponse;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -58,6 +59,29 @@ public class ViewsControllerTest {
                             AddViewResponse addViewResponse = mapper.readValue(response, AddViewResponse.class);
                             Assert.assertTrue(addViewResponse.getViewId() > 0);
                         }
+                )
+                .andReturn();
+    }
+
+    @Test
+    public void getViews() throws Exception {
+
+        mvc.perform(get("/login")//.session(session)
+                .with(csrf().asHeader()))
+                .andExpect(status().isOk())
+                .andDo(
+                        r ->
+                        {
+                            MvcResult result = mvc.perform(get("/views/get")
+                                    .with(csrf().asHeader()))
+                                    .andExpect(status().isOk()).andReturn();
+
+                            String response = result.getResponse().getContentAsString();
+                            ObjectMapper mapper = new ObjectMapper();
+                            GetViewsResponse getViewsResponse = mapper.readValue(response, GetViewsResponse.class);
+                            Assert.assertTrue(!getViewsResponse.getViewCodes().isEmpty());
+                        }
+
                 )
                 .andReturn();
     }

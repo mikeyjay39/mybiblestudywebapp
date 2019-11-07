@@ -3,9 +3,12 @@ package com.mybiblestudywebapp.persistence;
 import com.mybiblestudywebapp.bible.GetChapterResponse;
 import com.mybiblestudywebapp.dashboard.notes.RankNoteRequest;
 import com.mybiblestudywebapp.dashboard.notes.RankNoteResponse;
+import com.mybiblestudywebapp.dashboard.views.AddNotesToViewResponse;
 import com.mybiblestudywebapp.main.Response;
 import com.mybiblestudywebapp.persistence.model.Note;
 import com.mybiblestudywebapp.persistence.model.User;
+import com.mybiblestudywebapp.persistence.model.View;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 import java.util.Map;
@@ -74,4 +77,43 @@ public interface DaoService {
      */
     CompletableFuture<Map<String, Integer>> getChapter(String book, int chapterNo) throws DaoServiceException;
 
+    /**
+     * Get all the view codes for the currently logged in user.
+     * @return
+     * @throws DaoServiceException
+     */
+    List<String> getViews() throws DaoServiceException;
+
+    /**
+     * Remove a note from a view
+     * @param viewcode
+     * @param noteId
+     * @return
+     * @throws DaoServiceException
+     */
+    String removeNoteFromView(String viewcode, long noteId);
+
+    /**
+     * Deletes a View based on viewcode
+     * @param viewcode
+     * @return response success or failure
+     */
+    CompletableFuture<String> deleteView(String viewcode) throws DaoServiceException;
+
+    /**
+     * Returns all users
+     * @return
+     * @throws DaoServiceException
+     */
+    CompletableFuture<List<User>> getUsers() throws DaoServiceException;
+
+    /**
+     * Add all notes from an author above a certain ranking to the target viewcode.
+     * @param viewcode target viewcode
+     * @param authorId author's notes to add
+     * @param ranking all notes above this ranking
+     * @return
+     */
+    CompletableFuture<String> addNotesToView(String viewcode, long authorId, int ranking)
+        throws DaoServiceException;
 }

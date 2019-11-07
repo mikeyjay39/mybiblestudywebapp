@@ -26,6 +26,10 @@ public class BibleStudyResponse implements Response {
 
     private ErrorResponse errorResponse;
 
+    private long bookId = -1;
+
+    private long chapterId = -1;
+
     public String getBook() {
         return book;
     }
@@ -72,6 +76,22 @@ public class BibleStudyResponse implements Response {
 
     public void setErrorResponse(ErrorResponse errorResponse) {
         this.errorResponse = errorResponse;
+    }
+
+    public long getBookId() {
+        return bookId;
+    }
+
+    public void setBookId(long bookId) {
+        this.bookId = bookId;
+    }
+
+    public long getChapterId() {
+        return chapterId;
+    }
+
+    public void setChapterId(long chapterId) {
+        this.chapterId = chapterId;
     }
 
     public BibleStudyResponse() {
