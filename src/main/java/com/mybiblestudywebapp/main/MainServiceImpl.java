@@ -84,6 +84,7 @@ public class MainServiceImpl implements MainService {
                 response.setBookId(notes.get(0).getBookId());
                 response.setChapterId(notes.get(0).getChapterId());
             }
+
         } catch (DaoServiceException e) {
             return daoServiceExceptionHandler(e, response);
         } catch (InterruptedException e) {
@@ -101,8 +102,6 @@ public class MainServiceImpl implements MainService {
 
     /**
      * {@inheritDoc}
-     * @param request
-     * @return
      */
     @Override
     public ResponseEntity<Response> createUserAccount(CreateUserRequest request) {
@@ -138,8 +137,6 @@ public class MainServiceImpl implements MainService {
 
     /**
      * {@inheritDoc}
-     * @param request
-     * @return
      */
     @Override
     public ResponseEntity<Response> addNote(Note request) {
@@ -162,8 +159,6 @@ public class MainServiceImpl implements MainService {
 
     /**
      * {@inheritDoc}
-     * @param request
-     * @return
      */
     @Override
     public ResponseEntity<Response> rankNote(RankNoteRequest request) {
@@ -183,7 +178,6 @@ public class MainServiceImpl implements MainService {
 
     /**
      * {@inheritDoc}
-     * @return
      */
     @Override
     public ResponseEntity<Response> login() {
@@ -194,7 +188,6 @@ public class MainServiceImpl implements MainService {
 
     /**
      * {@inheritDoc}
-     * @return
      */
     @Override
     public ResponseEntity<Response> addView() {
@@ -387,6 +380,27 @@ public class MainServiceImpl implements MainService {
 
         try {
             response.setStatus(daoService.updateNote(note).get());
+            return ResponseEntity.ok(response);
+        } catch (DaoServiceException e) {
+            return daoServiceExceptionHandler(e, response);
+        } catch (InterruptedException e) {
+            return interruptedExceptionHandler(e, e.getMessage(), response);
+        } catch (ExecutionException e) {
+            return executionExceptionHandler(e, e.getMessage(), response);
+        }
+    }
+
+    /**
+     *
+     * {@inheritDoc}
+     */
+    @Override
+    public ResponseEntity<Response> deleteNote(long noteId) {
+        GenericResponse response = new GenericResponse();
+
+        try {
+            String result = daoService.deleteNote(noteId).get();
+            response.setStatus(result);
             return ResponseEntity.ok(response);
         } catch (DaoServiceException e) {
             return daoServiceExceptionHandler(e, response);

@@ -132,4 +132,13 @@ public interface DaoService {
      * @throws DaoServiceException
      */
     CompletableFuture<String> updateNote(Note note) throws DaoServiceException;
+
+    /**
+     * Delete a note. The userId stored in the user session will be
+     * used to verify the user is deleting a note that they own.
+     * @param noteId
+     * @return "success" on success
+     * @throws DaoServiceException
+     */
+    CompletableFuture<String> deleteNote(long noteId) throws DaoServiceException;
 }

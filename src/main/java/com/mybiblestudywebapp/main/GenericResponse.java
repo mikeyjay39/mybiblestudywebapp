@@ -11,6 +11,7 @@ public class GenericResponse implements Response {
     // TODO - refactor by removing all other response classes that are the same as this class to avoid duplicate code
 
     private ErrorResponse errorResponse = new ErrorResponse();
+    // TODO refactor status name to result
     private String status;
     private long userId;
 

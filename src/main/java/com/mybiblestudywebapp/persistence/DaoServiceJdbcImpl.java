@@ -600,4 +600,22 @@ public class DaoServiceJdbcImpl implements DaoService {
             throw new DaoServiceException("Could note update note_id: " + note.getNoteId());
         }
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Async
+    @Transactional
+    public CompletableFuture<String> deleteNote(long noteId) throws DaoServiceException {
+        Note note = new Note();
+        note.setNoteId(noteId);
+        note.setUserId(userSession.userId);
+
+        if (noteDao.delete(note)) {
+            return CompletableFuture.completedFuture("success");
+        } else {
+            throw new DaoServiceException("Could note delete noteId: " + noteId);
+        }
+    }
 }

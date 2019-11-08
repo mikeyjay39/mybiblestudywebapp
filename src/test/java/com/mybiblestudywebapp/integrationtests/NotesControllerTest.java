@@ -145,4 +145,18 @@ public class NotesControllerTest {
                 )
                 .andReturn();
     }
+
+    @Test
+    @Rollback
+    public void deleteNote() throws Exception {
+
+        mvc.perform(get("/login")
+                .with(csrf().asHeader()))
+                .andExpect(status().isOk())
+                .andDo(
+                        r ->
+                                mvc.perform(delete("/notes/delete/1")
+                                        .with(csrf().asHeader()))
+                                        .andExpect(status().isOk()).andReturn());
+    }
 }

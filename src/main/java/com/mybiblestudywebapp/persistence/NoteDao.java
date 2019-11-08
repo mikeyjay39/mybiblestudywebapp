@@ -117,10 +117,11 @@ public class NoteDao implements UpdatableDao<Note> {
     @Transactional
     @Override
     public boolean delete(Note note) {
-        String sql = "DELETE FROM notes WHERE note_id = :noteId";
+        String sql = "DELETE FROM notes WHERE note_id = :noteId AND user_id = :userId";
         KeyHolder holder = new GeneratedKeyHolder();
         SqlParameterSource params = new MapSqlParameterSource()
-                .addValue("noteId", note.getNoteId());
+                .addValue(NOTE_ID, note.getNoteId())
+                .addValue(USER_ID, note.getUserId());
         int rows = 0;
         rows = namedParameterJdbcTemplate.update(sql, params, holder);
         return rows > 0;

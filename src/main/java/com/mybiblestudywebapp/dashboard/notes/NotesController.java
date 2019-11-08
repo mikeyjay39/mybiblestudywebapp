@@ -61,4 +61,9 @@ public class NotesController {
     public ResponseEntity<Response> updateNote(@RequestBody Note note) {
         return mainService.updateNote(note);
     }
+
+    @DeleteMapping(path = "/delete/{noteId}", produces = "application/json")
+    public ResponseEntity<Response> deleteNote(@PathVariable long noteId) {
+        return mainService.deleteNote(noteId);
+    }
 }
