@@ -326,7 +326,8 @@ public class NoteDao implements UpdatableDao<Note> {
         StringBuilder sqlBuilder = new StringBuilder("SELECT * FROM notes as n " +
                 "JOIN books AS b ON b.book_id = n.book_id " +
                 "JOIN chapters AS c ON c.chapter_id = n.chapter_id " +
-                "WHERE n.user_id = :userId AND b.title = :book AND c.chapter_no = :chapterNo");
+                "WHERE n.user_id = :userId AND b.title = :book AND c.chapter_no = :chapterNo " +
+                "ORDER BY n.verse_start, n.verse_end, n.note_id ASC");
 
         if ((boolean)args.get("priv")) {
             sqlBuilder.append(" AND n.priv = false");
@@ -343,5 +344,4 @@ public class NoteDao implements UpdatableDao<Note> {
 
         return Optional.ofNullable(result);
     }
-
-    }
+}

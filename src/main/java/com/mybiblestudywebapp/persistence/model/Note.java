@@ -81,7 +81,12 @@ public class Note {
     }
 
     public void setVerseStart(int verseStart) {
-        this.verseStart = verseStart;
+
+        if (verseStart < 0) {
+            this.verseStart = 0;
+        } else {
+            this.verseStart = verseStart;
+        }
     }
 
     public int getVerseEnd() {
@@ -89,7 +94,12 @@ public class Note {
     }
 
     public void setVerseEnd(int verseEnd) {
-        this.verseEnd = verseEnd;
+
+        if (verseEnd < this.verseStart) {
+            this.verseEnd = verseStart >= 0 ? verseStart : 0;
+        } else {
+            this.verseEnd = verseEnd;
+        }
     }
 
     public int getRanking() {
