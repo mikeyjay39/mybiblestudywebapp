@@ -164,7 +164,7 @@ function getChapterUserNotes() {
                         '<button type="button" class="btn btn-sm btn-primary" ' +
                         'onclick="viewComments(' + i + ')">View comments</button>' +
                         '<button type="button" class="btn btn-sm btn-danger" ' +
-                        'onclick="removeNote(' + i + ')">Remove</button></div></div>';
+                        'onclick="deleteNote(' + i + ')">Delete</button></div></div>';
                 }
 
                 if (notes.length <= 0) {
@@ -382,6 +382,16 @@ function logoutHandler() {
 
 function showCreateNote() {
     hideRightContentDiv();
+    $("#createNoteButton").attr("onclick","createNote()");
+    $("#createNoteHeader").html("Create Note");
+
+    // erase values from fields
+    // populate fields
+    $("#verseStart").val("");
+    $("#verseEnd").val("");
+    $("#privNote").val("");
+    $("#noteText").val("");
+
     $("#createNote").show();
 }
 
@@ -658,6 +668,34 @@ function addNotesToView() {
         },
         crossDomain: true
     });
+}
+
+/**
+ * Called when user clicks on edit note button
+ * @param i
+ */
+function editNote(i) {
+    hideRightContentDiv();
+    var noteToEdit = currentNotes[i];
+    $("#createNoteHeader").html("Edit Note");
+    $("#createNoteButton").attr("onclick","updateNote()");
+
+    // populate fields
+    $("#verseStart").val(noteToEdit.verseStart);
+    $("#verseEnd").val(noteToEdit.verseEnd);
+    $("#privNote").val(noteToEdit.priv);
+    $("#noteText").val(noteToEdit.noteText);
+
+
+    $("#createNote").show();
+
+}
+
+/**
+ * Used to send the update note request to the server
+ */
+function updateNote(){
+
 }
 
 
