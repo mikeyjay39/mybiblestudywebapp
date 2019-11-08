@@ -418,6 +418,43 @@ function showManageNotes() {
 }
 
 function viewComments(id) {
+    var endpoint = url + "/notes/comments/" + id;
+    var token = getCsrf();
+
+    $.ajax({
+        url: endpoint,
+        type: "GET",
+        datatype: "application/json; charset=utf-8",
+        success: function (data, status) {
+
+            var comments = data.comments;
+            var commentsSize = comments.length;
+            var commentOutput = "";
+
+           if (commentsSize < 1) {
+               alert("no comments available for this note");
+           } else {
+               // iterate through and append comments
+               for (var i = 0; i < commentsSize; i++) {
+                   commentOutput += '<div id="comment' + i + '">' +
+                       '<strong>' + comments[i].createdAt + '</strong> ' +
+                       comments[i].commentText +
+                       '</div><hr>';
+               }
+
+               $("#notes").html(commentOutput);
+           }
+
+        },
+        error: function (xhr, ajaxOptions, thrownError) { //Add these parameters to display the required response
+            alert(xhr.status);
+            alert(xhr.responseText);
+        },
+        xhrFields: {
+            withCredentials: true
+        },
+        crossDomain: true
+    });
 
 }
 
