@@ -831,6 +831,7 @@ function updateNote(id){
     });
 }
 
+
 /**
  * Used in the client. Check the url parameter value for viewcode and if set then retrieve text and notes, otherwise
  * only text.
