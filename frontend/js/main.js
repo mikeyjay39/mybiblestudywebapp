@@ -11,6 +11,7 @@ var selectedUser; // id of the selected user
 var users; // list of user objects
 var userViewCodes;
 var chapterSize; // the number of verses in chapter
+var requestFromClientArea = false; // boolean to track if the request came from the client instead of the dashboard
 
 function make_base_auth(user, password) {
     var tok = user + ':' + password;
@@ -31,6 +32,8 @@ function getChapter() {
     var book = $("#book").val();
     var chapterNo = $("#chapter").val();
     var apiEndPoint = url + "/biblestudy/" + currentViewCode + "/" + book + "/" + chapterNo;
+    var clientArea = requestFromClientArea;
+
 
     $.ajax({
         url: apiEndPoint,
@@ -58,9 +61,22 @@ function getChapter() {
 
             // iterate through notes
             for (var i = 0; i < notes.length; i++) {
+
+                noteOutput += '<div id="note' + i + '"<strong>' + notes[i].verseStart + '-' + notes[i].verseEnd + '</strong>: ' +
+                    notes[i].noteText + '</br>';
+
+                if (clientArea != true) {
+                    // request came from dashboard area so show management buttons
+                    noteOutput += '<button type="button" class="btn btn-sm btn-danger" ' +
+                        'onclick="removeNote(' + i + ')">Remove</button>';
+                }
+
+                noteOutput += '<hr></br>';
+
+                /*
                 noteOutput += '<div id="note' + i + '"<strong>' + notes[i].verseStart + '-' + notes[i].verseEnd + '</strong>: ' +
                     notes[i].noteText + '</br><button type="button" class="btn btn-sm btn-danger" ' +
-                    'onclick="removeNote(' + i + ')">Remove</button><hr></br>';
+                    'onclick="removeNote(' + i + ')">Remove</button><hr></br>'; */
             }
 
             if (notes.length <= 0) {
@@ -813,6 +829,25 @@ function updateNote(id){
         },
         crossDomain: true
     });
+}
+
+/**
+ * Used in the client. Check the url parameter value for viewcode and if set then retrieve text and notes, otherwise
+ * only text.
+ */
+function clientGetBibleTextAndNotes() {
+
+    var urlParams = new URLSearchParams(window.location.search);
+    //var viewCodeString = urlParams.toString();
+    var viewCode = urlParams.get('viewcode');
+
+    if (viewCode != "" && viewCode != null) {
+        currentViewCode = viewCode;
+    }
+
+    requestFromClientArea = true;
+    getService();
+    requestFromClientArea = false;
 }
 
 
