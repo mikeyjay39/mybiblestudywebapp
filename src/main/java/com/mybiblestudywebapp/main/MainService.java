@@ -119,8 +119,15 @@ public interface MainService {
 
     /**
      * Delete a note.
-     * @param note
+     * @param noteId
      * @return
      */
     ResponseEntity<Response> deleteNote(long noteId);
+
+    /**
+     * Get comments for a note
+     * @param noteId
+     * @return
+     */
+    ResponseEntity<Response> getComments(long noteId);
 }

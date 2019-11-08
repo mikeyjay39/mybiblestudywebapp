@@ -123,12 +123,24 @@ public class CommentDao implements UpdatableDao<Comment> {
 
     /**
      * Get all comments for a note
-     * @param args contains key noteId
+     * @param args contains key noteId or noteId and "userOwnsNote" which prevents foreign users from accessing
+     *             comments of private notes.
      * @return
      */
     @Override
     public Optional<List<Comment>> get(Map<String, Object> args) {
-        String sql = "SELECT * FROM comments WHERE note_id = :noteId";
+        StringBuilder sqlBuilder = new StringBuilder("SELECT * FROM comments AS c");
+
+        if (!(args.keySet().contains("userOwnsNote"))) {
+            // user is not the owner of this note so filter out private notes
+            sqlBuilder.append(" JOIN notes AS n ON n.note_id = c.note_id " +
+                    "AND n.priv = false");
+        }
+
+        sqlBuilder.append(" WHERE c.note_id = :noteId " +
+                "ORDER BY c.created_at");
+        String sql = sqlBuilder.toString();
+
         SqlParameterSource params = new MapSqlParameterSource(args);
         List<Comment> result = null;
 

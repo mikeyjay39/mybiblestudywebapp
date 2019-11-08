@@ -5,6 +5,7 @@ import com.mybiblestudywebapp.dashboard.notes.RankNoteRequest;
 import com.mybiblestudywebapp.dashboard.notes.RankNoteResponse;
 import com.mybiblestudywebapp.dashboard.views.AddNotesToViewResponse;
 import com.mybiblestudywebapp.main.Response;
+import com.mybiblestudywebapp.persistence.model.Comment;
 import com.mybiblestudywebapp.persistence.model.Note;
 import com.mybiblestudywebapp.persistence.model.User;
 import com.mybiblestudywebapp.persistence.model.View;
@@ -128,8 +129,8 @@ public interface DaoService {
     /**
      * Updates a note
      * @param note
-     * @return "success" or "failure"
-     * @throws DaoServiceException
+     * @return "success"  on success
+     * @throws DaoServiceException on failure
      */
     CompletableFuture<String> updateNote(Note note) throws DaoServiceException;
 
@@ -138,7 +139,15 @@ public interface DaoService {
      * used to verify the user is deleting a note that they own.
      * @param noteId
      * @return "success" on success
-     * @throws DaoServiceException
+     * @throws DaoServiceException on failure
      */
     CompletableFuture<String> deleteNote(long noteId) throws DaoServiceException;
+
+    /**
+     * Get comments for a note
+     * @param noteId
+     * @return
+     * @throws DaoServiceException
+     */
+    CompletableFuture<List<Comment>> getComments(long noteId) throws DaoServiceException;
 }

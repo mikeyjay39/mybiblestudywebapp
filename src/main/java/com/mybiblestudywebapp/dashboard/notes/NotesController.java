@@ -33,6 +33,16 @@ public class NotesController {
     }
 
     /**
+     * Get comments for a note
+     * @param noteId
+     * @return
+     */
+    @GetMapping(path = "/comments/{noteId}")
+    public ResponseEntity<Response> getComments(@PathVariable long noteId) {
+        return mainService.getComments(noteId);
+    }
+
+    /**
      * Endpoint for adding new notes
      * @param request
      * @return

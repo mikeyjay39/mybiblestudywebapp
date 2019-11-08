@@ -618,4 +618,33 @@ public class DaoServiceJdbcImpl implements DaoService {
             throw new DaoServiceException("Could note delete noteId: " + noteId);
         }
     }
+
+    /**
+     *
+     * {@inheritDoc}
+     */
+    @Override
+    @Async
+    public CompletableFuture<List<Comment>> getComments(long noteId) throws DaoServiceException {
+        // Check if user is requesting their own notes. We don't want them viewing comments on private notes.
+        boolean userOwnsNote = true;
+        Optional<Note> opt = noteDao.get(noteId);
+
+        if (opt.isPresent()) {
+            userOwnsNote = userSession.userId == opt.get().getUserId();
+        }
+
+        // Build args
+        Map<String, Object> args = new HashMap<>();
+        args.put(NOTE_ID, noteId);
+        args.put("userOwnsNote", userOwnsNote);
+
+        Optional<List<Comment>> optComments = commentDao.get(args);
+
+        if (optComments.isEmpty()) {
+            throw new DaoServiceException("Couldn't retrieve comments for note_id: " + noteId);
+        }
+
+        return CompletableFuture.completedFuture(optComments.get());
+    }
 }

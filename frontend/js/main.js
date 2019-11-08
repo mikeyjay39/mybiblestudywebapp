@@ -169,7 +169,7 @@ function getChapterUserNotes() {
                         '<button type="button" class="btn btn-sm btn-primary" ' +
                         'onclick="editNote(' + i + ')">Edit</button>' +
                         '<button type="button" class="btn btn-sm btn-primary" ' +
-                        'onclick="viewComments(' + i + ')">View comments</button>' +
+                        'onclick="viewComments(' + notes[i].noteId + ')">View comments</button>' +
                         '<button type="button" class="btn btn-sm btn-danger" ' +
                         'onclick="deleteNote(' + notes[i].noteId + ')">Delete</button>' +
                         '</div></div><hr>';
@@ -415,6 +415,10 @@ function showManageNotes() {
     getChapterUserNotes();
     $("#notes").show();
     $("#goButton").attr("onclick","getChapterUserNotes()");
+}
+
+function viewComments(id) {
+
 }
 
 /**

@@ -4,6 +4,7 @@ import com.mybiblestudywebapp.bible.BibleStudyRequest;
 import com.mybiblestudywebapp.bible.BibleStudyResponse;
 import com.mybiblestudywebapp.bible.GetChapterResponse;
 import com.mybiblestudywebapp.dashboard.notes.AddNoteResponse;
+import com.mybiblestudywebapp.dashboard.notes.GetCommentsResponse;
 import com.mybiblestudywebapp.dashboard.notes.RankNoteRequest;
 import com.mybiblestudywebapp.dashboard.notes.RankNoteResponse;
 import com.mybiblestudywebapp.dashboard.users.GetUsersResponse;
@@ -401,6 +402,27 @@ public class MainServiceImpl implements MainService {
         try {
             String result = daoService.deleteNote(noteId).get();
             response.setStatus(result);
+            return ResponseEntity.ok(response);
+        } catch (DaoServiceException e) {
+            return daoServiceExceptionHandler(e, response);
+        } catch (InterruptedException e) {
+            return interruptedExceptionHandler(e, e.getMessage(), response);
+        } catch (ExecutionException e) {
+            return executionExceptionHandler(e, e.getMessage(), response);
+        }
+    }
+
+    /**
+     *
+     * {@inheritDoc}
+     */
+    @Override
+    public ResponseEntity<Response> getComments(long noteId) {
+        GetCommentsResponse response = new GetCommentsResponse();
+
+        try {
+            var result = daoService.getComments(noteId);
+            response.setComments(result.get());
             return ResponseEntity.ok(response);
         } catch (DaoServiceException e) {
             return daoServiceExceptionHandler(e, response);

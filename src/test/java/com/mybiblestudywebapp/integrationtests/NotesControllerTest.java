@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.mybiblestudywebapp.bible.BibleStudyResponse;
 import com.mybiblestudywebapp.dashboard.notes.AddNoteResponse;
+import com.mybiblestudywebapp.dashboard.notes.GetCommentsResponse;
 import com.mybiblestudywebapp.dashboard.notes.RankNoteRequest;
 import com.mybiblestudywebapp.dashboard.notes.RankNoteResponse;
 import com.mybiblestudywebapp.dashboard.views.GetViewsResponse;
@@ -158,5 +159,28 @@ public class NotesControllerTest {
                                 mvc.perform(delete("/notes/delete/1")
                                         .with(csrf().asHeader()))
                                         .andExpect(status().isOk()).andReturn());
+    }
+
+    @Test
+    public void getComments() throws Exception {
+
+        mvc.perform(get("/login")
+                .with(csrf().asHeader()))
+                .andExpect(status().isOk())
+                .andDo(
+                        r ->
+                        {
+                            MvcResult result = mvc.perform(get("/notes/comments/1")
+                                    .with(csrf().asHeader()))
+                                    .andExpect(status().isOk()).andReturn();
+
+                            String stringResponse = result.getResponse().getContentAsString();
+                            ObjectMapper mapper = new ObjectMapper();
+                            mapper.registerModule(new JavaTimeModule());
+                            GetCommentsResponse response =
+                                    mapper.readValue(stringResponse, GetCommentsResponse.class);
+                            Assert.assertTrue(!response.getComments().isEmpty());
+                        }
+                );
     }
 }
