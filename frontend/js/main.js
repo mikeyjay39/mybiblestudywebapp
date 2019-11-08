@@ -458,8 +458,8 @@ function getViewsForLoggedInUser() {
             for (var i = 0; i < size; i++) {
                 var vc = data.viewCodes[i];
                 $("#viewsList").append(
-                    '<li class="list-group-item" onclick="setCurrentViewCode(' + i + ')" onmouseover="" style="cursor: pointer;">' +
-                    vc + '</li>'
+                    '<label class="btn btn-sm btn-info"><input type="radio" ' +
+                    'name="viewlistrow" value="' + i + '">' + vc + '</label>'
                 );
             }
 
@@ -513,6 +513,15 @@ function setCurrentViewCode(i) {
     $("#currentViewCode").text(userViewCodes[i]);
     $("#notes").show();
 }
+
+
+
+$(document).ready(function() {
+    $("#viewsList").change(function() {
+        var i = $('input[name=viewlistrow]:checked').val();
+        setCurrentViewCode(i);
+    });
+});
 
 function removeNote(i) {
 
@@ -595,6 +604,8 @@ function showAddNotes() {
                     '<button type="button" class="list-group-item list-group-item-action list-group-item-primary" onclick="setCurrentAuthor(' + users[i].userId + ')" onmouseover="" style="cursor: pointer;">' +
                     users[i].name + '</button>'
                 )
+
+
             }
         },
         error: function (xhr, ajaxOptions, thrownError) { //Add these parameters to display the required response
