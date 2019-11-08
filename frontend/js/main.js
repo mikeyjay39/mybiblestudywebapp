@@ -171,7 +171,7 @@ function getChapterUserNotes() {
                         '<button type="button" class="btn btn-sm btn-primary" ' +
                         'onclick="viewComments(' + i + ')">View comments</button>' +
                         '<button type="button" class="btn btn-sm btn-danger" ' +
-                        'onclick="deleteNote(' + i + ')">Delete</button>' +
+                        'onclick="deleteNote(' + notes[i].noteId + ')">Delete</button>' +
                         '</div></div><hr>';
                 }
 
@@ -604,6 +604,36 @@ function deleteView() {
         },
         crossDomain: true
     });
+}
+
+function deleteNote(id) {
+    var endpoint = url + "/notes/delete/" + id;
+    var token = getCsrf();
+
+    $.ajax({
+        url: endpoint,
+        type: "DELETE",
+        datatype: "application/json; charset=utf-8",
+        headers: {'X-XSRF-TOKEN': token},
+        success: function (data, status) {
+
+            alert('success');
+            $("#notes").hide();
+            getChapterUserNotes();
+            $("#notes").show();
+
+        },
+        error: function (xhr, ajaxOptions, thrownError) { //Add these parameters to display the required response
+            alert(xhr.status);
+            alert(xhr.responseText);
+            alert('did not delete note')
+        },
+        xhrFields: {
+            withCredentials: true
+        },
+        crossDomain: true
+    });
+
 }
 
 function showAddNotes() {
