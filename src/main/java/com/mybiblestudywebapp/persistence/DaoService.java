@@ -124,4 +124,12 @@ public interface DaoService {
      */
     CompletableFuture<List<Note>> getAllChapterNotesForUser(String book, long chapterNo, long userId)
             throws DaoServiceException;
+
+    /**
+     * Updates a note
+     * @param note
+     * @return "success" or "failure"
+     * @throws DaoServiceException
+     */
+    CompletableFuture<String> updateNote(Note note) throws DaoServiceException;
 }

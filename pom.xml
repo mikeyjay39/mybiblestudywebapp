@@ -65,6 +65,12 @@
 			<scope>test</scope>
 		</dependency>
 
+		<!-- use this to help jackson deserialize datetime -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.datatype</groupId>
+			<artifactId>jackson-datatype-jsr310</artifactId>
+		</dependency>
+
 	</dependencies>
 
 	<build>

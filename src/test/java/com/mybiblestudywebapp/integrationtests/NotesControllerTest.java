@@ -2,10 +2,12 @@ package com.mybiblestudywebapp.integrationtests;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.mybiblestudywebapp.bible.BibleStudyResponse;
 import com.mybiblestudywebapp.dashboard.notes.AddNoteResponse;
 import com.mybiblestudywebapp.dashboard.notes.RankNoteRequest;
 import com.mybiblestudywebapp.dashboard.notes.RankNoteResponse;
+import com.mybiblestudywebapp.dashboard.views.GetViewsResponse;
 import com.mybiblestudywebapp.persistence.model.Note;
 import org.junit.Assert;
 import org.junit.Test;
@@ -22,8 +24,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
@@ -99,5 +100,49 @@ public class NotesControllerTest {
                 .andExpect(status().isOk())
                 .andReturn();
 
+    }
+
+    @Test
+    @Rollback
+    public void updateNote() throws Exception {
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        Note note = new Note();
+        String newNoteText = "This note has been updated";
+        note.setNoteId(1);
+        note.setBookId(1);
+        note.setChapterId(1);
+        note.setVerseStart(2);
+        note.setLang("en");
+        note.setPriv(false);
+        note.setNoteText(newNoteText);
+        String jsonRequest = mapper.writeValueAsString(note);
+
+        mvc.perform(put("/notes/update")
+                .with(csrf().asHeader())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonRequest))
+                .andExpect(status().isOk())
+                .andDo(
+                        r ->
+                        {
+                            MvcResult result = mvc.perform(get("/notes/mynotes/Genesis/1/1")
+                                    .with(csrf().asHeader()))
+                                    .andExpect(status().isOk()).andReturn();
+
+                            String response = result.getResponse().getContentAsString();
+                            BibleStudyResponse getViewsResponse = mapper.readValue(response, BibleStudyResponse.class);
+
+                            // iterate through notes and look for our updated note
+                            for (Note n : getViewsResponse.getNotes()) {
+
+                                if (n.getNoteId() == 1) {
+                                    Assert.assertEquals(newNoteText, n.getNoteText());
+                                }
+                            }
+                        }
+                )
+                .andReturn();
     }
 }

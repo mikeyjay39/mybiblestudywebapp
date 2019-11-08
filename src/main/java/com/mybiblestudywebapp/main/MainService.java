@@ -16,7 +16,6 @@ import org.springframework.http.ResponseEntity;
  */
 public interface MainService {
 
-
     /**
      * Get verses and notes for a chapter and view
      * @param request
@@ -111,4 +110,10 @@ public interface MainService {
      */
     ResponseEntity<Response> getChapterNotesForUser(String book, int chapterNo, long userId);
 
+    /**
+     * Updates a note owned by the logged in user
+     * @param note
+     * @return
+     */
+    ResponseEntity<Response> updateNote(Note note);
 }

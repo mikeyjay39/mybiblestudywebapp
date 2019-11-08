@@ -577,4 +577,22 @@ public class DaoServiceJdbcImpl implements DaoService {
             );
         }
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Async
+    @Transactional
+    public CompletableFuture<String> updateNote(Note note) throws DaoServiceException {
+
+        // set user_id here to make sure the user isn't trying to update a note they don't own
+        note.setUserId(userSession.userId);
+
+        if (noteDao.update(note)) {
+            return CompletableFuture.completedFuture("success");
+        } else {
+            throw new DaoServiceException("Could note update note_id: " + note.getNoteId());
+        }
+    }
 }

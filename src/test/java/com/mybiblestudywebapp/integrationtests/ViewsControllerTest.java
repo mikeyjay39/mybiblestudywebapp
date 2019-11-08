@@ -66,7 +66,7 @@ public class ViewsControllerTest {
     @Test
     public void getViews() throws Exception {
 
-        mvc.perform(get("/login")//.session(session)
+        mvc.perform(get("/login")
                 .with(csrf().asHeader()))
                 .andExpect(status().isOk())
                 .andDo(

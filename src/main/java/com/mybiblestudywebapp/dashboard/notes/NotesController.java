@@ -42,8 +42,6 @@ public class NotesController {
         return mainService.addNote(request);
     }
 
-
-
     /**
      * Endpoint for ranking notes
      * @param request
@@ -52,5 +50,15 @@ public class NotesController {
     @PostMapping(path = "/rank", consumes = "application/json", produces = "application/json")
     public ResponseEntity<Response> rankNote(@RequestBody RankNoteRequest request) {
         return mainService.rankNote(request);
+    }
+
+    /**
+     * Endpoint for updating notes
+     * @param note
+     * @return
+     */
+    @PutMapping(path = "/update", consumes = "application/json", produces = "application/json")
+    public ResponseEntity<Response> updateNote(@RequestBody Note note) {
+        return mainService.updateNote(note);
     }
 }
