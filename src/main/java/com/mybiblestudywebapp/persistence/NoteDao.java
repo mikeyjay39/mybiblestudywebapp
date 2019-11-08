@@ -149,6 +149,8 @@ public class NoteDao implements UpdatableDao<Note> {
      */
     @Override
     public Optional<List<Note>> get(final Map<String, Object> args) {
+        //TODO - consolidate the private methods in the switch into 1 private method and give it a different sql
+        // string and error message parameter for each case
         GetNotesCase getNotesCase = getNotesCase(args);
 
         if (getNotesCase == null) {
@@ -254,7 +256,8 @@ public class NoteDao implements UpdatableDao<Note> {
         String sql = "SELECT * FROM notes " +
                 "JOIN view_note ON view_note.note_id = notes.note_id " +
                 "WHERE view_note.view_id = view_id " +
-                "AND notes.chapter_id = :chapterId";
+                "AND notes.chapter_id = :chapterId " +
+                "ORDER BY notes.verse_start, notes.verse_end, notes.note_id ASC";
         SqlParameterSource params = new MapSqlParameterSource(args);
 
         try {
@@ -276,7 +279,8 @@ public class NoteDao implements UpdatableDao<Note> {
      */
     private Optional<List<Note>> getAllNotesAboveRank(final Map<String, Object> args) {
         List<Note> result = null;
-        String sql = "SELECT * FROM notes WHERE ranking > :ranking AND priv = false";
+        String sql = "SELECT * FROM notes WHERE ranking > :ranking AND priv = false " +
+                "ORDER BY verse_start, verse_end, note_id ASC";
         SqlParameterSource params = new MapSqlParameterSource(args);
 
         try {
@@ -297,7 +301,8 @@ public class NoteDao implements UpdatableDao<Note> {
      */
     private Optional<List<Note>> getAllNotesFromAuthor(final Map<String, Object> args) {
         List<Note> result = null;
-        StringBuilder sqlBuilder = new StringBuilder("SELECT * FROM notes WHERE user_id = :userID");
+        StringBuilder sqlBuilder = new StringBuilder("SELECT * FROM notes WHERE user_id = :userID " +
+                "ORDER BY verse_start, verse_end, note_id ASC");
 
         if (args.keySet().contains("priv")) {
             sqlBuilder.append(" AND priv = :priv");
