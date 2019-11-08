@@ -152,19 +152,27 @@ function getChapterUserNotes() {
 
                 // iterate through verses
                 for (var i = 0; i < size; i++) {
-                    verseOutput += "<sup>" + verses[i].verseNr + "</sup>" + verses[i].verse;
+                    verseOutput += '<sup>' + verses[i].verseNr + '</sup>' + verses[i].verse;
                 }
 
                 // iterate through notes
                 for (var i = 0; i < notes.length; i++) {
-                    noteOutput += '<div id="note' + i + '"><strong>' + notes[i].verseStart + '-' + notes[i].verseEnd + '</strong>: ' +
+                    noteOutput += '<div id="note' + i + '"><strong>' +
+                        '<span data-toggle="tooltip" ' +
+                        'title="this note applies from verse ' + notes[i].verseStart +
+                        ' to verse ' + notes[i].verseEnd + '">' +
+                        notes[i].verseStart + '-' + notes[i].verseEnd + '</span></strong>: ' +
+                        '<sup><span class="badge badge-primary" data-toggle="tooltip" ' +
+                        'title="ranking value for this note is ' + notes[i].ranking + '">' +
+                        notes[i].ranking + '</span></sup>' +
                         notes[i].noteText + '<br><div class ="btn-group">' +
                         '<button type="button" class="btn btn-sm btn-primary" ' +
                         'onclick="editNote(' + i + ')">Edit</button>' +
                         '<button type="button" class="btn btn-sm btn-primary" ' +
                         'onclick="viewComments(' + i + ')">View comments</button>' +
                         '<button type="button" class="btn btn-sm btn-danger" ' +
-                        'onclick="deleteNote(' + i + ')">Delete</button></div></div><hr>';
+                        'onclick="deleteNote(' + i + ')">Delete</button>' +
+                        '</div></div><hr>';
                 }
 
                 if (notes.length <= 0) {
@@ -422,7 +430,7 @@ function createNote() {
         chapterId: currentChapterId,
         verseStart: $("#verseStart").val(),
         verseEnd: $("#verseEnd").val(),
-        priv: $("#privNote").val()
+        priv: $("#privNote").is(":checked")
     };
 
     var data = JSON.stringify(note);
@@ -527,10 +535,15 @@ function setCurrentViewCode(i) {
 
 
 $(document).ready(function() {
+
+    // get radio button value
     $("#viewsList").change(function() {
         var i = $('input[name=viewlistrow]:checked').val();
         setCurrentViewCode(i);
     });
+
+    // enable tooltips
+    $('[data-toggle="tooltip"]').tooltip()
 });
 
 function removeNote(i) {
@@ -704,7 +717,7 @@ function updateNote(id){
         chapterId: currentChapterId,
         verseStart: $("#verseStart").val(),
         verseEnd: $("#verseEnd").val(),
-        priv: $("#privNote").val()
+        priv: $("#privNote").is(":checked")
     };
 
     var data = JSON.stringify(note);

@@ -61,8 +61,8 @@ public class NoteDao implements UpdatableDao<Note> {
     @Override
     @Transactional
     public long save(Note note) {
-        String sql = "INSERT INTO notes (note, user_id, book_id, chapter_id, verse_start, priv, lang) " +
-                "VALUES (:note, :userId, :bookId, :chapterId, :verseStart, :priv, :lang) " +
+        String sql = "INSERT INTO notes (note, user_id, book_id, chapter_id, verse_start, priv, lang, verse_end) " +
+                "VALUES (:note, :userId, :bookId, :chapterId, :verseStart, :priv, :lang, :verseEnd) " +
                 "RETURNING note_id";
         Long noteId = null;
 
@@ -73,7 +73,8 @@ public class NoteDao implements UpdatableDao<Note> {
                 .addValue(CHAPTER_ID, note.getChapterId())
                 .addValue(VERSE_START, note.getVerseStart())
                 .addValue("priv", note.isPriv())
-                .addValue("lang", note.getLang());
+                .addValue("lang", note.getLang() == null ? "en" : note.getLang())
+                .addValue("verseEnd", note.getVerseEnd());
 
         try {
             noteId = namedParameterJdbcTemplate.queryForObject(sql, namedParams, Long.class);
@@ -91,7 +92,8 @@ public class NoteDao implements UpdatableDao<Note> {
     public boolean update(Note note) {
         note.setLastModified(LocalDateTime.now());
         String sql = "UPDATE notes SET note = :note, book_id = :bookId, chapter_id = :chapterId," +
-                "verse_start = :verseStart, priv = :priv, lang = :lang, last_modified = :lastModified " +
+                "verse_start = :verseStart, priv = :priv, lang = :lang, last_modified = :lastModified, " +
+                "verse_end = :verseEnd " +
                 "WHERE note_id = :noteId";
 
         KeyHolder holder = new GeneratedKeyHolder();
@@ -103,7 +105,8 @@ public class NoteDao implements UpdatableDao<Note> {
                 .addValue(VERSE_START, note.getVerseStart())
                 .addValue("priv", note.isPriv())
                 .addValue("lang", note.getLang())
-                .addValue("lastModified", Timestamp.valueOf(note.getLastModified()));
+                .addValue("lastModified", Timestamp.valueOf(note.getLastModified()))
+                .addValue("verseEnd", note.getVerseEnd());
 
         int rows = 0;
         rows = namedParameterJdbcTemplate.update(sql, namedParams, holder);

@@ -589,6 +589,11 @@ public class DaoServiceJdbcImpl implements DaoService {
         // set user_id here to make sure the user isn't trying to update a note they don't own
         note.setUserId(userSession.userId);
 
+        // set default language to en if none is specified
+        if (note.getLang() == null) {
+            note.setLang("en");
+        }
+
         if (noteDao.update(note)) {
             return CompletableFuture.completedFuture("success");
         } else {
