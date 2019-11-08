@@ -157,14 +157,14 @@ function getChapterUserNotes() {
 
                 // iterate through notes
                 for (var i = 0; i < notes.length; i++) {
-                    noteOutput += '<hr><div id="note' + i + '"><strong>' + notes[i].verseStart + '-' + notes[i].verseEnd + '</strong>: ' +
+                    noteOutput += '<div id="note' + i + '"><strong>' + notes[i].verseStart + '-' + notes[i].verseEnd + '</strong>: ' +
                         notes[i].noteText + '<br><div class ="btn-group">' +
                         '<button type="button" class="btn btn-sm btn-primary" ' +
                         'onclick="editNote(' + i + ')">Edit</button>' +
                         '<button type="button" class="btn btn-sm btn-primary" ' +
                         'onclick="viewComments(' + i + ')">View comments</button>' +
                         '<button type="button" class="btn btn-sm btn-danger" ' +
-                        'onclick="deleteNote(' + i + ')">Delete</button></div></div>';
+                        'onclick="deleteNote(' + i + ')">Delete</button></div></div><hr>';
                 }
 
                 if (notes.length <= 0) {
@@ -678,7 +678,7 @@ function editNote(i) {
     hideRightContentDiv();
     var noteToEdit = currentNotes[i];
     $("#createNoteHeader").html("Edit Note");
-    $("#createNoteButton").attr("onclick","updateNote()");
+    $("#createNoteButton").attr("onclick","updateNote(" + currentNotes[i].noteId + ")");
 
     // populate fields
     $("#verseStart").val(noteToEdit.verseStart);
@@ -694,8 +694,41 @@ function editNote(i) {
 /**
  * Used to send the update note request to the server
  */
-function updateNote(){
+function updateNote(id){
+    var endpoint = url + "/notes/update";
 
+    var note = {
+        noteId: id,
+        noteText: $("#noteText").val(),
+        bookId: currentBookId,
+        chapterId: currentChapterId,
+        verseStart: $("#verseStart").val(),
+        verseEnd: $("#verseEnd").val(),
+        priv: $("#privNote").val()
+    };
+
+    var data = JSON.stringify(note);
+    var token = getCsrf();
+
+    $.ajax({
+        url: endpoint,
+        type: "PUT",
+        datatype: "json",
+        contentType: "application/json",
+        headers: {'X-XSRF-TOKEN': token},
+        data: data,
+        success: function (data, status) {
+            alert("note updated");
+        },
+        error: function (xhr, ajaxOptions, thrownError) { //Add these parameters to display the required response
+            alert(xhr.status);
+            alert(xhr.responseText);
+        },
+        xhrFields: {
+            withCredentials: true
+        },
+        crossDomain: true
+    });
 }
 
 
