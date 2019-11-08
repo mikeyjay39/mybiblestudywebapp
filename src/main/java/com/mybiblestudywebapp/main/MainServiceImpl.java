@@ -4,6 +4,7 @@ import com.mybiblestudywebapp.bible.BibleStudyRequest;
 import com.mybiblestudywebapp.bible.BibleStudyResponse;
 import com.mybiblestudywebapp.bible.GetChapterResponse;
 import com.mybiblestudywebapp.dashboard.notes.AddNoteResponse;
+import com.mybiblestudywebapp.dashboard.notes.GetCommentsResponse;
 import com.mybiblestudywebapp.dashboard.notes.RankNoteRequest;
 import com.mybiblestudywebapp.dashboard.notes.RankNoteResponse;
 import com.mybiblestudywebapp.dashboard.users.GetUsersResponse;
@@ -84,6 +85,7 @@ public class MainServiceImpl implements MainService {
                 response.setBookId(notes.get(0).getBookId());
                 response.setChapterId(notes.get(0).getChapterId());
             }
+
         } catch (DaoServiceException e) {
             return daoServiceExceptionHandler(e, response);
         } catch (InterruptedException e) {
@@ -101,8 +103,6 @@ public class MainServiceImpl implements MainService {
 
     /**
      * {@inheritDoc}
-     * @param request
-     * @return
      */
     @Override
     public ResponseEntity<Response> createUserAccount(CreateUserRequest request) {
@@ -138,8 +138,6 @@ public class MainServiceImpl implements MainService {
 
     /**
      * {@inheritDoc}
-     * @param request
-     * @return
      */
     @Override
     public ResponseEntity<Response> addNote(Note request) {
@@ -162,8 +160,6 @@ public class MainServiceImpl implements MainService {
 
     /**
      * {@inheritDoc}
-     * @param request
-     * @return
      */
     @Override
     public ResponseEntity<Response> rankNote(RankNoteRequest request) {
@@ -183,7 +179,6 @@ public class MainServiceImpl implements MainService {
 
     /**
      * {@inheritDoc}
-     * @return
      */
     @Override
     public ResponseEntity<Response> login() {
@@ -194,7 +189,6 @@ public class MainServiceImpl implements MainService {
 
     /**
      * {@inheritDoc}
-     * @return
      */
     @Override
     public ResponseEntity<Response> addView() {
@@ -329,6 +323,106 @@ public class MainServiceImpl implements MainService {
         try {
             String result = daoService.addNotesToView(viewcode, authorId, ranking).get();
             response.setResult(result);
+            return ResponseEntity.ok(response);
+        } catch (DaoServiceException e) {
+            return daoServiceExceptionHandler(e, response);
+        } catch (InterruptedException e) {
+            return interruptedExceptionHandler(e, e.getMessage(), response);
+        } catch (ExecutionException e) {
+            return executionExceptionHandler(e, e.getMessage(), response);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ResponseEntity<Response> getChapterNotesForUser(String book, int chapterNo, long userId) {
+        BibleStudyResponse response = new BibleStudyResponse();
+
+        try {
+            // Get Bible text
+            var getBibleTextFuture = getBibleService.getVersesForChapter(book, chapterNo);
+
+            // Get Notes
+            var getNotesFuture = daoService.getAllChapterNotesForUser(book, chapterNo, userId);
+
+            // Get future values
+            List<Note> notes = getNotesFuture.get();
+            var bibleText = getBibleTextFuture.get();
+
+            // Set response
+            response.setBook(book);
+            response.setChapter(chapterNo);
+
+            if (!notes.isEmpty()) {
+                response.setBookId(notes.get(0).getBookId());
+                response.setChapterId(notes.get(0).getChapterId());
+            }
+
+            response.setVerses(bibleText);
+            response.setNotes(notes);
+            return ResponseEntity.ok(response);
+        } catch (DaoServiceException e) {
+            return daoServiceExceptionHandler(e, response);
+        } catch (InterruptedException e) {
+            return interruptedExceptionHandler(e, e.getMessage(), response);
+        } catch (ExecutionException e) {
+            return executionExceptionHandler(e, e.getMessage(), response);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ResponseEntity<Response> updateNote(Note note) {
+        GenericResponse response = new GenericResponse();
+
+        try {
+            response.setStatus(daoService.updateNote(note).get());
+            return ResponseEntity.ok(response);
+        } catch (DaoServiceException e) {
+            return daoServiceExceptionHandler(e, response);
+        } catch (InterruptedException e) {
+            return interruptedExceptionHandler(e, e.getMessage(), response);
+        } catch (ExecutionException e) {
+            return executionExceptionHandler(e, e.getMessage(), response);
+        }
+    }
+
+    /**
+     *
+     * {@inheritDoc}
+     */
+    @Override
+    public ResponseEntity<Response> deleteNote(long noteId) {
+        GenericResponse response = new GenericResponse();
+
+        try {
+            String result = daoService.deleteNote(noteId).get();
+            response.setStatus(result);
+            return ResponseEntity.ok(response);
+        } catch (DaoServiceException e) {
+            return daoServiceExceptionHandler(e, response);
+        } catch (InterruptedException e) {
+            return interruptedExceptionHandler(e, e.getMessage(), response);
+        } catch (ExecutionException e) {
+            return executionExceptionHandler(e, e.getMessage(), response);
+        }
+    }
+
+    /**
+     *
+     * {@inheritDoc}
+     */
+    @Override
+    public ResponseEntity<Response> getComments(long noteId) {
+        GetCommentsResponse response = new GetCommentsResponse();
+
+        try {
+            var result = daoService.getComments(noteId);
+            response.setComments(result.get());
             return ResponseEntity.ok(response);
         } catch (DaoServiceException e) {
             return daoServiceExceptionHandler(e, response);

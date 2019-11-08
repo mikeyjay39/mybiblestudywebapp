@@ -20,6 +20,29 @@ public class NotesController {
     private MainService mainService;
 
     /**
+     * Get all the chapter notes for the logged in user along with the Bible text
+     * @param book
+     * @param chapterNo
+     * @return
+     */
+    @GetMapping(path = "/mynotes/{book}/{chapterNo}/{userId}")
+    public ResponseEntity<Response> getMyNotes(@PathVariable String book,
+                                               @PathVariable int chapterNo,
+                                               @PathVariable long userId) {
+        return mainService.getChapterNotesForUser(book, chapterNo, userId);
+    }
+
+    /**
+     * Get comments for a note
+     * @param noteId
+     * @return
+     */
+    @GetMapping(path = "/comments/{noteId}")
+    public ResponseEntity<Response> getComments(@PathVariable long noteId) {
+        return mainService.getComments(noteId);
+    }
+
+    /**
      * Endpoint for adding new notes
      * @param request
      * @return
@@ -29,8 +52,6 @@ public class NotesController {
         return mainService.addNote(request);
     }
 
-
-
     /**
      * Endpoint for ranking notes
      * @param request
@@ -39,5 +60,20 @@ public class NotesController {
     @PostMapping(path = "/rank", consumes = "application/json", produces = "application/json")
     public ResponseEntity<Response> rankNote(@RequestBody RankNoteRequest request) {
         return mainService.rankNote(request);
+    }
+
+    /**
+     * Endpoint for updating notes
+     * @param note
+     * @return
+     */
+    @PutMapping(path = "/update", consumes = "application/json", produces = "application/json")
+    public ResponseEntity<Response> updateNote(@RequestBody Note note) {
+        return mainService.updateNote(note);
+    }
+
+    @DeleteMapping(path = "/delete/{noteId}", produces = "application/json")
+    public ResponseEntity<Response> deleteNote(@PathVariable long noteId) {
+        return mainService.deleteNote(noteId);
     }
 }

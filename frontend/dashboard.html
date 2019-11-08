@@ -90,7 +90,7 @@
 
     <!-- Manage views row -->
     <div class="row">
-    <div id="manageViews" class="col-sm-12 text-center">
+    <div id="manageViews" style="display:none;" class="col-sm-12 text-center">
 
         <button type="button" class="btn btn-success" onclick="createView()">Create new view</button>
         <button type="button" class="btn btn-secondary" onclick="showAddNotes()">Add notes</button>
@@ -99,8 +99,8 @@
         <h4 class="text-center">
             My Views
         </h4>
-        <ul id="viewsList" class="list-group">
-        </ul>
+        <div id="viewsList" class="btn-group btn-group-toggle" data-toggle="buttons">
+        </div>
         <div>Current view:</div>
             <strong>
         <div id="currentViewCode"></div></strong>
@@ -135,7 +135,7 @@
                     <input id="book" type="text" class="textbox" name="book" pattern="[A-Za-z1-9]*">
                     Chapter:
                     <input id="chapter" class="textbox" name="chapter" type="number" />
-                    <button type="button" class="btn btn-primary" onclick="getService()">Go!</button>
+                    <button id="goButton" type="button" class="btn btn-primary" onclick="getService()">Go!</button>
                 </p>
             </form>
         </div>
@@ -150,14 +150,17 @@
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. 1
             </p>
         </div>
-        <!-- end of verses column -->
-        <div id="notes" style="display:none;" class="col-sm-6">
+        <!-- end of verses column style="display:none;"-->
+        <div id="notes"  class="col-sm-6">
+            <h5 class="text-center">My Notes</h5>
             <p>
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. 1
             </p>
         </div>
+
+        <!-- create note start-->
         <div id="createNote" style="display:none;" class="col-sm-6">
-            <h4 class="text-center">
+            <h4 id="createNoteHeader" class="text-center">
         Create note
             </h4>
             <form id="createNoteForm" name="createNoteForm" onsubmit="" action="">
@@ -183,9 +186,11 @@
                     <label for="noteText">Note text</label>
                 <textarea id="noteText" class="form-control" name="noteText" rows="8"></textarea>
                 </div>
-                <button type="button" class="btn btn-primary" onclick="createNote()">Save</button>
+                <button id="createNoteButton" type="button" class="btn btn-success" onclick="createNote()">Save</button>
             </form>
         </div>
+        <!--create note end-->
+
 
     </div>
     <!-- end main content row -->
@@ -202,8 +207,6 @@
 
 </body>
 
-<script crossorigin="anonymous" src="js/main.js"></script>
-
 <!-- jQuery library -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
@@ -215,5 +218,6 @@
 
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
 
+<script crossorigin="anonymous" src="js/main.js"></script>
 
 </html>

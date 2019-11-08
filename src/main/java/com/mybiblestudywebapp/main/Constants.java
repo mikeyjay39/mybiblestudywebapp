@@ -37,6 +37,8 @@ public class Constants {
 
     public static final String RANKING_VALUE = "rankingValue";
 
+    public static final String PRIV = "priv";
+
     private Constants(){}
 
 }

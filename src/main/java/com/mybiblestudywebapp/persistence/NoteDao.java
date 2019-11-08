@@ -35,7 +35,8 @@ import static com.mybiblestudywebapp.main.Constants.*;
 enum GetNotesCase {
     CHAPTER_NOTES_FROM_VIEW,
     ALL_NOTES_ABOVE_RANK,
-    ALL_NOTES_FROM_AUTHOR
+    ALL_NOTES_FROM_AUTHOR,
+    CHAPTER_NOTES_FROM_AUTHOR
 }
 
 @Component
@@ -60,8 +61,8 @@ public class NoteDao implements UpdatableDao<Note> {
     @Override
     @Transactional
     public long save(Note note) {
-        String sql = "INSERT INTO notes (note, user_id, book_id, chapter_id, verse_start, priv, lang) " +
-                "VALUES (:note, :userId, :bookId, :chapterId, :verseStart, :priv, :lang) " +
+        String sql = "INSERT INTO notes (note, user_id, book_id, chapter_id, verse_start, priv, lang, verse_end) " +
+                "VALUES (:note, :userId, :bookId, :chapterId, :verseStart, :priv, :lang, :verseEnd) " +
                 "RETURNING note_id";
         Long noteId = null;
 
@@ -72,7 +73,8 @@ public class NoteDao implements UpdatableDao<Note> {
                 .addValue(CHAPTER_ID, note.getChapterId())
                 .addValue(VERSE_START, note.getVerseStart())
                 .addValue("priv", note.isPriv())
-                .addValue("lang", note.getLang());
+                .addValue("lang", note.getLang() == null ? "en" : note.getLang())
+                .addValue("verseEnd", note.getVerseEnd());
 
         try {
             noteId = namedParameterJdbcTemplate.queryForObject(sql, namedParams, Long.class);
@@ -90,7 +92,8 @@ public class NoteDao implements UpdatableDao<Note> {
     public boolean update(Note note) {
         note.setLastModified(LocalDateTime.now());
         String sql = "UPDATE notes SET note = :note, book_id = :bookId, chapter_id = :chapterId," +
-                "verse_start = :verseStart, priv = :priv, lang = :lang, last_modified = :lastModified " +
+                "verse_start = :verseStart, priv = :priv, lang = :lang, last_modified = :lastModified, " +
+                "verse_end = :verseEnd " +
                 "WHERE note_id = :noteId";
 
         KeyHolder holder = new GeneratedKeyHolder();
@@ -102,7 +105,8 @@ public class NoteDao implements UpdatableDao<Note> {
                 .addValue(VERSE_START, note.getVerseStart())
                 .addValue("priv", note.isPriv())
                 .addValue("lang", note.getLang())
-                .addValue("lastModified", Timestamp.valueOf(note.getLastModified()));
+                .addValue("lastModified", Timestamp.valueOf(note.getLastModified()))
+                .addValue("verseEnd", note.getVerseEnd());
 
         int rows = 0;
         rows = namedParameterJdbcTemplate.update(sql, namedParams, holder);
@@ -113,10 +117,11 @@ public class NoteDao implements UpdatableDao<Note> {
     @Transactional
     @Override
     public boolean delete(Note note) {
-        String sql = "DELETE FROM notes WHERE note_id = :noteId";
+        String sql = "DELETE FROM notes WHERE note_id = :noteId AND user_id = :userId";
         KeyHolder holder = new GeneratedKeyHolder();
         SqlParameterSource params = new MapSqlParameterSource()
-                .addValue("noteId", note.getNoteId());
+                .addValue(NOTE_ID, note.getNoteId())
+                .addValue(USER_ID, note.getUserId());
         int rows = 0;
         rows = namedParameterJdbcTemplate.update(sql, params, holder);
         return rows > 0;
@@ -144,6 +149,8 @@ public class NoteDao implements UpdatableDao<Note> {
      */
     @Override
     public Optional<List<Note>> get(final Map<String, Object> args) {
+        //TODO - consolidate the private methods in the switch into 1 private method and give it a different sql
+        // string and error message parameter for each case
         GetNotesCase getNotesCase = getNotesCase(args);
 
         if (getNotesCase == null) {
@@ -157,6 +164,8 @@ public class NoteDao implements UpdatableDao<Note> {
                 return getAllNotesAboveRank(args);
             case ALL_NOTES_FROM_AUTHOR:
                 return getAllNotesFromAuthor(args);
+            case CHAPTER_NOTES_FROM_AUTHOR:
+                return getChapterNotesFromAuthor(args);
             default:
                 break;
         }
@@ -215,9 +224,17 @@ public class NoteDao implements UpdatableDao<Note> {
         List<String> notesFromAuthor = new ArrayList<>();
         notesFromAuthor.add(USER_ID);
 
+        // Build get notes from user and chapter
+        List<String> chapterNotesForUser = new ArrayList<>();
+        chapterNotesForUser.add(USER_ID);
+        chapterNotesForUser.add("book");
+        chapterNotesForUser.add("chapterNo");
+
         // Build get public notes from author
         if (keys.containsAll(notesViewKeys)) {
             result = GetNotesCase.CHAPTER_NOTES_FROM_VIEW;
+        } else if (keys.containsAll(chapterNotesForUser)) {
+            result = GetNotesCase.CHAPTER_NOTES_FROM_AUTHOR;
         } else if (keys.containsAll(notesRankingKeys)) {
             result = GetNotesCase.ALL_NOTES_ABOVE_RANK;
         } else if (keys.containsAll(notesFromAuthor)) {
@@ -239,7 +256,8 @@ public class NoteDao implements UpdatableDao<Note> {
         String sql = "SELECT * FROM notes " +
                 "JOIN view_note ON view_note.note_id = notes.note_id " +
                 "WHERE view_note.view_id = view_id " +
-                "AND notes.chapter_id = :chapterId";
+                "AND notes.chapter_id = :chapterId " +
+                "ORDER BY notes.verse_start, notes.verse_end, notes.note_id ASC";
         SqlParameterSource params = new MapSqlParameterSource(args);
 
         try {
@@ -261,7 +279,8 @@ public class NoteDao implements UpdatableDao<Note> {
      */
     private Optional<List<Note>> getAllNotesAboveRank(final Map<String, Object> args) {
         List<Note> result = null;
-        String sql = "SELECT * FROM notes WHERE ranking > :ranking AND priv = false";
+        String sql = "SELECT * FROM notes WHERE ranking > :ranking AND priv = false " +
+                "ORDER BY verse_start, verse_end, note_id ASC";
         SqlParameterSource params = new MapSqlParameterSource(args);
 
         try {
@@ -282,7 +301,8 @@ public class NoteDao implements UpdatableDao<Note> {
      */
     private Optional<List<Note>> getAllNotesFromAuthor(final Map<String, Object> args) {
         List<Note> result = null;
-        StringBuilder sqlBuilder = new StringBuilder("SELECT * FROM notes WHERE user_id = :userID");
+        StringBuilder sqlBuilder = new StringBuilder("SELECT * FROM notes WHERE user_id = :userID " +
+                "ORDER BY verse_start, verse_end, note_id ASC");
 
         if (args.keySet().contains("priv")) {
             sqlBuilder.append(" AND priv = :priv");
@@ -301,4 +321,32 @@ public class NoteDao implements UpdatableDao<Note> {
         return Optional.ofNullable(result);
     }
 
+    /**
+     *
+     * @param args keys are "userId", "book", "chapterNo" and "priv"
+     * @return
+     */
+    private Optional<List<Note>> getChapterNotesFromAuthor(final Map<String, Object> args) {
+        List<Note> result = null;
+        StringBuilder sqlBuilder = new StringBuilder("SELECT * FROM notes as n " +
+                "JOIN books AS b ON b.book_id = n.book_id " +
+                "JOIN chapters AS c ON c.chapter_id = n.chapter_id " +
+                "WHERE n.user_id = :userId AND b.title = :book AND c.chapter_no = :chapterNo " +
+                "ORDER BY n.verse_start, n.verse_end, n.note_id ASC");
+
+        if ((boolean)args.get("priv")) {
+            sqlBuilder.append(" AND n.priv = false");
+        }
+
+        String sql = sqlBuilder.toString();
+
+        try {
+            result = namedParameterJdbcTemplate.query(sql, args, NoteDao::mapRow);
+        } catch (DataAccessException e) {
+            String errMsg = "Could not retrieve notes for user_id: " + args.get("userId") + "\n" + e.getMessage();
+            LOGGER.error(errMsg);
+        }
+
+        return Optional.ofNullable(result);
+    }
 }

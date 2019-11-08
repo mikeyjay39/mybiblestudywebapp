@@ -36,11 +36,6 @@ function getChapter() {
         url: apiEndPoint,
         type: "GET",
         datatype: "application/json; charset=utf-8",
-        /*beforeSend: function (xhr){
-            //xhr.setRequestHeader("Authorization", "Basic " + btoa("admin@admin.com:12345"));
-
-            xhr.setRequestHeader("Authorization", "Basic " + btoa("testingemail@testingthis.com:testpassword"));
-        },*/
         success: function (data, status) {
 
             var returnedBook = data.book;
@@ -124,6 +119,79 @@ function getChapterId() {
         },
         crossDomain: true
     });
+}
+
+/**
+ * Used to get Bible text and notes for the currently logged in user
+ */
+function getChapterUserNotes() {
+
+    var book = $("#book").val();
+    var chapterNo = $("#chapter").val();
+    var endpoint = url + "/notes/mynotes/" + book + "/" + chapterNo + "/" + currentUserId;
+
+    if (book != "" && chapterNo != "") {
+        $.ajax({
+            url: endpoint,
+            type: "GET",
+            datatype: "application/json; charset=utf-8",
+            success: function (data, status) {
+
+                var returnedBook = data.book;
+                var verseOutput = "";
+                var noteOutput = "";
+                var versesId = $("#verses");
+                var verses = data.verses;
+                var notes = data.notes;
+                var size = verses.length;
+                currentBook = data.book;
+                currentChapter = data.chapter;
+                currentBookId = data.bookId;
+                currentChapterId = data.chapterId;
+                currentNotes = data.notes;
+
+                // iterate through verses
+                for (var i = 0; i < size; i++) {
+                    verseOutput += '<sup>' + verses[i].verseNr + '</sup>' + verses[i].verse;
+                }
+
+                // iterate through notes
+                for (var i = 0; i < notes.length; i++) {
+                    noteOutput += '<div id="note' + i + '"><strong>' +
+                        '<span data-toggle="tooltip" ' +
+                        'title="this note applies from verse ' + notes[i].verseStart +
+                        ' to verse ' + notes[i].verseEnd + '">' +
+                        notes[i].verseStart + '-' + notes[i].verseEnd + '</span></strong>: ' +
+                        '<sup><span class="badge badge-primary" data-toggle="tooltip" ' +
+                        'title="ranking value for this note is ' + notes[i].ranking + '">' +
+                        notes[i].ranking + '</span></sup>' +
+                        notes[i].noteText + '<br><div class ="btn-group">' +
+                        '<button type="button" class="btn btn-sm btn-primary" ' +
+                        'onclick="editNote(' + i + ')">Edit</button>' +
+                        '<button type="button" class="btn btn-sm btn-primary" ' +
+                        'onclick="viewComments(' + notes[i].noteId + ')">View comments</button>' +
+                        '<button type="button" class="btn btn-sm btn-danger" ' +
+                        'onclick="deleteNote(' + notes[i].noteId + ')">Delete</button>' +
+                        '</div></div><hr>';
+                }
+
+                if (notes.length <= 0) {
+                    noteOutput = "<em>No notes available for this chapter</em>"
+                }
+
+                versesId.html(verseOutput);
+                $("#notes").html(noteOutput);
+            },
+            error: function (xhr, ajaxOptions, thrownError) { //Add these parameters to display the required response
+                alert(xhr.status);
+                alert(xhr.responseText);
+            },
+            xhrFields: {
+                withCredentials: true
+            },
+            crossDomain: true
+        });
+    }
 }
 
 function createUser() {
@@ -276,6 +344,7 @@ function hideAllBody() {
  * Hide the content column next to verses
  */
 function hideRightContentDiv() {
+    $("#goButton").attr("onclick","getService()");
     $("#notes").hide();
     $("#createNote").hide();
     $("#manageViews").hide();
@@ -321,6 +390,16 @@ function logoutHandler() {
 
 function showCreateNote() {
     hideRightContentDiv();
+    $("#createNoteButton").attr("onclick","createNote()");
+    $("#createNoteHeader").html("Create Note");
+
+    // erase values from fields
+    // populate fields
+    $("#verseStart").val("");
+    $("#verseEnd").val("");
+    $("#privNote").val("");
+    $("#noteText").val("");
+
     $("#createNote").show();
 }
 
@@ -329,6 +408,54 @@ function showManageViews() {
     hideRightContentDiv();
     getViewsForLoggedInUser();
     $("#manageViews").show();
+}
+
+function showManageNotes() {
+    hideRightContentDiv();
+    getChapterUserNotes();
+    $("#notes").show();
+    $("#goButton").attr("onclick","getChapterUserNotes()");
+}
+
+function viewComments(id) {
+    var endpoint = url + "/notes/comments/" + id;
+    var token = getCsrf();
+
+    $.ajax({
+        url: endpoint,
+        type: "GET",
+        datatype: "application/json; charset=utf-8",
+        success: function (data, status) {
+
+            var comments = data.comments;
+            var commentsSize = comments.length;
+            var commentOutput = "";
+
+           if (commentsSize < 1) {
+               alert("no comments available for this note");
+           } else {
+               // iterate through and append comments
+               for (var i = 0; i < commentsSize; i++) {
+                   commentOutput += '<div id="comment' + i + '">' +
+                       '<strong>' + comments[i].createdAt + '</strong> ' +
+                       comments[i].commentText +
+                       '</div><hr>';
+               }
+
+               $("#notes").html(commentOutput);
+           }
+
+        },
+        error: function (xhr, ajaxOptions, thrownError) { //Add these parameters to display the required response
+            alert(xhr.status);
+            alert(xhr.responseText);
+        },
+        xhrFields: {
+            withCredentials: true
+        },
+        crossDomain: true
+    });
+
 }
 
 /**
@@ -344,7 +471,7 @@ function createNote() {
         chapterId: currentChapterId,
         verseStart: $("#verseStart").val(),
         verseEnd: $("#verseEnd").val(),
-        priv: $("#privNote").val()
+        priv: $("#privNote").is(":checked")
     };
 
     var data = JSON.stringify(note);
@@ -390,8 +517,8 @@ function getViewsForLoggedInUser() {
             for (var i = 0; i < size; i++) {
                 var vc = data.viewCodes[i];
                 $("#viewsList").append(
-                    '<li class="list-group-item" onclick="setCurrentViewCode(' + i + ')" onmouseover="" style="cursor: pointer;">' +
-                    vc + '</li>'
+                    '<label class="btn btn-sm btn-info"><input type="radio" ' +
+                    'name="viewlistrow" value="' + i + '">' + vc + '</label>'
                 );
             }
 
@@ -445,6 +572,20 @@ function setCurrentViewCode(i) {
     $("#currentViewCode").text(userViewCodes[i]);
     $("#notes").show();
 }
+
+
+
+$(document).ready(function() {
+
+    // get radio button value
+    $("#viewsList").change(function() {
+        var i = $('input[name=viewlistrow]:checked').val();
+        setCurrentViewCode(i);
+    });
+
+    // enable tooltips
+    $('[data-toggle="tooltip"]').tooltip()
+});
 
 function removeNote(i) {
 
@@ -506,6 +647,36 @@ function deleteView() {
     });
 }
 
+function deleteNote(id) {
+    var endpoint = url + "/notes/delete/" + id;
+    var token = getCsrf();
+
+    $.ajax({
+        url: endpoint,
+        type: "DELETE",
+        datatype: "application/json; charset=utf-8",
+        headers: {'X-XSRF-TOKEN': token},
+        success: function (data, status) {
+
+            alert('success');
+            $("#notes").hide();
+            getChapterUserNotes();
+            $("#notes").show();
+
+        },
+        error: function (xhr, ajaxOptions, thrownError) { //Add these parameters to display the required response
+            alert(xhr.status);
+            alert(xhr.responseText);
+            alert('did not delete note')
+        },
+        xhrFields: {
+            withCredentials: true
+        },
+        crossDomain: true
+    });
+
+}
+
 function showAddNotes() {
     var endpoint = url + "/users";
     var token = getCsrf();
@@ -527,6 +698,8 @@ function showAddNotes() {
                     '<button type="button" class="list-group-item list-group-item-action list-group-item-primary" onclick="setCurrentAuthor(' + users[i].userId + ')" onmouseover="" style="cursor: pointer;">' +
                     users[i].name + '</button>'
                 )
+
+
             }
         },
         error: function (xhr, ajaxOptions, thrownError) { //Add these parameters to display the required response
@@ -573,6 +746,67 @@ function addNotesToView() {
             alert(xhr.status);
             alert(xhr.responseText);
             alert('cannot add notes to view')
+        },
+        xhrFields: {
+            withCredentials: true
+        },
+        crossDomain: true
+    });
+}
+
+/**
+ * Called when user clicks on edit note button
+ * @param i
+ */
+function editNote(i) {
+    hideRightContentDiv();
+    var noteToEdit = currentNotes[i];
+    $("#createNoteHeader").html("Edit Note");
+    $("#createNoteButton").attr("onclick","updateNote(" + currentNotes[i].noteId + ")");
+
+    // populate fields
+    $("#verseStart").val(noteToEdit.verseStart);
+    $("#verseEnd").val(noteToEdit.verseEnd);
+    $("#privNote").val(noteToEdit.priv);
+    $("#noteText").val(noteToEdit.noteText);
+
+
+    $("#createNote").show();
+
+}
+
+/**
+ * Used to send the update note request to the server
+ */
+function updateNote(id){
+    var endpoint = url + "/notes/update";
+
+    var note = {
+        noteId: id,
+        noteText: $("#noteText").val(),
+        bookId: currentBookId,
+        chapterId: currentChapterId,
+        verseStart: $("#verseStart").val(),
+        verseEnd: $("#verseEnd").val(),
+        priv: $("#privNote").is(":checked")
+    };
+
+    var data = JSON.stringify(note);
+    var token = getCsrf();
+
+    $.ajax({
+        url: endpoint,
+        type: "PUT",
+        datatype: "json",
+        contentType: "application/json",
+        headers: {'X-XSRF-TOKEN': token},
+        data: data,
+        success: function (data, status) {
+            alert("note updated");
+        },
+        error: function (xhr, ajaxOptions, thrownError) { //Add these parameters to display the required response
+            alert(xhr.status);
+            alert(xhr.responseText);
         },
         xhrFields: {
             withCredentials: true

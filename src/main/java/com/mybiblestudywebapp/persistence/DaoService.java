@@ -5,6 +5,7 @@ import com.mybiblestudywebapp.dashboard.notes.RankNoteRequest;
 import com.mybiblestudywebapp.dashboard.notes.RankNoteResponse;
 import com.mybiblestudywebapp.dashboard.views.AddNotesToViewResponse;
 import com.mybiblestudywebapp.main.Response;
+import com.mybiblestudywebapp.persistence.model.Comment;
 import com.mybiblestudywebapp.persistence.model.Note;
 import com.mybiblestudywebapp.persistence.model.User;
 import com.mybiblestudywebapp.persistence.model.View;
@@ -116,4 +117,37 @@ public interface DaoService {
      */
     CompletableFuture<String> addNotesToView(String viewcode, long authorId, int ranking)
         throws DaoServiceException;
+
+    /**
+     * Gets all notes for the logged in user
+     * @return
+     * @throws DaoServiceException
+     */
+    CompletableFuture<List<Note>> getAllChapterNotesForUser(String book, long chapterNo, long userId)
+            throws DaoServiceException;
+
+    /**
+     * Updates a note
+     * @param note
+     * @return "success"  on success
+     * @throws DaoServiceException on failure
+     */
+    CompletableFuture<String> updateNote(Note note) throws DaoServiceException;
+
+    /**
+     * Delete a note. The userId stored in the user session will be
+     * used to verify the user is deleting a note that they own.
+     * @param noteId
+     * @return "success" on success
+     * @throws DaoServiceException on failure
+     */
+    CompletableFuture<String> deleteNote(long noteId) throws DaoServiceException;
+
+    /**
+     * Get comments for a note
+     * @param noteId
+     * @return
+     * @throws DaoServiceException
+     */
+    CompletableFuture<List<Comment>> getComments(long noteId) throws DaoServiceException;
 }
