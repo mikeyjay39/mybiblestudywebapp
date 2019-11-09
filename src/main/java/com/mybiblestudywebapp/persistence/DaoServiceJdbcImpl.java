@@ -652,6 +652,7 @@ public class DaoServiceJdbcImpl implements DaoService {
      */
     @Override
     @Async
+    @Transactional
     public CompletableFuture<Response> addComent(Comment comment) throws DaoServiceException {
         comment.setUserId(userSession.userId);
         long result = commentDao.save(comment);

@@ -43,7 +43,7 @@ public class NotesController {
         return mainService.getComments(noteId);
     }
 
-    @PostMapping(path = "/comments/{noteId}", consumes = "application/json", produces = "application/json")
+    @PostMapping(path = "/comments", consumes = "application/json", produces = "application/json")
     public ResponseEntity<Response> addComment(@RequestBody Comment comment) {
         return mainService.addComment(comment);
     }
