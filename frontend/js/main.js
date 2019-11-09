@@ -189,7 +189,7 @@ function getChapterUserNotes() {
                         'title="this note applies from verse ' + notes[i].verseStart +
                         ' to verse ' + notes[i].verseEnd + '">' +
                         notes[i].verseStart + '-' + notes[i].verseEnd + '</span></strong>: ' +
-                        '<sup><span class="badge badge-primary" data-toggle="tooltip" ' +
+                        '<sup><span class="badge badge-warning" data-toggle="tooltip" ' +
                         'title="ranking value for this note is ' + notes[i].ranking + '">' +
                         notes[i].ranking + '</span></sup>' +
                         notes[i].noteText + '<br>';
@@ -197,7 +197,7 @@ function getChapterUserNotes() {
                     if (exploreNotesSection) {
                         noteOutput += 'Created by user: ' + notes[i].userId + '<br>' +
                             '<div class ="btn-group">' +
-                            '<button type="button" class="btn btn-sm btn-primary" ' +
+                            '<button type="button" class="btn btn-sm btn-info" ' +
                             'onclick="showAddComment(' + i + ')">Add Comment</button>' +
                             '<button type="button" class="btn btn-sm btn-danger" ' +
                             'onclick="downVote(' + notes[i].noteId + ')"> - </button>' +
@@ -206,9 +206,9 @@ function getChapterUserNotes() {
                             '</div></div><hr>';
                     } else {
                         noteOutput += '<div class ="btn-group">' +
-                            '<button type="button" class="btn btn-sm btn-primary" ' +
+                            '<button type="button" class="btn btn-sm btn-info" ' +
                             'onclick="editNote(' + i + ')">Edit</button>' +
-                            '<button type="button" class="btn btn-sm btn-primary" ' +
+                            '<button type="button" class="btn btn-sm btn-info" ' +
                             'onclick="viewComments(' + notes[i].noteId + ')">View comments</button>' +
                             '<button type="button" class="btn btn-sm btn-danger" ' +
                             'onclick="deleteNote(' + notes[i].noteId + ')">Delete</button>' +
