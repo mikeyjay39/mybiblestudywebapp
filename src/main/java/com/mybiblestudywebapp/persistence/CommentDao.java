@@ -46,12 +46,13 @@ public class CommentDao implements UpdatableDao<Comment> {
      */
     @Override
     public long save(Comment comment) {
-        String sql = "INSERT INTO comments (user_id, note_id) " +
-                "VALUES (:userId, :noteId) " +
+        String sql = "INSERT INTO comments (user_id, note_id, comment) " +
+                "VALUES (:userId, :noteId, :commentText) " +
                 "RETURNING comment_id";
         SqlParameterSource params = new MapSqlParameterSource()
                 .addValue("userId", comment.getUserId())
-                .addValue("noteId", comment.getNoteId());
+                .addValue("noteId", comment.getNoteId())
+                .addValue("commentText", comment.getCommentText());
         long commentId = -1;
 
         try {

@@ -481,7 +481,7 @@ function showAddComment(i) {
     $("#notes").hide();
 
     $("#addCommentNote").html(currentNotes[i].noteText);
-
+    $("#addComment").attr("onclick","addCommentClicked(" + currentNotes[i].noteId + ")");
     $("#addCommentDiv").show();
 }
 
@@ -523,6 +523,55 @@ function viewComments(id) {
         },
         crossDomain: true
     });
+}
+
+/**
+ * Called when user clicks on 'Add Comment' button
+ * @param i
+ */
+function addCommentClicked(id) {
+
+
+
+    var endpoint = url + "/notes/comments";
+    var token = getCsrf();
+
+    var commentRequest = {
+        noteId: id,
+        commentText: $("#commentText").val()
+    };
+
+    var textValue = $("#commentText").val();
+
+    if (textValue == null || textValue == "") {
+        alert('Please enter a comment before submitting');
+        return;
+    }
+
+    var data = JSON.stringify(commentRequest);
+
+    $.ajax({
+        url: endpoint,
+        type: "POST",
+        datatype: "json",
+        contentType: "application/json",
+        headers: {'X-XSRF-TOKEN': token},
+        data: data,
+        success: function (data, status) {
+            alert("comment added");
+            $("#addCommentDiv").hide();
+            $("#notes").show();
+        },
+        error: function (xhr, ajaxOptions, thrownError) { //Add these parameters to display the required response
+            alert(xhr.status);
+            alert(xhr.responseText);
+        },
+        xhrFields: {
+            withCredentials: true
+        },
+        crossDomain: true
+    });
+
 }
 
 /**
