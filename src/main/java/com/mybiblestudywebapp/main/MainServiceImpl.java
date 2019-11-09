@@ -16,6 +16,7 @@ import com.mybiblestudywebapp.getbible.GetBibleService;
 import com.mybiblestudywebapp.persistence.Dao;
 import com.mybiblestudywebapp.persistence.DaoService;
 import com.mybiblestudywebapp.persistence.DaoServiceException;
+import com.mybiblestudywebapp.persistence.model.Comment;
 import com.mybiblestudywebapp.persistence.model.Note;
 import com.mybiblestudywebapp.persistence.model.User;
 
@@ -424,6 +425,26 @@ public class MainServiceImpl implements MainService {
             var result = daoService.getComments(noteId);
             response.setComments(result.get());
             return ResponseEntity.ok(response);
+        } catch (DaoServiceException e) {
+            return daoServiceExceptionHandler(e, response);
+        } catch (InterruptedException e) {
+            return interruptedExceptionHandler(e, e.getMessage(), response);
+        } catch (ExecutionException e) {
+            return executionExceptionHandler(e, e.getMessage(), response);
+        }
+    }
+
+    /**
+     *
+     * {@inheritDoc}
+     */
+    @Override
+    public ResponseEntity<Response> addComment(Comment comment) {
+        Response response = new GenericResponse();
+
+        try {
+            Response daoResponse = daoService.addComent(comment).get();
+            return ResponseEntity.ok(daoResponse);
         } catch (DaoServiceException e) {
             return daoServiceExceptionHandler(e, response);
         } catch (InterruptedException e) {

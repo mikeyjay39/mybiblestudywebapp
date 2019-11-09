@@ -150,4 +150,12 @@ public interface DaoService {
      * @throws DaoServiceException
      */
     CompletableFuture<List<Comment>> getComments(long noteId) throws DaoServiceException;
+
+    /**
+     * Add a comment
+     * @param comment
+     * @return
+     * @throws DaoServiceException
+     */
+    CompletableFuture<Response> addComent(Comment comment) throws DaoServiceException;
 }

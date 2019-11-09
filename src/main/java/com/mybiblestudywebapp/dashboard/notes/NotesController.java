@@ -2,6 +2,7 @@ package com.mybiblestudywebapp.dashboard.notes;
 
 import com.mybiblestudywebapp.main.MainService;
 import com.mybiblestudywebapp.main.Response;
+import com.mybiblestudywebapp.persistence.model.Comment;
 import com.mybiblestudywebapp.persistence.model.Note;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -42,9 +43,9 @@ public class NotesController {
         return mainService.getComments(noteId);
     }
 
-    @PostMapping(path = "/comments/{noteId}")
-    public ResponseEntity<Response> addComment(@PathVariable long noteId) {
-        return mainService.addComment(noteId);
+    @PostMapping(path = "/comments/{noteId}", consumes = "application/json", produces = "application/json")
+    public ResponseEntity<Response> addComment(@RequestBody Comment comment) {
+        return mainService.addComment(comment);
     }
 
     /**

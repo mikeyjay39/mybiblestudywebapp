@@ -4,6 +4,7 @@ import com.mybiblestudywebapp.dashboard.notes.RankNoteRequest;
 import com.mybiblestudywebapp.dashboard.notes.RankNoteResponse;
 import com.mybiblestudywebapp.dashboard.users.LoginResponse;
 import com.mybiblestudywebapp.dashboard.users.UserSession;
+import com.mybiblestudywebapp.main.GenericResponse;
 import com.mybiblestudywebapp.main.Response;
 import com.mybiblestudywebapp.persistence.model.*;
 import org.slf4j.Logger;
@@ -643,5 +644,26 @@ public class DaoServiceJdbcImpl implements DaoService {
         }
 
         return CompletableFuture.completedFuture(optComments.get());
+    }
+
+    /**
+     *
+     * {@inheritDoc}
+     */
+    @Override
+    @Async
+    public CompletableFuture<Response> addComent(Comment comment) throws DaoServiceException {
+        comment.setUserId(userSession.userId);
+        long result = commentDao.save(comment);
+
+        if (result <= 0) {
+            throw new DaoServiceException("Could not add comment to note_id: " + comment.getNoteId());
+        }
+
+        GenericResponse response = new GenericResponse();
+        response.setUserId(userSession.userId);
+        response.setStatus("success");
+        response.setEntityId(result);
+        return CompletableFuture.completedFuture(response);
     }
 }
