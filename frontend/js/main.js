@@ -195,7 +195,15 @@ function getChapterUserNotes() {
                         notes[i].noteText + '<br>';
 
                     if (exploreNotesSection) {
-
+                        noteOutput += 'Created by user: ' + notes[i].userId + '<br>' +
+                            '<div class ="btn-group">' +
+                            '<button type="button" class="btn btn-sm btn-primary" ' +
+                            'onclick="showAddComment(' + i + ')">Add Comment</button>' +
+                            '<button type="button" class="btn btn-sm btn-danger" ' +
+                            'onclick="downVote(' + notes[i].noteId + ')"> - </button>' +
+                            '<button type="button" class="btn btn-sm btn-success" ' +
+                            'onclick="upVote(' + notes[i].noteId + ')"> + </button>' +
+                            '</div></div><hr>';
                     } else {
                         noteOutput += '<div class ="btn-group">' +
                             '<button type="button" class="btn btn-sm btn-primary" ' +
