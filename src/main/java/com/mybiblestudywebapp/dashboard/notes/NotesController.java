@@ -42,6 +42,11 @@ public class NotesController {
         return mainService.getComments(noteId);
     }
 
+    @PostMapping(path = "/comments/{noteId}")
+    public ResponseEntity<Response> addComment(@PathVariable long noteId) {
+        return mainService.addComment(noteId);
+    }
+
     /**
      * Endpoint for adding new notes
      * @param request

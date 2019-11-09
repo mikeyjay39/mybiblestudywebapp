@@ -202,6 +202,21 @@
         </div>
         <!--create note end-->
 
+        <!-- start add comment column -->
+        <div id="addCommentDiv" style="display:none;" class="col-sm-6">
+            <h4 class="text-center">Note</h4>
+            <div id="addCommentNote"></div>
+            <hr>
+            <form id="addCommentForm" name="addCommentForm" onsubmit="" action="">
+                <label for="commentText">Add comment</label>
+                <textarea id="commentText" class="form-control" name="commentText" rows="8"></textarea>
+                <br>
+                <button id="addComment" type="button" class="btn btn-success" onclick="addComment()">Add comment</button>
+            </form>
+            <hr>
+        </div>
+        <!-- end add comment column -->
+
 
     </div>
     <!-- end main content row -->

@@ -391,6 +391,7 @@ function hideRightContentDiv() {
     $("#createNote").hide();
     $("#manageViews").hide();
     $("#exploreNotes").hide();
+    $("#addCommentDiv").hide();
 }
 
 /**
@@ -471,6 +472,19 @@ function showExploreNotes() {
     $("#notes").show();
 }
 
+/**
+ * Called when user clicks on add comment button
+ * @param id
+ */
+function showAddComment(i) {
+    // hide all other notes
+    $("#notes").hide();
+
+    $("#addCommentNote").html(currentNotes[i].noteText);
+
+    $("#addCommentDiv").show();
+}
+
 function viewComments(id) {
     var endpoint = url + "/notes/comments/" + id;
     var token = getCsrf();
@@ -509,7 +523,6 @@ function viewComments(id) {
         },
         crossDomain: true
     });
-
 }
 
 /**
