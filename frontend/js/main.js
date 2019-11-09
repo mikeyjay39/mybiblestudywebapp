@@ -364,6 +364,7 @@ function hideRightContentDiv() {
     $("#notes").hide();
     $("#createNote").hide();
     $("#manageViews").hide();
+    $("#exploreNotes").hide();
 }
 
 /**
@@ -431,6 +432,13 @@ function showManageNotes() {
     getChapterUserNotes();
     $("#notes").show();
     $("#goButton").attr("onclick","getChapterUserNotes()");
+}
+
+function showExploreNotes() {
+    hideRightContentDiv();
+    exploreViewGetUsers();
+    $("#exploreNotes").show();
+    $("#notes").show();
 }
 
 function viewComments(id) {
@@ -849,6 +857,49 @@ function clientGetBibleTextAndNotes() {
     requestFromClientArea = true;
     getService();
     requestFromClientArea = false;
+}
+
+/**
+ * Call this function when loading explore notes. It populates the authors list
+ */
+function exploreViewGetUsers() {
+    var endpoint = url + "/users";
+    var token = getCsrf();
+
+    $.ajax({
+        url: endpoint,
+        type: "GET",
+        datatype: "application/json; charset=utf-8",
+        headers: {'X-XSRF-TOKEN': token},
+        success: function (data, status) {
+
+            users = data.users;
+            usersSize = users.length;
+            $("#selectAuthorsList").empty();
+
+            // add all authors radio button
+            $("#selectAuthorsList").append('<label class="btn btn-sm btn-secondary">\n' +
+                '<input type="radio" name="selectAuthorsRow" value="-1">All authors</label>');
+
+
+            // iterate through users and append to list
+            for (var i = 0; i < usersSize; i++) {
+                $("#selectAuthorsList").append(
+                    '<label class="btn btn-sm btn-secondary"><input type="radio" ' +
+                    'name="viewlistrow" value="' + users[i].userId + '">' + users[i].name + '</label>'
+                );
+            }
+        },
+        error: function (xhr, ajaxOptions, thrownError) { //Add these parameters to display the required response
+            alert(xhr.status);
+            alert(xhr.responseText);
+            alert('cannot get users')
+        },
+        xhrFields: {
+            withCredentials: true
+        },
+        crossDomain: true
+    });
 }
 
 

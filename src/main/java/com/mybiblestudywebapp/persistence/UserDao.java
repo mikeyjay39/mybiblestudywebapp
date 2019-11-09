@@ -77,7 +77,7 @@ public class UserDao implements UpdatableDao<User> {
 
     @Override
     public List<User> getAll() {
-        String sql = "SELECT * FROM users";
+        String sql = "SELECT * FROM users ORDER BY lastname, firstname";
         var result = jdbcTemplate.queryForList(sql);
         if (result.isEmpty()) {
             return new ArrayList<>();
