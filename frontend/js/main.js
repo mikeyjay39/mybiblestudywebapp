@@ -12,6 +12,7 @@ var users; // list of user objects
 var userViewCodes;
 var chapterSize; // the number of verses in chapter
 var requestFromClientArea = false; // boolean to track if the request came from the client instead of the dashboard
+var exploreNotesSection = false;
 
 function make_base_auth(user, password) {
     var tok = user + ':' + password;
@@ -27,6 +28,9 @@ function getService() {
     }
 }
 
+/**
+ * This should be called from either the client or from the manage my views section in the dashboard
+ */
 function getChapter() {
 
     var book = $("#book").val();
@@ -144,7 +148,14 @@ function getChapterUserNotes() {
 
     var book = $("#book").val();
     var chapterNo = $("#chapter").val();
-    var endpoint = url + "/notes/mynotes/" + book + "/" + chapterNo + "/" + currentUserId;
+    var endpoint = url + "/notes/mynotes/" + book + "/" + chapterNo + "/";
+
+    if (exploreNotesSection) {
+        // get selected user_id
+        endpoint += selectedUser;
+    } else {
+        endpoint += currentUserId;
+    }
 
     if (book != "" && chapterNo != "") {
         $.ajax({
@@ -181,14 +192,20 @@ function getChapterUserNotes() {
                         '<sup><span class="badge badge-primary" data-toggle="tooltip" ' +
                         'title="ranking value for this note is ' + notes[i].ranking + '">' +
                         notes[i].ranking + '</span></sup>' +
-                        notes[i].noteText + '<br><div class ="btn-group">' +
-                        '<button type="button" class="btn btn-sm btn-primary" ' +
-                        'onclick="editNote(' + i + ')">Edit</button>' +
-                        '<button type="button" class="btn btn-sm btn-primary" ' +
-                        'onclick="viewComments(' + notes[i].noteId + ')">View comments</button>' +
-                        '<button type="button" class="btn btn-sm btn-danger" ' +
-                        'onclick="deleteNote(' + notes[i].noteId + ')">Delete</button>' +
-                        '</div></div><hr>';
+                        notes[i].noteText + '<br>';
+
+                    if (exploreNotesSection) {
+
+                    } else {
+                        noteOutput += '<div class ="btn-group">' +
+                            '<button type="button" class="btn btn-sm btn-primary" ' +
+                            'onclick="editNote(' + i + ')">Edit</button>' +
+                            '<button type="button" class="btn btn-sm btn-primary" ' +
+                            'onclick="viewComments(' + notes[i].noteId + ')">View comments</button>' +
+                            '<button type="button" class="btn btn-sm btn-danger" ' +
+                            'onclick="deleteNote(' + notes[i].noteId + ')">Delete</button>' +
+                            '</div></div><hr>';
+                    }
                 }
 
                 if (notes.length <= 0) {
@@ -353,13 +370,14 @@ function hideAllBody() {
     $("#loginDiv").hide();
     $("#getChapterForm").hide();
     $("#verses").hide();
-    hideRightContentDiv()
+    hideRightContentDiv();
 }
 
 /**
  * Hide the content column next to verses
  */
 function hideRightContentDiv() {
+    exploreNotesSection = false;
     $("#goButton").attr("onclick","getService()");
     $("#notes").hide();
     $("#createNote").hide();
@@ -429,6 +447,7 @@ function showManageViews() {
 
 function showManageNotes() {
     hideRightContentDiv();
+    $("#notes").empty();
     getChapterUserNotes();
     $("#notes").show();
     $("#goButton").attr("onclick","getChapterUserNotes()");
@@ -436,7 +455,10 @@ function showManageNotes() {
 
 function showExploreNotes() {
     hideRightContentDiv();
-    exploreViewGetUsers();
+    $("#notes").empty();
+    exploreNotesGetUsers();
+    exploreNotesSection = true;
+    $("#goButton").attr("onclick","getChapterUserNotes()");
     $("#exploreNotes").show();
     $("#notes").show();
 }
@@ -597,6 +619,10 @@ function setCurrentViewCode(i) {
     $("#notes").show();
 }
 
+function setSelectedUser(id) {
+    selectedUser = id;
+}
+
 
 
 $(document).ready(function() {
@@ -605,6 +631,12 @@ $(document).ready(function() {
     $("#viewsList").change(function() {
         var i = $('input[name=viewlistrow]:checked').val();
         setCurrentViewCode(i);
+    });
+
+    // get author on explore notes
+    $("#selectAuthorsList").change(function() {
+        var i = $('input[name=selectAuthorsListRow]:checked').val();
+        setSelectedUser(i);
     });
 
     // enable tooltips
@@ -862,7 +894,7 @@ function clientGetBibleTextAndNotes() {
 /**
  * Call this function when loading explore notes. It populates the authors list
  */
-function exploreViewGetUsers() {
+function exploreNotesGetUsers() {
     var endpoint = url + "/users";
     var token = getCsrf();
 
@@ -879,14 +911,14 @@ function exploreViewGetUsers() {
 
             // add all authors radio button
             $("#selectAuthorsList").append('<label class="btn btn-sm btn-secondary">\n' +
-                '<input type="radio" name="selectAuthorsRow" value="-1">All authors</label>');
+                '<input type="radio" name="selectAuthorsListRow" value=0>All authors</label>');
 
 
             // iterate through users and append to list
             for (var i = 0; i < usersSize; i++) {
                 $("#selectAuthorsList").append(
                     '<label class="btn btn-sm btn-secondary"><input type="radio" ' +
-                    'name="viewlistrow" value="' + users[i].userId + '">' + users[i].name + '</label>'
+                    'name="selectAuthorsListRow" value="' + users[i].userId + '">' + users[i].name + '</label>'
                 );
             }
         },

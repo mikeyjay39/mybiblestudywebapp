@@ -26,9 +26,9 @@ public class NotesController {
      * @return
      */
     @GetMapping(path = "/mynotes/{book}/{chapterNo}/{userId}")
-    public ResponseEntity<Response> getMyNotes(@PathVariable String book,
-                                               @PathVariable int chapterNo,
-                                               @PathVariable long userId) {
+    public ResponseEntity<Response> getUserNotes(@PathVariable String book,
+                                                 @PathVariable int chapterNo,
+                                                 @PathVariable long userId) {
         return mainService.getChapterNotesForUser(book, chapterNo, userId);
     }
 

@@ -565,18 +565,15 @@ public class DaoServiceJdbcImpl implements DaoService {
         args.put("userId", userId);
         args.put("book", book);
         args.put("chapterNo", chapterNo);
+
         // make sure only private notes are selected if this comes from the logged in user
         args.put("priv", userId != userSession.userId);
+
         var opt = noteDao.get(args);
 
-        if (opt.isPresent()) {
-            return CompletableFuture.completedFuture((List<Note>) opt.get());
-        } else {
-            throw new DaoServiceException(
-                    "No notes found for user: " + userId + " book: " + book + " chapter: " + chapterNo
-            );
-        }
+        return CompletableFuture.completedFuture((List<Note>) opt.orElse(new ArrayList<>()));
     }
+
 
     /**
      * {@inheritDoc}
