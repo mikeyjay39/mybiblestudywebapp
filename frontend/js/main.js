@@ -635,10 +635,12 @@ function getViewsForLoggedInUser() {
         url: endpoint,
         type: "GET",
         datatype: "application/json; charset=utf-8",
+        async: false,
         success: function (data, status) {
 
             var size = data.viewCodes.length;
-            userViewCodes = data.viewCodes;
+            //userViewCodes = data.viewCodes;
+            setUserViewCodes(data.viewCodes);
 
             // iterate through view codes
             for (var i = 0; i < size; i++) {
@@ -648,6 +650,7 @@ function getViewsForLoggedInUser() {
                     'name="viewlistrow" value="' + i + '">' + vc + '</label>'
                 );
             }
+
 
             //$("#verses").html(verseOutput);
         },
@@ -660,6 +663,15 @@ function getViewsForLoggedInUser() {
         },
         crossDomain: true
     });
+
+}
+
+/**
+ * Use this to set the global userViewCodes
+ * @param viewCodes return from ajax
+ */
+function setUserViewCodes(viewCodes) {
+    userViewCodes = viewCodes;
 }
 
 /**
@@ -894,9 +906,8 @@ function showAddToView(index) {
         );
     }
 
-
-
 }
+
 
 function setCurrentAuthor(id) {
     selectedUser = id;
