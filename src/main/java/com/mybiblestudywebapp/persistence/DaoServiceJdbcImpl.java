@@ -667,4 +667,36 @@ public class DaoServiceJdbcImpl implements DaoService {
         response.setEntityId(result);
         return CompletableFuture.completedFuture(response);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Async
+    @Transactional
+    public CompletableFuture<Response> addNoteToView(String viewcode, long noteId) throws DaoServiceException {
+        Map<String, Object> args = new HashMap<>();
+        args.put("viewCode", viewcode);
+        var opt = viewDao.get(args);
+        long viewId;
+
+        if (opt.isEmpty()) {
+            throw new DaoServiceException("Could not get id for viewcode: " + viewcode);
+        } else {
+            viewId = ((List<View>)opt.get()).get(0).getViewId();
+        }
+
+        ViewNote viewNote = new ViewNote();
+        viewNote.setViewId(viewId);
+        viewNote.setNoteId(noteId);
+
+        if (viewNoteDao.save(viewNote) < 1) {
+            throw new DaoServiceException("Could note add note_id " + noteId + " to view_id " + viewId + "\n" +
+                    "Note already exists");
+        }
+
+        GenericResponse response = new GenericResponse();
+        response.setStatus("success");
+        return CompletableFuture.completedFuture(response);
+    }
 }

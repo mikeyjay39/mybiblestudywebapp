@@ -17,6 +17,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static com.mybiblestudywebapp.main.Constants.NOTE_ID;
+import static com.mybiblestudywebapp.main.Constants.VIEW_ID;
+
 /**
  * Created by Michael Jeszenka.
  * <a href="mailto:michael@jeszenka.com">michael@jeszenka.com</a>
@@ -64,9 +67,24 @@ public class ViewNoteDao implements UpdatableDao<ViewNote> {
         return Optional.ofNullable(result);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public long save(ViewNote viewNote) {
-        return 0;
+        String sql = "INSERT INTO view_note (view_id, note_id) " +
+                "VALUES (:viewId, :noteId)";
+
+        SqlParameterSource params = new MapSqlParameterSource()
+                .addValue(VIEW_ID, viewNote.getViewId())
+                .addValue(NOTE_ID, viewNote.getNoteId());
+
+        try {
+            return namedParameterJdbcTemplate.update(sql, params);
+        } catch (DataAccessException e) {
+            logger.error(e.getMessage());
+            return 0;
+        }
     }
 
     @Override

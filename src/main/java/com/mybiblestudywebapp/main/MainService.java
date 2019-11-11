@@ -138,4 +138,12 @@ public interface MainService {
      * @return
      */
     ResponseEntity<Response> addComment(Comment comment);
+
+    /**
+     * Add a single note to a view
+     * @param viewcode
+     * @param noteId
+     * @return
+     */
+    ResponseEntity<Response> addNoteToView(String viewcode, long noteId);
 }

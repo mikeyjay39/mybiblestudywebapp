@@ -455,6 +455,25 @@ public class MainServiceImpl implements MainService {
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ResponseEntity<Response> addNoteToView(String viewcode, long noteId) {
+        GenericResponse response = new GenericResponse();
+
+        try {
+            return ResponseEntity.ok(daoService.addNoteToView(viewcode, noteId).get());
+        } catch (DaoServiceException e) {
+            response.setStatus(e.getMessage());
+            return daoServiceExceptionHandler(e, response);
+        } catch (InterruptedException e) {
+            return interruptedExceptionHandler(e, e.getMessage(), response);
+        } catch (ExecutionException e) {
+            return executionExceptionHandler(e, e.getMessage(), response);
+        }
+    }
+
+    /**
      * Handler for DaoService Exceptions. Sets HTTP status to 400
      * @param e
      * @param response

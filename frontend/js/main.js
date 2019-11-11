@@ -723,6 +723,7 @@ $(document).ready(function() {
     $("#viewsList").change(function() {
         var i = $('input[name=viewlistrow]:checked').val();
         setCurrentViewCode(i);
+        getService();
     });
 
     // get author on explore notes
@@ -895,17 +896,55 @@ function showAddToView(index) {
 
             $("#selectViewRadioList" + index).append(
                 '<label class="btn btn-sm btn-secondary"><input type="radio" ' +
-                'name="viewlistrow" value="' + i + '">' + vc + '</label>'
+                'name="addnotetoviewlistrow" value="' + i + '">' + vc + '</label>'
             );
         }
 
         $("#selectViewListRow" + index).append(
             '<div>' +
-            '<button type="button" class="btn btn-primary" onclick="addNoteToView()">Add Note to View</button>' +
+            '<button type="button" class="btn btn-primary" onclick="addNoteToView(' + index + ')">Add Note to View</button>' +
             '</div>'
         );
     }
+}
 
+/**
+ * Ajax call to add a single note
+ * @param noteIndex
+ */
+function addNoteToView(noteIndex) {
+
+    // get viewcode
+    var i = $('input[name=addnotetoviewlistrow]:checked').val();
+
+    var viewcode = userViewCodes[i];
+
+    // get noteId
+    var noteId = currentNotes[noteIndex].noteId;
+
+    var endpoint = url + "/views/add/" + viewcode + "/" + noteId;
+    var token = getCsrf();
+
+    $.ajax({
+        url: endpoint,
+        type: "POST",
+        headers: {'X-XSRF-TOKEN': token},
+        success: function (data, status) {
+
+            if (data.status == "success") {
+                alert('note added to view');
+            }
+        },
+        error: function (xhr, ajaxOptions, thrownError) { //Add these parameters to display the required response
+            // TODO - add message that note is already added to this view
+            /*alert(xhr.status);
+            alert(xhr.responseText);*/
+        },
+        xhrFields: {
+            withCredentials: true
+        },
+        crossDomain: true
+    });
 }
 
 

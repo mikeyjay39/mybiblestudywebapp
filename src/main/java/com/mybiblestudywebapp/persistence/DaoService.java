@@ -158,4 +158,13 @@ public interface DaoService {
      * @throws DaoServiceException
      */
     CompletableFuture<Response> addComent(Comment comment) throws DaoServiceException;
+
+    /**
+     * Add a single note to a view
+     * @param viewcode
+     * @param noteId
+     * @return
+     * @throws DaoServiceException
+     */
+    CompletableFuture<Response> addNoteToView(String viewcode, long noteId) throws DaoServiceException;
 }
