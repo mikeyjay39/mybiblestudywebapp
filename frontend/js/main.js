@@ -211,7 +211,8 @@ function getChapterUserNotes() {
                             '<button type="button" class="btn btn-sm btn-danger" ' +
                             'onclick="downVote(' + notes[i].noteId + ')"> - </button>' +
                             '<button type="button" class="btn btn-sm btn-success" ' +
-                            'onclick="upVote(' + notes[i].noteId + ')"> + </button>' +
+                            'onclick="upVote(' + notes[i].noteId + ')"> + </button></div>' +
+                            '<div id="selectViewListRow' + i + '">' +
                             '</div></div><hr>';
                     } else {
                         noteOutput += '<div class ="btn-group">' +
@@ -860,19 +861,18 @@ function showAddToView(index) {
 
     size = userViewCodes.length;
 
-
-
     if (size < 1) {
-        $("#note" + index).append(
+        $("#selectViewListRow" + index).empty();
+        $("#selectViewListRow" + index).append(
             '<em>You have no views</em>'
         );
         return;
     } else {
 
-        if ($("#note" + index ).text().indexOf('My Views') <= 0) {
-            $("#note" + index).append(
-                '<br>My Views:' +
-                '<div id="selectViewList" class="btn-group btn-group-toggle" data-toggle="buttons">\n' +
+        if ($("#selectViewListRow" + index).text().indexOf('My Views') <= 0) {
+            $("#selectViewListRow" + index).empty();
+            $("#selectViewListRow" + index).append(
+                '<div id="selectViewRadioList' + index + '" class="btn-group-vertical btn-group-toggle" data-toggle="buttons">' +
                 '</div>'
             );
         }
@@ -881,14 +881,16 @@ function showAddToView(index) {
         for (var i = 0; i < size; i++) {
             var vc = userViewCodes[i];
 
-            $("#selectViewList").append(
-                '<label class="btn btn-sm btn-info"><input type="radio" ' +
+            $("#selectViewRadioList" + index).append(
+                '<label class="btn btn-sm btn-secondary"><input type="radio" ' +
                 'name="viewlistrow" value="' + i + '">' + vc + '</label>'
             );
         }
 
-        $("#note" + index).append(
-            '<button type="button" class="btn btn-primary" onclick="addNoteToView()">Add Note to View</button>'
+        $("#selectViewListRow" + index).append(
+            '<div>' +
+            '<button type="button" class="btn btn-primary" onclick="addNoteToView()">Add Note to View</button>' +
+            '</div>'
         );
     }
 
