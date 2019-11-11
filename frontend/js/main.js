@@ -206,6 +206,8 @@ function getChapterUserNotes() {
                             '<div class ="btn-group">' +
                             '<button type="button" class="btn btn-sm btn-info" ' +
                             'onclick="showAddComment(' + i + ')">Add Comment</button>' +
+                            '<button type="button" class="btn btn-sm btn-info" ' +
+                            'onclick="showAddToView(' + i + ')">Add to view</button>' +
                             '<button type="button" class="btn btn-sm btn-danger" ' +
                             'onclick="downVote(' + notes[i].noteId + ')"> - </button>' +
                             '<button type="button" class="btn btn-sm btn-success" ' +
@@ -646,7 +648,6 @@ function getViewsForLoggedInUser() {
                 );
             }
 
-
             //$("#verses").html(verseOutput);
         },
         error: function (xhr, ajaxOptions, thrownError) { //Add these parameters to display the required response
@@ -846,6 +847,53 @@ function showAddNotes() {
         },
         crossDomain: true
     });
+}
+
+/**
+ * Called when user clicks on "Add to view" button in the explore notes section
+ * @param index - note index
+ */
+function showAddToView(index) {
+
+    getViewsForLoggedInUser();
+    var size = 0;
+
+    size = userViewCodes.length;
+
+
+
+    if (size < 1) {
+        $("#note" + index).append(
+            '<em>You have no views</em>'
+        );
+        return;
+    } else {
+
+        if ($("#note" + index ).text().indexOf('My Views') <= 0) {
+            $("#note" + index).append(
+                '<br>My Views:' +
+                '<div id="selectViewList" class="btn-group btn-group-toggle" data-toggle="buttons">\n' +
+                '</div>'
+            );
+        }
+
+        // iterate through view codes
+        for (var i = 0; i < size; i++) {
+            var vc = userViewCodes[i];
+
+            $("#selectViewList").append(
+                '<label class="btn btn-sm btn-info"><input type="radio" ' +
+                'name="viewlistrow" value="' + i + '">' + vc + '</label>'
+            );
+        }
+
+        $("#note" + index).append(
+            '<button type="button" class="btn btn-primary" onclick="addNoteToView()">Add Note to View</button>'
+        );
+    }
+
+
+
 }
 
 function setCurrentAuthor(id) {
