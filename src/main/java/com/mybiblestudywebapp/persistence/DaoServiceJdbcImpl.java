@@ -279,7 +279,7 @@ public class DaoServiceJdbcImpl implements DaoService {
                 "WHERE note_id = :noteId";
         SqlParameterSource params = new MapSqlParameterSource()
                 .addValue(NOTE_ID, request.getNoteId())
-                .addValue(USER_ID, request.getUserId())
+                .addValue(USER_ID, userSession.userId)
                 .addValue("rankingValue", request.isIncreaseRanking() ? 1 : -1);
 
         // check if ranking already exists

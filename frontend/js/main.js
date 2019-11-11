@@ -1004,6 +1004,65 @@ function exploreNotesGetUsers() {
     });
 }
 
+/**
+ * Called when user downvotes a note
+ * @param id
+ */
+function downVote(id) {
+    noteVote(id, false);
+}
+
+/**
+ * Called when a user upvotes a note
+ * @param id
+ */
+function upVote(id) {
+    noteVote(id, true);
+}
+
+/**
+ * Called by downVote and upVote to send the ajax request
+ * @param id note_id
+ * @param vote - boolean: true for up or false for negative
+ */
+function noteVote(id, vote) {
+
+    var endpoint = url + "/notes/rank";
+
+    var token = getCsrf();
+
+    var rankObj = {
+        noteId: id,
+        increaseRanking: vote
+    };
+
+    var request = JSON.stringify(rankObj);
+
+    $.ajax({
+        url: endpoint,
+        type: "POST",
+        datatype: "json",
+        contentType: "application/json",
+        data: request,
+        headers: {'X-XSRF-TOKEN': token},
+        success: function (data, status) {
+
+            alert('vote success');
+            getChapterUserNotes();
+        },
+        error: function (xhr, ajaxOptions, thrownError) { //Add these parameters to display the required response
+            alert(xhr.status);
+            alert(xhr.responseText);
+            alert('cannot get users')
+        },
+        xhrFields: {
+            withCredentials: true
+        },
+        crossDomain: true
+    });
+
+}
+
 
 
 
