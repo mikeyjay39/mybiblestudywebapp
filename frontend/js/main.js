@@ -151,8 +151,15 @@ function getChapterUserNotes() {
     var endpoint = url + "/notes/mynotes/" + book + "/" + chapterNo + "/";
 
     if (exploreNotesSection) {
-        // get selected user_id
-        endpoint += selectedUser;
+
+        // return if there is no selectedUser
+        if (selectedUser == "" || selectedUser == null) {
+            return;
+        } else {
+            // get selected user_id
+            endpoint += selectedUser;
+        }
+
     } else {
         endpoint += currentUserId;
     }
@@ -468,6 +475,7 @@ function showExploreNotes() {
     exploreNotesGetUsers();
     exploreNotesSection = true;
     $("#goButton").attr("onclick","getChapterUserNotes()");
+    getChapterUserNotes();
     $("#exploreNotes").show();
     $("#notes").show();
 }
@@ -1047,13 +1055,11 @@ function noteVote(id, vote) {
         headers: {'X-XSRF-TOKEN': token},
         success: function (data, status) {
 
-            alert('vote success');
             getChapterUserNotes();
         },
         error: function (xhr, ajaxOptions, thrownError) { //Add these parameters to display the required response
             alert(xhr.status);
             alert(xhr.responseText);
-            alert('cannot get users')
         },
         xhrFields: {
             withCredentials: true
