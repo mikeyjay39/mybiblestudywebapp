@@ -12,6 +12,7 @@ var users; // list of user objects
 var userViewCodes;
 var chapterSize; // the number of verses in chapter
 var requestFromClientArea = false; // boolean to track if the request came from the client instead of the dashboard
+var exploreNotesSection = false;
 
 function make_base_auth(user, password) {
     var tok = user + ':' + password;
@@ -27,6 +28,9 @@ function getService() {
     }
 }
 
+/**
+ * This should be called from either the client or from the manage my views section in the dashboard
+ */
 function getChapter() {
 
     var book = $("#book").val();
@@ -144,7 +148,21 @@ function getChapterUserNotes() {
 
     var book = $("#book").val();
     var chapterNo = $("#chapter").val();
-    var endpoint = url + "/notes/mynotes/" + book + "/" + chapterNo + "/" + currentUserId;
+    var endpoint = url + "/notes/mynotes/" + book + "/" + chapterNo + "/";
+
+    if (exploreNotesSection) {
+
+        // return if there is no selectedUser
+        if (selectedUser == "" || selectedUser == null) {
+            return;
+        } else {
+            // get selected user_id
+            endpoint += selectedUser;
+        }
+
+    } else {
+        endpoint += currentUserId;
+    }
 
     if (book != "" && chapterNo != "") {
         $.ajax({
@@ -178,17 +196,34 @@ function getChapterUserNotes() {
                         'title="this note applies from verse ' + notes[i].verseStart +
                         ' to verse ' + notes[i].verseEnd + '">' +
                         notes[i].verseStart + '-' + notes[i].verseEnd + '</span></strong>: ' +
-                        '<sup><span class="badge badge-primary" data-toggle="tooltip" ' +
+                        '<sup><span class="badge badge-warning" data-toggle="tooltip" ' +
                         'title="ranking value for this note is ' + notes[i].ranking + '">' +
                         notes[i].ranking + '</span></sup>' +
-                        notes[i].noteText + '<br><div class ="btn-group">' +
-                        '<button type="button" class="btn btn-sm btn-primary" ' +
-                        'onclick="editNote(' + i + ')">Edit</button>' +
-                        '<button type="button" class="btn btn-sm btn-primary" ' +
-                        'onclick="viewComments(' + notes[i].noteId + ')">View comments</button>' +
-                        '<button type="button" class="btn btn-sm btn-danger" ' +
-                        'onclick="deleteNote(' + notes[i].noteId + ')">Delete</button>' +
-                        '</div></div><hr>';
+                        notes[i].noteText + '<br>';
+
+                    if (exploreNotesSection) {
+                        noteOutput += 'Created by user: ' + notes[i].userId + '<br>' +
+                            '<div class ="btn-group">' +
+                            '<button type="button" class="btn btn-sm btn-info" ' +
+                            'onclick="showAddComment(' + i + ')">Add Comment</button>' +
+                            '<button type="button" class="btn btn-sm btn-info" ' +
+                            'onclick="showAddToView(' + i + ')">Add to view</button>' +
+                            '<button type="button" class="btn btn-sm btn-danger" ' +
+                            'onclick="downVote(' + notes[i].noteId + ')"> - </button>' +
+                            '<button type="button" class="btn btn-sm btn-success" ' +
+                            'onclick="upVote(' + notes[i].noteId + ')"> + </button></div>' +
+                            '<div id="selectViewListRow' + i + '">' +
+                            '</div></div><hr>';
+                    } else {
+                        noteOutput += '<div class ="btn-group">' +
+                            '<button type="button" class="btn btn-sm btn-info" ' +
+                            'onclick="editNote(' + i + ')">Edit</button>' +
+                            '<button type="button" class="btn btn-sm btn-info" ' +
+                            'onclick="viewComments(' + notes[i].noteId + ')">View comments</button>' +
+                            '<button type="button" class="btn btn-sm btn-danger" ' +
+                            'onclick="deleteNote(' + notes[i].noteId + ')">Delete</button>' +
+                            '</div></div><hr>';
+                    }
                 }
 
                 if (notes.length <= 0) {
@@ -353,17 +388,20 @@ function hideAllBody() {
     $("#loginDiv").hide();
     $("#getChapterForm").hide();
     $("#verses").hide();
-    hideRightContentDiv()
+    hideRightContentDiv();
 }
 
 /**
  * Hide the content column next to verses
  */
 function hideRightContentDiv() {
+    exploreNotesSection = false;
     $("#goButton").attr("onclick","getService()");
     $("#notes").hide();
     $("#createNote").hide();
     $("#manageViews").hide();
+    $("#exploreNotes").hide();
+    $("#addCommentDiv").hide();
 }
 
 /**
@@ -428,9 +466,34 @@ function showManageViews() {
 
 function showManageNotes() {
     hideRightContentDiv();
+    $("#notes").empty();
     getChapterUserNotes();
     $("#notes").show();
     $("#goButton").attr("onclick","getChapterUserNotes()");
+}
+
+function showExploreNotes() {
+    hideRightContentDiv();
+    $("#notes").empty();
+    exploreNotesGetUsers();
+    exploreNotesSection = true;
+    $("#goButton").attr("onclick","getChapterUserNotes()");
+    getChapterUserNotes();
+    $("#exploreNotes").show();
+    $("#notes").show();
+}
+
+/**
+ * Called when user clicks on add comment button
+ * @param id
+ */
+function showAddComment(i) {
+    // hide all other notes
+    $("#notes").hide();
+
+    $("#addCommentNote").html(currentNotes[i].noteText);
+    $("#addComment").attr("onclick","addCommentClicked(" + currentNotes[i].noteId + ")");
+    $("#addCommentDiv").show();
 }
 
 function viewComments(id) {
@@ -461,6 +524,54 @@ function viewComments(id) {
                $("#notes").html(commentOutput);
            }
 
+        },
+        error: function (xhr, ajaxOptions, thrownError) { //Add these parameters to display the required response
+            alert(xhr.status);
+            alert(xhr.responseText);
+        },
+        xhrFields: {
+            withCredentials: true
+        },
+        crossDomain: true
+    });
+}
+
+/**
+ * Called when user clicks on 'Add Comment' button
+ * @param i
+ */
+function addCommentClicked(id) {
+
+
+
+    var endpoint = url + "/notes/comments";
+    var token = getCsrf();
+
+    var commentRequest = {
+        noteId: id,
+        commentText: $("#commentText").val()
+    };
+
+    var textValue = $("#commentText").val();
+
+    if (textValue == null || textValue == "") {
+        alert('Please enter a comment before submitting');
+        return;
+    }
+
+    var data = JSON.stringify(commentRequest);
+
+    $.ajax({
+        url: endpoint,
+        type: "POST",
+        datatype: "json",
+        contentType: "application/json",
+        headers: {'X-XSRF-TOKEN': token},
+        data: data,
+        success: function (data, status) {
+            alert("comment added");
+            $("#addCommentDiv").hide();
+            $("#notes").show();
         },
         error: function (xhr, ajaxOptions, thrownError) { //Add these parameters to display the required response
             alert(xhr.status);
@@ -524,10 +635,12 @@ function getViewsForLoggedInUser() {
         url: endpoint,
         type: "GET",
         datatype: "application/json; charset=utf-8",
+        async: false,
         success: function (data, status) {
 
             var size = data.viewCodes.length;
-            userViewCodes = data.viewCodes;
+            //userViewCodes = data.viewCodes;
+            setUserViewCodes(data.viewCodes);
 
             // iterate through view codes
             for (var i = 0; i < size; i++) {
@@ -550,6 +663,15 @@ function getViewsForLoggedInUser() {
         },
         crossDomain: true
     });
+
+}
+
+/**
+ * Use this to set the global userViewCodes
+ * @param viewCodes return from ajax
+ */
+function setUserViewCodes(viewCodes) {
+    userViewCodes = viewCodes;
 }
 
 /**
@@ -589,6 +711,10 @@ function setCurrentViewCode(i) {
     $("#notes").show();
 }
 
+function setSelectedUser(id) {
+    selectedUser = id;
+}
+
 
 
 $(document).ready(function() {
@@ -597,6 +723,13 @@ $(document).ready(function() {
     $("#viewsList").change(function() {
         var i = $('input[name=viewlistrow]:checked').val();
         setCurrentViewCode(i);
+        getService();
+    });
+
+    // get author on explore notes
+    $("#selectAuthorsList").change(function() {
+        var i = $('input[name=selectAuthorsListRow]:checked').val();
+        setSelectedUser(i);
     });
 
     // enable tooltips
@@ -730,6 +863,91 @@ function showAddNotes() {
     });
 }
 
+/**
+ * Called when user clicks on "Add to view" button in the explore notes section
+ * @param index - note index
+ */
+function showAddToView(index) {
+
+    getViewsForLoggedInUser();
+    var size = 0;
+
+    size = userViewCodes.length;
+
+    if (size < 1) {
+        $("#selectViewListRow" + index).empty();
+        $("#selectViewListRow" + index).append(
+            '<em>You have no views</em>'
+        );
+        return;
+    } else {
+
+        if ($("#selectViewListRow" + index).text().indexOf('My Views') <= 0) {
+            $("#selectViewListRow" + index).empty();
+            $("#selectViewListRow" + index).append(
+                '<div id="selectViewRadioList' + index + '" class="btn-group-vertical btn-group-toggle" data-toggle="buttons">' +
+                '</div>'
+            );
+        }
+
+        // iterate through view codes
+        for (var i = 0; i < size; i++) {
+            var vc = userViewCodes[i];
+
+            $("#selectViewRadioList" + index).append(
+                '<label class="btn btn-sm btn-secondary"><input type="radio" ' +
+                'name="addnotetoviewlistrow" value="' + i + '">' + vc + '</label>'
+            );
+        }
+
+        $("#selectViewListRow" + index).append(
+            '<div>' +
+            '<button type="button" class="btn btn-primary" onclick="addNoteToView(' + index + ')">Add Note to View</button>' +
+            '</div>'
+        );
+    }
+}
+
+/**
+ * Ajax call to add a single note
+ * @param noteIndex
+ */
+function addNoteToView(noteIndex) {
+
+    // get viewcode
+    var i = $('input[name=addnotetoviewlistrow]:checked').val();
+
+    var viewcode = userViewCodes[i];
+
+    // get noteId
+    var noteId = currentNotes[noteIndex].noteId;
+
+    var endpoint = url + "/views/add/" + viewcode + "/" + noteId;
+    var token = getCsrf();
+
+    $.ajax({
+        url: endpoint,
+        type: "POST",
+        headers: {'X-XSRF-TOKEN': token},
+        success: function (data, status) {
+
+            if (data.status == "success") {
+                alert('note added to view');
+            }
+        },
+        error: function (xhr, ajaxOptions, thrownError) { //Add these parameters to display the required response
+            // TODO - add message that note is already added to this view
+            /*alert(xhr.status);
+            alert(xhr.responseText);*/
+        },
+        xhrFields: {
+            withCredentials: true
+        },
+        crossDomain: true
+    });
+}
+
+
 function setCurrentAuthor(id) {
     selectedUser = id;
 }
@@ -849,6 +1067,106 @@ function clientGetBibleTextAndNotes() {
     requestFromClientArea = true;
     getService();
     requestFromClientArea = false;
+}
+
+/**
+ * Call this function when loading explore notes. It populates the authors list
+ */
+function exploreNotesGetUsers() {
+    var endpoint = url + "/users";
+    var token = getCsrf();
+
+    $.ajax({
+        url: endpoint,
+        type: "GET",
+        datatype: "application/json; charset=utf-8",
+        headers: {'X-XSRF-TOKEN': token},
+        success: function (data, status) {
+
+            users = data.users;
+            usersSize = users.length;
+            $("#selectAuthorsList").empty();
+
+            // add all authors radio button
+            $("#selectAuthorsList").append('<label class="btn btn-sm btn-secondary">\n' +
+                '<input type="radio" name="selectAuthorsListRow" value=0>All authors</label>');
+
+
+            // iterate through users and append to list
+            for (var i = 0; i < usersSize; i++) {
+                $("#selectAuthorsList").append(
+                    '<label class="btn btn-sm btn-secondary"><input type="radio" ' +
+                    'name="selectAuthorsListRow" value="' + users[i].userId + '">' + users[i].name + '</label>'
+                );
+            }
+        },
+        error: function (xhr, ajaxOptions, thrownError) { //Add these parameters to display the required response
+            alert(xhr.status);
+            alert(xhr.responseText);
+            alert('cannot get users')
+        },
+        xhrFields: {
+            withCredentials: true
+        },
+        crossDomain: true
+    });
+}
+
+/**
+ * Called when user downvotes a note
+ * @param id
+ */
+function downVote(id) {
+    noteVote(id, false);
+}
+
+/**
+ * Called when a user upvotes a note
+ * @param id
+ */
+function upVote(id) {
+    noteVote(id, true);
+}
+
+/**
+ * Called by downVote and upVote to send the ajax request
+ * @param id note_id
+ * @param vote - boolean: true for up or false for negative
+ */
+function noteVote(id, vote) {
+
+    var endpoint = url + "/notes/rank";
+
+    var token = getCsrf();
+
+    var rankObj = {
+        noteId: id,
+        increaseRanking: vote
+    };
+
+    var request = JSON.stringify(rankObj);
+
+    $.ajax({
+        url: endpoint,
+        type: "POST",
+        datatype: "json",
+        contentType: "application/json",
+        data: request,
+        headers: {'X-XSRF-TOKEN': token},
+        success: function (data, status) {
+
+            getChapterUserNotes();
+        },
+        error: function (xhr, ajaxOptions, thrownError) { //Add these parameters to display the required response
+            alert(xhr.status);
+            alert(xhr.responseText);
+        },
+        xhrFields: {
+            withCredentials: true
+        },
+        crossDomain: true
+    });
+
 }
 
 

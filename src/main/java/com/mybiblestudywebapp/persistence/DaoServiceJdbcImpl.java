@@ -4,6 +4,7 @@ import com.mybiblestudywebapp.dashboard.notes.RankNoteRequest;
 import com.mybiblestudywebapp.dashboard.notes.RankNoteResponse;
 import com.mybiblestudywebapp.dashboard.users.LoginResponse;
 import com.mybiblestudywebapp.dashboard.users.UserSession;
+import com.mybiblestudywebapp.main.GenericResponse;
 import com.mybiblestudywebapp.main.Response;
 import com.mybiblestudywebapp.persistence.model.*;
 import org.slf4j.Logger;
@@ -278,7 +279,7 @@ public class DaoServiceJdbcImpl implements DaoService {
                 "WHERE note_id = :noteId";
         SqlParameterSource params = new MapSqlParameterSource()
                 .addValue(NOTE_ID, request.getNoteId())
-                .addValue(USER_ID, request.getUserId())
+                .addValue(USER_ID, userSession.userId)
                 .addValue("rankingValue", request.isIncreaseRanking() ? 1 : -1);
 
         // check if ranking already exists
@@ -565,18 +566,15 @@ public class DaoServiceJdbcImpl implements DaoService {
         args.put("userId", userId);
         args.put("book", book);
         args.put("chapterNo", chapterNo);
+
         // make sure only private notes are selected if this comes from the logged in user
         args.put("priv", userId != userSession.userId);
+
         var opt = noteDao.get(args);
 
-        if (opt.isPresent()) {
-            return CompletableFuture.completedFuture((List<Note>) opt.get());
-        } else {
-            throw new DaoServiceException(
-                    "No notes found for user: " + userId + " book: " + book + " chapter: " + chapterNo
-            );
-        }
+        return CompletableFuture.completedFuture((List<Note>) opt.orElse(new ArrayList<>()));
     }
+
 
     /**
      * {@inheritDoc}
@@ -646,5 +644,59 @@ public class DaoServiceJdbcImpl implements DaoService {
         }
 
         return CompletableFuture.completedFuture(optComments.get());
+    }
+
+    /**
+     *
+     * {@inheritDoc}
+     */
+    @Override
+    @Async
+    @Transactional
+    public CompletableFuture<Response> addComent(Comment comment) throws DaoServiceException {
+        comment.setUserId(userSession.userId);
+        long result = commentDao.save(comment);
+
+        if (result <= 0) {
+            throw new DaoServiceException("Could not add comment to note_id: " + comment.getNoteId());
+        }
+
+        GenericResponse response = new GenericResponse();
+        response.setUserId(userSession.userId);
+        response.setStatus("success");
+        response.setEntityId(result);
+        return CompletableFuture.completedFuture(response);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Async
+    @Transactional
+    public CompletableFuture<Response> addNoteToView(String viewcode, long noteId) throws DaoServiceException {
+        Map<String, Object> args = new HashMap<>();
+        args.put("viewCode", viewcode);
+        var opt = viewDao.get(args);
+        long viewId;
+
+        if (opt.isEmpty()) {
+            throw new DaoServiceException("Could not get id for viewcode: " + viewcode);
+        } else {
+            viewId = ((List<View>)opt.get()).get(0).getViewId();
+        }
+
+        ViewNote viewNote = new ViewNote();
+        viewNote.setViewId(viewId);
+        viewNote.setNoteId(noteId);
+
+        if (viewNoteDao.save(viewNote) < 1) {
+            throw new DaoServiceException("Could note add note_id " + noteId + " to view_id " + viewId + "\n" +
+                    "Note already exists");
+        }
+
+        GenericResponse response = new GenericResponse();
+        response.setStatus("success");
+        return CompletableFuture.completedFuture(response);
     }
 }

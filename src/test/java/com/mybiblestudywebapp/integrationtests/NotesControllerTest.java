@@ -9,6 +9,8 @@ import com.mybiblestudywebapp.dashboard.notes.GetCommentsResponse;
 import com.mybiblestudywebapp.dashboard.notes.RankNoteRequest;
 import com.mybiblestudywebapp.dashboard.notes.RankNoteResponse;
 import com.mybiblestudywebapp.dashboard.views.GetViewsResponse;
+import com.mybiblestudywebapp.main.GenericResponse;
+import com.mybiblestudywebapp.persistence.model.Comment;
 import com.mybiblestudywebapp.persistence.model.Note;
 import org.junit.Assert;
 import org.junit.Test;
@@ -42,6 +44,12 @@ public class NotesControllerTest {
 
     @Autowired
     private MockMvc mvc;
+
+    private ObjectMapper mapper = new ObjectMapper();
+
+    public NotesControllerTest() {
+        mapper.registerModule(new JavaTimeModule());
+    }
 
     @Test
     @Rollback
@@ -175,12 +183,40 @@ public class NotesControllerTest {
                                     .andExpect(status().isOk()).andReturn();
 
                             String stringResponse = result.getResponse().getContentAsString();
-                            ObjectMapper mapper = new ObjectMapper();
-                            mapper.registerModule(new JavaTimeModule());
                             GetCommentsResponse response =
                                     mapper.readValue(stringResponse, GetCommentsResponse.class);
                             Assert.assertTrue(!response.getComments().isEmpty());
                         }
                 );
+    }
+
+    @Test
+    @Rollback
+    public void addComment() throws Exception {
+
+        mvc.perform(get("/login")
+                .with(csrf().asHeader()))
+                .andExpect(status().isOk())
+                .andDo(
+                        r ->
+                        {
+                            Comment comment = new Comment();
+                            comment.setNoteId(1);
+                            comment.setCommentText("This is a unit test comment");
+                            String jsonRequest = mapper.writeValueAsString(comment);
+
+                            MvcResult result = mvc.perform(post("/notes/comments")
+                                    .with(csrf().asHeader())
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content(jsonRequest))
+                                    .andExpect(status().isOk())
+                                    .andReturn();
+
+                            String stringResponse = result.getResponse().getContentAsString();
+                            GenericResponse response =
+                                    mapper.readValue(stringResponse, GenericResponse.class);
+                            Assert.assertTrue(response.getEntityId() > 0);
+                            Assert.assertEquals("success", response.getStatus());
+                        });
     }
 }

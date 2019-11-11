@@ -2,6 +2,7 @@ package com.mybiblestudywebapp.dashboard.views;
 
 import com.mybiblestudywebapp.main.MainService;
 import com.mybiblestudywebapp.main.Response;
+import com.mybiblestudywebapp.persistence.model.Note;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +32,7 @@ public class ViewsController {
     /**
      * Endpoint to add all notes from an author above a certain ranking to the target viewcode.
      * @param viewcode target viewcode
-     * @param authorId author's notes to add
+     * @param author author's notes to add
      * @param ranking all notes above this ranking
      * @return
      */
@@ -40,6 +41,18 @@ public class ViewsController {
                                                    @PathVariable long author,
                                                    @PathVariable int ranking) {
         return mainService.addNotesToView(viewcode, author, ranking);
+    }
+
+    /**
+     * Add a single note to a view
+     * @param viewcode
+     * @param noteId
+     * @return
+     */
+    @PostMapping(path = "/add/{viewcode}/{noteId}")
+    public ResponseEntity<Response> addNoteToView(@PathVariable String viewcode,
+                                                  @PathVariable long noteId) {
+        return mainService.addNoteToView(viewcode, noteId);
     }
 
     @DeleteMapping("/{viewcode}/{noteId}")

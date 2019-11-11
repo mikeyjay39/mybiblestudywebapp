@@ -15,6 +15,9 @@ public class GenericResponse implements Response {
     private String status;
     private long userId;
 
+    // This is the primary key of the row that was created or modified
+    private long entityId;
+
     @Override
     public ErrorResponse getErrorResponse() {
         return errorResponse;
@@ -39,5 +42,13 @@ public class GenericResponse implements Response {
 
     public void setUserId(long userId) {
         this.userId = userId;
+    }
+
+    public long getEntityId() {
+        return entityId;
+    }
+
+    public void setEntityId(long entityId) {
+        this.entityId = entityId;
     }
 }

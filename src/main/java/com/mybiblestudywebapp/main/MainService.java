@@ -3,6 +3,7 @@ package com.mybiblestudywebapp.main;
 import com.mybiblestudywebapp.bible.BibleStudyRequest;
 import com.mybiblestudywebapp.dashboard.notes.RankNoteRequest;
 import com.mybiblestudywebapp.dashboard.users.CreateUserRequest;
+import com.mybiblestudywebapp.persistence.model.Comment;
 import com.mybiblestudywebapp.persistence.model.Note;
 import org.springframework.http.ResponseEntity;
 
@@ -130,4 +131,19 @@ public interface MainService {
      * @return
      */
     ResponseEntity<Response> getComments(long noteId);
+
+    /**
+     * Add a comment
+     * @param comment
+     * @return
+     */
+    ResponseEntity<Response> addComment(Comment comment);
+
+    /**
+     * Add a single note to a view
+     * @param viewcode
+     * @param noteId
+     * @return
+     */
+    ResponseEntity<Response> addNoteToView(String viewcode, long noteId);
 }

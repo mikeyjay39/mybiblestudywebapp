@@ -330,13 +330,22 @@ public class NoteDao implements UpdatableDao<Note> {
         List<Note> result = null;
         StringBuilder sqlBuilder = new StringBuilder("SELECT * FROM notes as n " +
                 "JOIN books AS b ON b.book_id = n.book_id " +
-                "JOIN chapters AS c ON c.chapter_id = n.chapter_id " +
-                "WHERE n.user_id = :userId AND b.title = :book AND c.chapter_no = :chapterNo " +
-                "ORDER BY n.verse_start, n.verse_end, n.note_id ASC");
+                "JOIN chapters AS c ON c.chapter_id = n.chapter_id WHERE " +
+                "b.title = :book AND c.chapter_no = :chapterNo ");
+
+        // userId = 0 denotes that all users should be selected
+        if ((long)args.get("userId") != 0) {
+            sqlBuilder.append( "AND n.user_id = :userId ");
+        }
 
         if ((boolean)args.get("priv")) {
-            sqlBuilder.append(" AND n.priv = false");
+            sqlBuilder.append("AND n.priv = false ");
         }
+
+        sqlBuilder.append("" +
+                "ORDER BY n.verse_start, n.verse_end, n.note_id ASC");
+
+
 
         String sql = sqlBuilder.toString();
 
@@ -347,6 +356,6 @@ public class NoteDao implements UpdatableDao<Note> {
             LOGGER.error(errMsg);
         }
 
-        return Optional.ofNullable(result);
+        return Optional.of(result == null ? new ArrayList<>() : result);
     }
 }
