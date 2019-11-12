@@ -53,7 +53,7 @@
 
     <!-- login -->
     <div id="loginDiv" style="display:none;" class="row">
-        <div class="col-sm-12 text-center">
+        <div id="signinDiv" class="col-sm-12 text-center">
             <h4 class="mt-5" >
                 <p class="text-center">LOGIN</p>
             </h4>
@@ -81,9 +81,61 @@
                 <button type="button" class="btn btn-primary" onclick="login()">Login</button>
             <!-- remove this after building -->
             <button type="button" class="btn btn-primary" onclick="autoLogin()">Auto Login</button>
+            <button type="button" class="btn btn-success" onclick="signUp()">Sign Up</button>
         </form>
         </div>
+
+        <!-- create account div -->
+        <div id="signupDiv" class="col-sm-12 text-center" style="display:none;">
+            <h4 class="mt-5" >
+                <p class="text-center">CREATE ACCOUNT</p>
+            </h4>
+            <p>Please enter your details</p>
+
+            <form id="createAccountForm" name="createAccountForm" onsubmit="" action="createAccount()">
+
+                <div class="row">
+                    <div class="col-sm-6 text-right">
+                        <label class="control-label" for="setFirstnameId">First Name</label>
+                    </div>
+                    <div class="col-sm-6 text-left">
+                        <input id="setFirstnameId" type="text" class="textbox" placeholder="Enter firstname">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-6 text-right">
+                        <label class="control-label" for="setLastnameId">Last Name</label>
+                    </div>
+                    <div class="col-sm-6 text-left">
+                        <input id="setLastnameId" type="text" class="textbox" placeholder="Enter lastname">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-6 text-right">
+                        <label class="control-label" for="setEmailId">Email</label>
+                    </div>
+                    <div class="col-sm-6 text-left">
+                        <input id="setEmailId" type="text" class="textbox" placeholder="Enter email">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-6 text-right">
+                        <label class="control-label" for="passwordField">Password</label>
+                    </div>
+                    <div class="col-sm-6 text-left">
+                        <input id="setPasswordId" type="password" class="text" type="setPasswordId" placeholder="Enter password">
+                    </div>
+                </div>
+                <br>
+                <button id="createAccountButton" type="button" class="btn btn-success" onclick="createAccount()">Create Account</button>
+            </form>
+        </div>
+        <!--end create account div-->
     </div>
+    <!--end login div-->
 
     <!-- Manage views row -->
     <div class="row" id="manageViews" style="display:none;">

@@ -25,6 +25,15 @@ public class UsersController {
         return mainService.createUserAccount(request);
     }
 
+    /**
+     * Use this to get a CSRF token before calling createAccount
+     * @return
+     */
+    @PostMapping(path = "/csrf/{get}")
+    public ResponseEntity<String> getCsrfToken(@RequestParam String get) {
+        return ResponseEntity.ok("csrf sent");
+    }
+
     @GetMapping
     public ResponseEntity<Response> getUsers() {
         return mainService.getUsers();
