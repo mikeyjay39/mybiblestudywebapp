@@ -386,6 +386,7 @@ function getCookie(cname) {
  */
 function hideAllBody() {
     $("#loginDiv").hide();
+    $("#signupDiv").hide();
     $("#getChapterForm").hide();
     $("#verses").hide();
     hideRightContentDiv();
@@ -1156,6 +1157,76 @@ function noteVote(id, vote) {
         success: function (data, status) {
 
             getChapterUserNotes();
+        },
+        error: function (xhr, ajaxOptions, thrownError) { //Add these parameters to display the required response
+            alert(xhr.status);
+            alert(xhr.responseText);
+        },
+        xhrFields: {
+            withCredentials: true
+        },
+        crossDomain: true
+    });
+}
+
+function signUp() {
+    $("#signupDiv").show();
+    getCsrfFromServer();
+}
+
+/**
+ * Call to get token when not logged in
+ */
+function getCsrfFromServer() {
+    var endpoint = url + "/users/csrf/get";
+    var token = getCsrf();
+
+    $.ajax({
+        url: endpoint,
+        type: "POST",
+        headers: {'X-XSRF-TOKEN': token},
+        success: function (data, status) {
+
+
+        },
+        error: function (xhr, ajaxOptions, thrownError) { //Add these parameters to display the required response
+        },
+        xhrFields: {
+            withCredentials: true
+        },
+        crossDomain: true
+    });
+}
+
+/**
+ * Call this to create a new account
+ */
+function createAccount() {
+
+    var endpoint = url + "/users/signup";
+    var token = getCsrf();
+
+    var requestObj = {
+        email: $("#setEmailId").val(),
+        firstname: $("#setFirstnameId").val(),
+        lastname: $("#setLastnameId").val(),
+        password: $("#setPasswordId").val()
+    }
+
+    var requestJson = JSON.stringify(requestObj);
+
+    $.ajax({
+        url: endpoint,
+        type: "POST",
+        datatype: "json",
+        contentType: "application/json",
+        data: requestJson,
+        headers: {'X-XSRF-TOKEN': token},
+        success: function (data, status) {
+
+            alert('account created');
+            successfulLogin();
+
         },
         error: function (xhr, ajaxOptions, thrownError) { //Add these parameters to display the required response
             alert(xhr.status);
