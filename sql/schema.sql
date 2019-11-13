@@ -1,3 +1,4 @@
+
 create table users
 (
     user_id bigserial not null
@@ -74,7 +75,7 @@ create table notes
     verse_start integer not null,
     ranking integer default 0,
     priv boolean default false not null,
-    lang varchar(64),
+    lang varchar(64) default 'en'::character varying,
     created_at timestamp default now() not null,
     last_modified timestamp,
     verse_end integer

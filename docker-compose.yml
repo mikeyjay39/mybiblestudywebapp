@@ -1,0 +1,41 @@
+version: "3"
+services:
+  db:
+    image: pgbuild:latest
+    network_mode: bridge
+    container_name: studybibledb
+    volumes:
+      - studybibledb:/var/lib/postgresql/data
+
+    expose:
+      - 5432
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=studybibledb
+    restart: unless-stopped
+  # APP*****************************************
+  springbootapp:
+    build: .
+    environment:
+      - PSQLDBNAME=app
+      - PSQLDBUSER=postgres
+      - PSQLDBPASS=password
+      - PSQLDBURL=jdbc:postgresql://db:5432/studybibledb
+      - PSQLDBDRIVER=org.postgresql.Driver
+    network_mode: bridge
+    container_name: springbootapp
+    expose:
+      - 8080
+    ports:
+      - 8080:8080
+    restart: unless-stopped
+    depends_on:
+      - db
+    links:
+      - db
+
+volumes:
+  studybibledb: {}

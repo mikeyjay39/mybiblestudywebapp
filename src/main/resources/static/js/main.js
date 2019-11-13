@@ -286,13 +286,10 @@ function login() {
     var apiEndPoint = "http://localhost:8080/login";
     var email = $("#emailLoginField").val();
     var pass = $("#passwordField").val();
-    var token = getCsrf();
-
     $.ajax({
         url: apiEndPoint,
         type: "GET",
         datatype: "application/json; charset=utf-8",
-        headers: {'X-XSRF-TOKEN': token},
         beforeSend: function (xhr){
             xhr.setRequestHeader("Authorization", "Basic " + btoa(email + ":" + pass));
             //xhr.setRequestHeader("Authorization", "Basic " + btoa("admin@admin.com:12345"));
@@ -659,8 +656,8 @@ function getViewsForLoggedInUser() {
             //$("#verses").html(verseOutput);
         },
         error: function (xhr, ajaxOptions, thrownError) { //Add these parameters to display the required response
-            //alert(xhr.status);
-            //alert(xhr.responseText);
+            alert(xhr.status);
+            alert(xhr.responseText);
         },
         xhrFields: {
             withCredentials: true
@@ -727,7 +724,7 @@ $(document).ready(function() {
     $("#viewsList").change(function() {
         var i = $('input[name=viewlistrow]:checked').val();
         setCurrentViewCode(i);
-        //getService();
+        getService();
     });
 
     // get author on explore notes

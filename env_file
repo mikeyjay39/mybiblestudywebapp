@@ -1,0 +1,5 @@
+PSQLDBNAME=postgres
+PSQLDBUSER=postgres
+PSQLDBPASS=password
+PSQLDBURL=jdbc:postgresql://localhost:5432/postgres
+PSQLDBDRIVER=org.postgresql.Driver
