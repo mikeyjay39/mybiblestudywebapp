@@ -282,10 +282,23 @@ function createUser() {
     });
 }
 
+/**
+ * Called for main navbar
+ */
 function login() {
-    var apiEndPoint = "http://localhost:8080/login";
     var email = $("#emailLoginField").val();
     var pass = $("#passwordField").val();
+    doLogin(email, pass);
+}
+
+/**
+ * Also called after sign up
+ * @param email
+ * @param pass
+ */
+function doLogin(email, pass) {
+    var apiEndPoint = "http://localhost:8080/login";
+
     $.ajax({
         url: apiEndPoint,
         type: "GET",
@@ -295,7 +308,7 @@ function login() {
             //xhr.setRequestHeader("Authorization", "Basic " + btoa("admin@admin.com:12345"));
         },
         success: function (data, status) {
-            var userId = data.userId;
+            currentUserId = data.userId;
             successfulLogin();
         },
         error: function (xhr, ajaxOptions, thrownError) { //Add these parameters to display the required response
@@ -307,6 +320,7 @@ function login() {
         },
         crossDomain: true
     });
+
 }
 
 function autoLogin() {
@@ -1205,13 +1219,15 @@ function createAccount() {
 
     var endpoint = url + "/users/signup";
     var token = getCsrf();
+    var email = $("#setEmailId").val();
+    var pass = $("#setPasswordId").val();
 
     var requestObj = {
-        email: $("#setEmailId").val(),
+        email: email,
         firstname: $("#setFirstnameId").val(),
         lastname: $("#setLastnameId").val(),
-        password: $("#setPasswordId").val()
-    }
+        password: pass
+    };
 
     var requestJson = JSON.stringify(requestObj);
 
@@ -1225,7 +1241,7 @@ function createAccount() {
         success: function (data, status) {
 
             alert('account created');
-            successfulLogin();
+            doLogin(email, pass);
 
         },
         error: function (xhr, ajaxOptions, thrownError) { //Add these parameters to display the required response
