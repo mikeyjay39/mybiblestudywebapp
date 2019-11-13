@@ -17,7 +17,7 @@ services:
       - POSTGRES_DB=studybibledb
     restart: unless-stopped
   # APP*****************************************
-  springbootapp:
+  mybiblestudywebapp:
     build: .
     environment:
       - PSQLDBNAME=app
@@ -26,7 +26,6 @@ services:
       - PSQLDBURL=jdbc:postgresql://db:5432/studybibledb
       - PSQLDBDRIVER=org.postgresql.Driver
     network_mode: bridge
-    container_name: springbootapp
     expose:
       - 8080
     ports:

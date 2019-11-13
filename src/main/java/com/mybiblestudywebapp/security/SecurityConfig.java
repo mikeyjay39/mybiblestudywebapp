@@ -34,7 +34,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             "/test/**",
             "/users/**",
             "/login/**",
-            "/js/main.js"
+            "/js/**",
+            "/resources/**", "/static/**", "/css/**", "/js/**", "/images/**",
+            "/resources/static/**", "/css/**", "/js/**"
     };
 
     @Autowired
