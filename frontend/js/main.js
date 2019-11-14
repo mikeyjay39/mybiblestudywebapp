@@ -1,5 +1,5 @@
-var url = "http://mybiblestudywebapp.us-east-2.elasticbeanstalk.com:80";
-//var url = "http://localhost:8080";
+//var url = "http://mybiblestudywebapp.us-east-2.elasticbeanstalk.com:80";
+var url = "http://localhost:8080";
 
 //var viewCode = "6e9e6366-f386-11e9-b633-0242ac110002";
 var currentBook;

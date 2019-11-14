@@ -1,8 +1,8 @@
 version: "3"
 services:
   mybiblestudywebapp:
-    build: .
     env_file: biblestudy_envfile
+    build: .
     network_mode: bridge
     expose:
       - 8080

@@ -29,6 +29,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private static final String[] PUBLIC_URLS = {
             "/index.html",
+            "/actuator/health",
             "/dashboard.html",
             "/biblestudy/**",
             "/test/**",

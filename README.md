@@ -79,7 +79,15 @@ sudo docker-compose up
 ```
 sudo docker tag mybiblestudywebapp_mybiblestudywebapp:latest 721517280680.dkr.ecr.us-east-2.amazonaws.com/mybiblestudywebapp:latest
 
-docker push 721517280680.dkr.ecr.us-east-2.amazonaws.com/mybiblestudywebapp:latest
+sudo docker push 721517280680.dkr.ecr.us-east-2.amazonaws.com/mybiblestudywebapp:latest
 ```
 
 6. Reupload aws.zip to EBS. This should contain the Dockerrun.aws.json file
+
+Remove all containers
+
+```
+sudo docker rm $(sudo docker ps -a -q)
+
+sudo docker rmi $(sudo docker images -a -q)
+```
