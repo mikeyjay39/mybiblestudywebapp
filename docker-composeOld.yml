@@ -15,7 +15,7 @@ services:
   # APP*****************************************
   springbootapp:
     image: my-bible-study-web-app:latest
-    env_file: env_file
+    env_file: biblestudy_envfile
     network_mode: bridge
     container_name: springbootapp
     expose:

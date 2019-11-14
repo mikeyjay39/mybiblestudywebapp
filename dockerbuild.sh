@@ -1,5 +1,7 @@
 #bin/bash
 
+mvn clean install
+
 # delete local containers
 sudo docker rm $(sudo docker ps -a -q)
 
@@ -12,9 +14,6 @@ sudo $(aws ecr get-login --no-include-email --region us-east-2)
 
 # delete repository images
 aws ecr batch-delete-image --repository-name mybiblestudywebapp --image-ids imageTag=latest
-
-# maven build
-sudo mvn clean install
 
 # build locally
 sudo docker-compose build
