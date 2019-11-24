@@ -740,7 +740,11 @@ $(document).ready(function() {
     $("#viewsList").change(function() {
         var i = $('input[name=viewlistrow]:checked').val();
         setCurrentViewCode(i);
-        getService();
+
+        // only load verses and notes if book and chapter have been set
+        if (currentBook != "" && currentChapter != "" && currentBook != null && currentChapter != null) {
+            getService();
+        }
     });
 
     // get author on explore notes
