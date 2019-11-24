@@ -419,6 +419,7 @@ function hideRightContentDiv() {
     $("#manageViews").hide();
     $("#exploreNotes").hide();
     $("#addCommentDiv").hide();
+    $("#addNotes").hide();
 }
 
 /**
@@ -868,9 +869,9 @@ function showAddNotes() {
                     '<button type="button" class="list-group-item list-group-item-action list-group-item-primary" onclick="setCurrentAuthor(' + users[i].userId + ')" onmouseover="" style="cursor: pointer;">' +
                     users[i].name + '</button>'
                 )
-
-
             }
+
+            $("#addNotes").show();
         },
         error: function (xhr, ajaxOptions, thrownError) { //Add these parameters to display the required response
             alert(xhr.status);

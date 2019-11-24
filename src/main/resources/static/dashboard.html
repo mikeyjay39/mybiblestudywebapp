@@ -160,14 +160,18 @@
             <h5>
                 Add Notes
             </h5>
-            <p>Select authors</p>
+            <p>Select which author you want to add notes from:</p>
             <div id="authorsList" class="list-group list-group-horizontal">
             </div>
             <div class="form-group text-center">
-            <p>Set minimum ranking</p>
-            <input id="minimumRanking" type="number" class="form-control col-sm-2 text-center">
-                <button type="button" class="btn btn-success" onclick="addNotesToView()">Add notes to current view</button>
+                <p>
+                    <br>
+                <label for="minimumRanking">Set minimum ranking value for notes:</label>
+            <input id="minimumRanking" type="number" class="col-sm-2 text-center">
             </div>
+            <button type="button" class="btn btn-success" onclick="addNotesToView()">Add notes to current view</button>
+            </p>
+            <hr>
         </div>
 
 
