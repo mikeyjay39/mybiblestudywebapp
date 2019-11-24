@@ -37,5 +37,8 @@ public class BcryptTest {
         String hash = "$2a$12$g9WA.xsnvRbTqLoBAL/vj.L7sLTGkuQ4b3Cl737zJmpSVHf21g6ba";
         Assert.assertTrue(encoder.matches("testpassword", hash));
 
+        hash = "$2a$12$cnSrzLVjAyzbLW5MPzIePeFOt6s7jzERVI66Sxy1ROpC9SlVS.9im";
+        Assert.assertTrue(new BCryptPasswordEncoder(12).matches("12345", hash));
+
     }
 }

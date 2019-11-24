@@ -1,5 +1,8 @@
 package com.mybiblestudywebapp.security.xss;
 
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
+
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -10,6 +13,8 @@ import java.io.IOException;
  * <a href="mailto:michael@jeszenka.com">michael@jeszenka.com</a>
  * 11/11/19
  */
+@Component
+@Order(1)
 public class XssFilter implements Filter {
 
     private FilterConfig filterConfig;

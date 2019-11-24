@@ -46,3 +46,48 @@ curl -X POST -H "Content-Type: application/json" -d '{"viewCode":"6e9e6366-f386-
 
 ```
 curl -v -X POST -H "Content-Type: application/json" -d '{"email":"testingemail@testing.com","firstname":"Abe","lastname":"Lincoln","password","testingpassword"}' localhost:8080/users
+```
+
+__Docker Build Process__
+
+1. Delete all running bible app containers
+
+```
+sudo docker rm <cotainer id>
+```
+
+2. Delete all bible app images
+
+```
+sudo docker rmi <image id>
+```
+
+3. Rebuild with maven
+
+```
+mvn clean install
+```
+
+4. Build docker image
+
+```
+sudo docker-compose up
+```
+
+5. Push to ECR
+
+```
+sudo docker tag mybiblestudywebapp_mybiblestudywebapp:latest 721517280680.dkr.ecr.us-east-2.amazonaws.com/mybiblestudywebapp:latest
+
+sudo docker push 721517280680.dkr.ecr.us-east-2.amazonaws.com/mybiblestudywebapp:latest
+```
+
+6. Reupload aws.zip to EBS. This should contain the Dockerrun.aws.json file
+
+Remove all containers
+
+```
+sudo docker rm $(sudo docker ps -a -q)
+
+sudo docker rmi $(sudo docker images -a -q)
+```

@@ -28,9 +28,16 @@ import static org.springframework.http.HttpStatus.FORBIDDEN;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private static final String[] PUBLIC_URLS = {
+            "/index.html",
+            "/actuator/health",
+            "/dashboard.html",
             "/biblestudy/**",
             "/test/**",
-            "/users/**"
+            "/users/**",
+            "/login/**",
+            "/js/**",
+            "/resources/**", "/static/**", "/css/**", "/js/**", "/images/**",
+            "/resources/static/**", "/css/**", "/js/**"
     };
 
     @Autowired
@@ -49,7 +56,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .jdbcAuthentication()
                 .dataSource(dataSource)
                 .usersByUsernameQuery(
-                        "SELECT email, password, user_id, enabled FROM users " +
+                        "SELECT email, password, enabled FROM users " +
                                 "WHERE email = ?"
                 )
                 .authoritiesByUsernameQuery(
@@ -78,9 +85,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()) // use this if we want to enable csrf protection
                 .and()
                 .headers()
-                .contentSecurityPolicy("script-src 'self' https://trustedscripts.example.com; " +
+                /*.contentSecurityPolicy("script-src 'self' https://trustedscripts.example.com; " +
                         "object-src https://trustedplugins.example.com; report-uri /csp-report-endpoint/")
-                .and()
+                .and()*/
                 .and()
                 .logout()
                 .logoutUrl("/perform_logout")

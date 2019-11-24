@@ -1,0 +1,11 @@
+version: "3"
+services:
+  mybiblestudywebapp:
+    env_file: biblestudy_envfile
+    build: .
+    network_mode: bridge
+    expose:
+      - 8080
+    ports:
+      - 8080:8080
+    restart: unless-stopped
