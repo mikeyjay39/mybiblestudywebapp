@@ -222,14 +222,16 @@ public class DaoServiceJdbcImpl implements DaoService {
             // get all public notes
             sql = "SELECT * FROM notes " +
                     "JOIN chapters ON notes.chapter_id = chapters.chapter_id " +
-                    "WHERE chapters.chapter_id = :chapterId AND notes.priv = false";
+                    "WHERE chapters.chapter_id = :chapterId AND notes.priv = false " +
+                    "ORDER BY notes.verse_start, notes.verse_end, notes.note_id ASC";
         } else {
             // view code was set so get view specific notes
             sql = "SELECT * FROM notes " +
                     "JOIN view_note ON view_note.note_id = notes.note_id " +
                     "JOIN chapters ON notes.chapter_id = chapters.chapter_id " +
                     "WHERE chapters.chapter_id = :chapterId " +
-                    "AND view_note.view_id = :viewId";
+                    "AND view_note.view_id = :viewId " +
+                    "ORDER BY notes.verse_start, notes.verse_end, notes.note_id ASC";
         }
 
         List<Note> result = namedParameterJdbcTemplate.query(sql, params, NoteDao::mapRow);
