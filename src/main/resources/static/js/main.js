@@ -419,6 +419,7 @@ function hideRightContentDiv() {
     $("#manageViews").hide();
     $("#exploreNotes").hide();
     $("#addCommentDiv").hide();
+    $("#addNotes").hide();
 }
 
 /**
@@ -740,7 +741,11 @@ $(document).ready(function() {
     $("#viewsList").change(function() {
         var i = $('input[name=viewlistrow]:checked').val();
         setCurrentViewCode(i);
-        getService();
+
+        // only load verses and notes if book and chapter have been set
+        if (currentBook != "" && currentChapter != "" && currentBook != null && currentChapter != null) {
+            getService();
+        }
     });
 
     // get author on explore notes
@@ -864,9 +869,9 @@ function showAddNotes() {
                     '<button type="button" class="list-group-item list-group-item-action list-group-item-primary" onclick="setCurrentAuthor(' + users[i].userId + ')" onmouseover="" style="cursor: pointer;">' +
                     users[i].name + '</button>'
                 )
-
-
             }
+
+            $("#addNotes").show();
         },
         error: function (xhr, ajaxOptions, thrownError) { //Add these parameters to display the required response
             alert(xhr.status);
@@ -1079,6 +1084,8 @@ function clientGetBibleTextAndNotes() {
 
     if (viewCode != "" && viewCode != null) {
         currentViewCode = viewCode;
+    } else {
+        currentViewCode = "0"; // 0 denotes generic view code for all public notes
     }
 
     requestFromClientArea = true;

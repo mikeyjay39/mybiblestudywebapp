@@ -160,14 +160,18 @@
             <h5>
                 Add Notes
             </h5>
-            <p>Select authors</p>
+            <p>Select which author you want to add notes from:</p>
             <div id="authorsList" class="list-group list-group-horizontal">
             </div>
             <div class="form-group text-center">
-            <p>Set minimum ranking</p>
-            <input id="minimumRanking" type="number" class="form-control col-sm-2 text-center">
-                <button type="button" class="btn btn-success" onclick="addNotesToView()">Add notes to current view</button>
+                <p>
+                    <br>
+                <label for="minimumRanking">Set minimum ranking value for notes:</label>
+            <input id="minimumRanking" type="number" class="col-sm-2 text-center">
             </div>
+            <button type="button" class="btn btn-success" onclick="addNotesToView()">Add notes to current view</button>
+            </p>
+            <hr>
         </div>
 
 
@@ -176,7 +180,7 @@
     <!-- end manage views row -->
 
     <!-- Explore notes row -->
-    <div class="row" id="exploreNotes" >
+    <div class="row" id="exploreNotes" style="display:none;">
         <div class="col-sm-12 text-center">
             <h4>Explore Notes</h4>
             <h5>Select Author</h5>
@@ -210,14 +214,12 @@
         <div id="verses" class="col-sm-6">
             <h5 class="text-center">Verses</h5>
             <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. 1
             </p>
         </div>
         <!-- end of verses column style="display:none;"-->
         <div id="notes"  class="col-sm-6">
             <h5 class="text-center">My Notes</h5>
             <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. 1
             </p>
         </div>
 

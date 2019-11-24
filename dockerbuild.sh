@@ -1,6 +1,7 @@
 #bin/bash
 
-mvn clean install
+# need to do a maven build first
+sudo -u michael mvn clean install
 
 # delete local containers
 sudo docker rm $(sudo docker ps -a -q)
