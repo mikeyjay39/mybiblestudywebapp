@@ -155,7 +155,7 @@ public class DaoServiceJdbcImpl implements DaoService {
     /**
      * {@inheritDoc}
      *
-     * @param viewCode
+     * @param viewCode if viewCode is 0 then get ALL public notes from every author
      * @param book
      * @param chapterNo
      * @return
@@ -173,12 +173,22 @@ public class DaoServiceJdbcImpl implements DaoService {
         // get view_id
         Optional<List<View>> viewOpt = viewDao.get(viewArgs);
 
-        List<View> viewList = viewOpt.orElseThrow(
-                () -> new DaoServiceException("No views returned for view: " + viewCode)
-        );
+        List<View> viewList = null;
 
-        View view = viewList.get(0);
-        long viewId = view.getViewId();
+        View view = null;
+        long viewId = 0;
+
+        if (!"0".equals(viewCode)) {
+            // not the generic view case to get viewId
+            viewOpt = viewDao.get(viewArgs);
+
+            viewList = viewOpt.orElseThrow(
+                    () -> new DaoServiceException("No views returned for view: " + viewCode)
+            );
+
+            view = viewList.get(0);
+            viewId = view.getViewId();
+        }
 
         // get book_id
         Optional<List<Book>> bookIdOpt = bookDao.get(bookArgs);
@@ -205,11 +215,22 @@ public class DaoServiceJdbcImpl implements DaoService {
                 .addValue("viewId", viewId)
                 .addValue("chapterId", chapterId);
 
-        String sql = "SELECT * FROM notes " +
-                "JOIN view_note ON view_note.note_id = notes.note_id " +
-                "JOIN chapters ON notes.chapter_id = chapters.chapter_id " +
-                "WHERE chapters.chapter_id = :chapterId " +
-                "AND view_note.view_id = :viewId";
+        String sql = "";
+
+        // check for all notes or view specific notes
+        if ("0".equals(viewCode)) {
+            // get all public notes
+            sql = "SELECT * FROM notes " +
+                    "JOIN chapters ON notes.chapter_id = chapters.chapter_id " +
+                    "WHERE chapters.chapter_id = :chapterId AND notes.priv = false";
+        } else {
+            // view code was set so get view specific notes
+            sql = "SELECT * FROM notes " +
+                    "JOIN view_note ON view_note.note_id = notes.note_id " +
+                    "JOIN chapters ON notes.chapter_id = chapters.chapter_id " +
+                    "WHERE chapters.chapter_id = :chapterId " +
+                    "AND view_note.view_id = :viewId";
+        }
 
         List<Note> result = namedParameterJdbcTemplate.query(sql, params, NoteDao::mapRow);
 

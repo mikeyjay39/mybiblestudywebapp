@@ -138,6 +138,11 @@ public class ViewDao implements UpdatableDao<View> {
      */
     @Override
     public Optional<List<View>> get(Map<String, Object> args) {
+        // 0 is used to denote a generic view to contain all public notes
+        if ("0".equals(args.get(VIEW_CODE))) {
+            return Optional.empty();
+        }
+
         String sql = "SELECT * FROM views WHERE view_code = :viewCode";
         SqlParameterSource params = new MapSqlParameterSource()
                 .addValue(VIEW_CODE, args.get(VIEW_CODE), Types.OTHER);
