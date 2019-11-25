@@ -1,4 +1,4 @@
-//var url = "http://mybiblestudywebapp.us-east-2.elasticbeanstalk.com:80";
+//var url = "http://mybiblestudywebapp.us-east-2.elasticbeanstalk.com";
 var url = "http://localhost:8080";
 
 //var viewCode = "6e9e6366-f386-11e9-b633-0242ac110002";
@@ -726,6 +726,11 @@ function createView() {
 function setCurrentViewCode(i) {
     currentViewCode = userViewCodes[i];
     $("#currentViewCode").text(userViewCodes[i]);
+    var viewCodeLink =
+        url + '/index.html?viewcode=' + userViewCodes[i];
+    $("#viewCodeLink").html('Your client link is: <br>' +
+        '<a href="' + viewCodeLink + '">' + viewCodeLink + '</a>'
+    );
     $("#notes").show();
 }
 
