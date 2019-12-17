@@ -1,3 +1,44 @@
+# My Bible Study Web App
+
+## Access
+
+The web app can be accessed at: http://mybiblestudywebapp.us-east-2.elasticbeanstalk.com/index.html
+
+## Build
+
+Run the build script:
+
+```
+./dockerbuild.sh
+```
+
+## Contents
+
+#### root directory
+Many of the files in the root directory are related to build the project, docker, and pushing it to
+my AWS repository. They will not work in your environment. To do so would require my AWS
+credentials. I apologize for the inconvenience.
+
+#### .mvn/wrapper/
+This is a standalone executable version of maven, the build tool I used.
+
+#### documentation/
+This folder contains schema diagrams of the database I made, as well as a UML sequence
+diagram showing how the service classes inside the backend app communicate with each other.
+
+#### frontend/
+This contains the frontend html and javascript files. It is used for testing purposes locally and is
+not included in the actual deployed version of the app. It mirrors the html and javascript files
+found in src/main/resources/static
+
+#### sql/
+This folder contains scripts for setting up the Postgres database.
+
+#### src/
+This folder contains all the source code of the project.
+
+## Random Development Notes
+
 __Backup Schema__
 
 1. Right click on "public" in datagrip
