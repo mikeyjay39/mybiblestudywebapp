@@ -15,6 +15,7 @@
     <description>Parent Pom for the My Bible Study Web App</description>
     <modules>
         <module>mybiblestudyservice</module>
+        <module>confsvr</module>
     </modules>
 
 
