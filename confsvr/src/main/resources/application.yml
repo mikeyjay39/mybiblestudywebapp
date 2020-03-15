@@ -4,11 +4,12 @@ spring:
   cloud:
     config:
       server:
+        encrypt.enabled: false
         git:
           uri: https://github.com/mikeyjay39/mybiblestudywebapp-config
           searchPaths: mybiblestudyservice
           username: mikeyjay39
-          password: M$6%uqKv*g8K #TODO change this
+          password: "{cipher}96e240f89ddaf366f267feb4b916fb95f9dc07a9b30318f6ae7c52b72b11e6a1"
 #TODO remove this when config server is set up
 management:
   security:
