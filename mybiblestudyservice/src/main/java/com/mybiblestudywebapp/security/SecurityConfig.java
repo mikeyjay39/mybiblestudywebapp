@@ -30,7 +30,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private static final String[] PUBLIC_URLS = {
             "/message/**",
             "/index.html",
-            "/actuator/**",
+            "/service-instances/**", // TODO remove after testing
+            "/actuator/**", // TODO remove after testing
             "/dashboard.html",
             "/biblestudy/**",
             "/test/**",

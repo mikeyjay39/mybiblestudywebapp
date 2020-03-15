@@ -13,6 +13,7 @@
     <modules>
         <module>mybiblestudyservice</module>
         <module>confsvr</module>
+        <module>eurekasvr</module>
     </modules>
 
 
