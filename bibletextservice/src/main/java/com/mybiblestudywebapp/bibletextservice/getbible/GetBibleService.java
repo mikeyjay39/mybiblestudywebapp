@@ -1,4 +1,4 @@
-package com.mybiblestudywebapp.getbible;
+package com.mybiblestudywebapp.bibletextservice.getbible;
 
 import java.util.List;
 import java.util.Map;
@@ -18,6 +18,6 @@ public interface GetBibleService {
      * @param chapter
      * @return
      */
-    CompletableFuture<List<Map<String, String>>> getVersesForChapter(String book, int chapter);
+    List<Map<String, String>> getVersesForChapter(String book, int chapter);
 
 }

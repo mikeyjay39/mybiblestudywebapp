@@ -1,6 +1,11 @@
 package com.mybiblestudywebapp.bibletext;
 
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Michael Jeszenka.
@@ -9,4 +14,7 @@ import org.springframework.cloud.openfeign.FeignClient;
  */
 @FeignClient("bibletextservice")
 public interface BibleTextClient {
+
+    @GetMapping("/bibletext/{book}/{chapterNo}")
+    List<Map<String, String>> getVerses(@PathVariable String book, @PathVariable int chapterNo);
 }

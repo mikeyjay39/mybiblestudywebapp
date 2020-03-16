@@ -1,4 +1,4 @@
-package com.mybiblestudywebapp.getbible;
+package com.mybiblestudywebapp.bibletextservice.getbible;
 
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -24,8 +24,7 @@ public class GetBibleServiceImpl implements GetBibleService {
      * @param chapter
      * @return
      */
-    @Async
-    public CompletableFuture<List<Map<String, String>>> getVersesForChapter(String book, int chapter) {
-        return CompletableFuture.completedFuture(getBible.getVersesForChapter(book, chapter).getVerses());
+    public List<Map<String, String>> getVersesForChapter(String book, int chapter) {
+        return getBible.getVersesForChapter(book, chapter).getVerses();
     }
 }

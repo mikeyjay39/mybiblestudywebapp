@@ -1,4 +1,4 @@
-package com.mybiblestudywebapp.getbible;
+package com.mybiblestudywebapp.bibletextservice.getbible;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 

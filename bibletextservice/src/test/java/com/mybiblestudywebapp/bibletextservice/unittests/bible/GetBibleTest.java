@@ -1,12 +1,13 @@
-package com.mybiblestudywebapp.unittests.bible;
+package com.mybiblestudywebapp.bibletextservice.unittests.bible;
 
-import com.mybiblestudywebapp.getbible.GetBible;
-import com.mybiblestudywebapp.getbible.GetBibleImpl;
-import com.mybiblestudywebapp.getbible.GetBibleResponse;
+import com.mybiblestudywebapp.bibletextservice.getbible.GetBible;
+import com.mybiblestudywebapp.bibletextservice.getbible.GetBibleImpl;
+import com.mybiblestudywebapp.bibletextservice.getbible.GetBibleResponse;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.testng.annotations.AfterTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;

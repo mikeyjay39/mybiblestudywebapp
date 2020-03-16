@@ -1,4 +1,4 @@
-package com.mybiblestudywebapp.getbible;
+package com.mybiblestudywebapp.bibletextservice.getbible;
 
 import java.util.List;
 import java.util.Map;

@@ -1,6 +1,6 @@
 package com.mybiblestudywebapp.integrationtests;
 
-import com.mybiblestudywebapp.getbible.GetBibleService;
+import com.mybiblestudywebapp.bibletext.BibleTextClient;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,11 +18,11 @@ import org.springframework.test.context.junit4.SpringRunner;
 public class GetBibleServiceTest {
 
     @Autowired
-    private GetBibleService getBibleService;
+    private BibleTextClient bibleTextClient;
 
     @Test
     public void getVersesForChapter() throws Exception {
-        var result = getBibleService.getVersesForChapter("Genesis", 1).get();
+        var result = bibleTextClient.getVerses("Genesis", 1);
         Assert.assertNotNull(result);
     }
 }

@@ -1,6 +1,4 @@
-package com.mybiblestudywebapp.getbible;
-
-import java.util.concurrent.CompletableFuture;
+package com.mybiblestudywebapp.bibletextservice.getbible;
 
 /**
  * Created by Michael Jeszenka.

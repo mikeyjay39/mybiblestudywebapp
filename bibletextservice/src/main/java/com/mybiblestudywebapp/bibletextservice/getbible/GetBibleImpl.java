@@ -1,4 +1,4 @@
-package com.mybiblestudywebapp.getbible;
+package com.mybiblestudywebapp.bibletextservice.getbible;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
@@ -12,7 +12,6 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
 
 /**
  * Created by Michael Jeszenka.

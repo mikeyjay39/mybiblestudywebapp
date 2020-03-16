@@ -3,6 +3,7 @@ package com.mybiblestudywebapp.main;
 import com.mybiblestudywebapp.bible.BibleStudyRequest;
 import com.mybiblestudywebapp.bible.BibleStudyResponse;
 import com.mybiblestudywebapp.bible.GetChapterResponse;
+import com.mybiblestudywebapp.bibletext.BibleTextClient;
 import com.mybiblestudywebapp.dashboard.notes.AddNoteResponse;
 import com.mybiblestudywebapp.dashboard.notes.GetCommentsResponse;
 import com.mybiblestudywebapp.dashboard.notes.RankNoteRequest;
@@ -12,7 +13,6 @@ import com.mybiblestudywebapp.dashboard.views.AddNotesToViewResponse;
 import com.mybiblestudywebapp.dashboard.views.AddViewResponse;
 import com.mybiblestudywebapp.dashboard.views.DeleteViewResponse;
 import com.mybiblestudywebapp.dashboard.views.GetViewsResponse;
-import com.mybiblestudywebapp.getbible.GetBibleService;
 import com.mybiblestudywebapp.persistence.Dao;
 import com.mybiblestudywebapp.persistence.DaoService;
 import com.mybiblestudywebapp.persistence.DaoServiceException;
@@ -48,7 +48,7 @@ import org.springframework.stereotype.Service;
 public class MainServiceImpl implements MainService {
 
     @Autowired
-    private GetBibleService getBibleService;
+    private BibleTextClient bibleTextClient;
 
     @Autowired
     private DaoService daoService;
@@ -67,7 +67,7 @@ public class MainServiceImpl implements MainService {
         String book = request.getBook();
         int chapterNo = request.getChapterNo();
         BibleStudyResponse response = new BibleStudyResponse();
-        var verses = getBibleService.getVersesForChapter(book, chapterNo);
+        var verses = bibleTextClient.getVerses(book, chapterNo);
         CompletableFuture<List<Note>> futureNotes;
 
         try {
@@ -75,7 +75,7 @@ public class MainServiceImpl implements MainService {
             List<Note> notes = futureNotes.get();
             response.setBook(book);
             response.setChapter(chapterNo);
-            response.setVerses(verses.get());
+            response.setVerses(verses);
             response.setNotes(notes);
 
             if (notes.isEmpty()) {
@@ -214,11 +214,11 @@ public class MainServiceImpl implements MainService {
     @Override
     public ResponseEntity<Response> getChapter(String book, int chapterNo) {
         GetChapterResponse response = new GetChapterResponse();
-        var futureVerses = getBibleService.getVersesForChapter(book, chapterNo);
+        var futureVerses = bibleTextClient.getVerses(book, chapterNo);
 
         try {
             var futureChapters = daoService.getChapter(book, chapterNo);
-            response.setVerses(futureVerses.get());
+            response.setVerses(futureVerses);
             var chapters = futureChapters.get();
             response.setBookId(chapters.get("bookId"));
             response.setChapterId(chapters.get("chapterId"));
@@ -342,14 +342,14 @@ public class MainServiceImpl implements MainService {
 
         try {
             // Get Bible text
-            var getBibleTextFuture = getBibleService.getVersesForChapter(book, chapterNo);
+            var getBibleTextFuture = bibleTextClient.getVerses(book, chapterNo);;
 
             // Get Notes
             var getNotesFuture = daoService.getAllChapterNotesForUser(book, chapterNo, userId);
 
             // Get future values
             List<Note> notes = getNotesFuture.get();
-            var bibleText = getBibleTextFuture.get();
+            var bibleText = getBibleTextFuture;
 
             // Set response
             response.setBook(book);
