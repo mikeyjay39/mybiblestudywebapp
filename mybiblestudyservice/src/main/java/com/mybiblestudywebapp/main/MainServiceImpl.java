@@ -3,7 +3,7 @@ package com.mybiblestudywebapp.main;
 import com.mybiblestudywebapp.bible.BibleStudyRequest;
 import com.mybiblestudywebapp.bible.BibleStudyResponse;
 import com.mybiblestudywebapp.bible.GetChapterResponse;
-import com.mybiblestudywebapp.bibletext.BibleTextClient;
+import com.mybiblestudywebapp.bibletext.BibleTextService;
 import com.mybiblestudywebapp.dashboard.notes.AddNoteResponse;
 import com.mybiblestudywebapp.dashboard.notes.GetCommentsResponse;
 import com.mybiblestudywebapp.dashboard.notes.RankNoteRequest;
@@ -48,7 +48,7 @@ import org.springframework.stereotype.Service;
 public class MainServiceImpl implements MainService {
 
     @Autowired
-    private BibleTextClient bibleTextClient;
+    private BibleTextService bibleTextService;
 
     @Autowired
     private DaoService daoService;
@@ -67,7 +67,7 @@ public class MainServiceImpl implements MainService {
         String book = request.getBook();
         int chapterNo = request.getChapterNo();
         BibleStudyResponse response = new BibleStudyResponse();
-        var verses = bibleTextClient.getVerses(book, chapterNo);
+        var verses = bibleTextService.getVerses(book, chapterNo);
         CompletableFuture<List<Note>> futureNotes;
 
         try {
@@ -214,7 +214,7 @@ public class MainServiceImpl implements MainService {
     @Override
     public ResponseEntity<Response> getChapter(String book, int chapterNo) {
         GetChapterResponse response = new GetChapterResponse();
-        var futureVerses = bibleTextClient.getVerses(book, chapterNo);
+        var futureVerses = bibleTextService.getVerses(book, chapterNo);
 
         try {
             var futureChapters = daoService.getChapter(book, chapterNo);
@@ -342,7 +342,7 @@ public class MainServiceImpl implements MainService {
 
         try {
             // Get Bible text
-            var getBibleTextFuture = bibleTextClient.getVerses(book, chapterNo);;
+            var getBibleTextFuture = bibleTextService.getVerses(book, chapterNo);;
 
             // Get Notes
             var getNotesFuture = daoService.getAllChapterNotesForUser(book, chapterNo, userId);
