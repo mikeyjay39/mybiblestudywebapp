@@ -1,14 +1,20 @@
 package com.mybiblestudywebapp.bibletext;
 
+import com.mybiblestudywebapp.utils.UserContext;
+import com.mybiblestudywebapp.utils.UserContextHolder;
 import com.netflix.hystrix.contrib.javanica.annotation.DefaultProperties;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
 /**
+ * Service class to call the BibleText microservice
+ *
  * Created by Michael Jeszenka.
  * <a href="mailto:michael@jeszenka.com">michael@jeszenka.com</a>
  * 3/17/20
@@ -24,6 +30,8 @@ public class BibleTextService {
 
     private BibleTextClient bibleTextClient;
 
+    private static Logger logger = LoggerFactory.getLogger(BibleTextService.class);
+
     @Autowired
     public BibleTextService(BibleTextClient bibleTextClient) {
         this.bibleTextClient = bibleTextClient;
@@ -38,6 +46,7 @@ public class BibleTextService {
      */
     @HystrixCommand(fallbackMethod = "getVersesFallback")
     public List<Map<String, String>> getVerses(String book, int chapterNo) {
+        logger.debug("UserContextFilter User id: {}", UserContextHolder.getContext().getUserId());
         return bibleTextClient.getVerses(book, chapterNo);
     }
 
