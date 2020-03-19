@@ -15,6 +15,7 @@
         <module>confsvr</module>
         <module>eurekasvr</module>
         <module>bibletextservice</module>
+        <module>zuulsvr</module>
     </modules>
 
 
