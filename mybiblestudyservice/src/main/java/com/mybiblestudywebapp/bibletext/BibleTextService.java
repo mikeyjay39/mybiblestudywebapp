@@ -46,11 +46,12 @@ public class BibleTextService {
      */
     @HystrixCommand(fallbackMethod = "getVersesFallback")
     public List<Map<String, String>> getVerses(String book, int chapterNo) {
-        logger.debug("UserContextFilter User id: {}", UserContextHolder.getContext().getUserId());
+        logger.debug("UserContextFilter Correlation id: {}", UserContextHolder.getContext().getCorrelationId());
         return bibleTextClient.getVerses(book, chapterNo);
     }
 
     private List<Map<String, String>> getVersesFallback(String book, int chapterNo) {
+        logger.warn("getVersesFallback method called. Bibletextservice may be unreachable.");
         Map<String, String> verse = new HashMap<>();
         verse.put("verse", "Error loading verses for " + book + " " + chapterNo);
         verse.put("verseNr", "");

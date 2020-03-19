@@ -11,16 +11,22 @@ import org.springframework.stereotype.Component;
 public class UserContext {
     public enum Constants {
         AUTH_TOKEN("auth-token"),
+        CORRELATION_ID("correlation-id"),
         USER_ID("user-id");
 
-        final String val;
+        private final String name;
 
-        Constants(String val) {
-            this.val = val;
+        Constants(String name) {
+            this.name = name;
+        }
+
+        public String toString() {
+            return this.name;
         }
     }
 
     private String authToken= new String();
+    private String correlationId = new String();
     private String userId = new String();
 
     public String getAuthToken() {
@@ -29,6 +35,14 @@ public class UserContext {
 
     public void setAuthToken(String authToken) {
         this.authToken = authToken;
+    }
+
+    public String getCorrelationId() {
+        return correlationId;
+    }
+
+    public void setCorrelationId(String correlationId) {
+        this.correlationId = correlationId;
     }
 
     public String getUserId() {

@@ -24,10 +24,24 @@ public class UserContextFilter implements Filter {
 
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
 
-        UserContextHolder.getContext().setUserId(httpServletRequest.getHeader(UserContext.Constants.USER_ID.val));
-        UserContextHolder.getContext().setAuthToken(httpServletRequest.getHeader(UserContext.Constants.AUTH_TOKEN.val));
 
-        logger.debug("UserContextFilter User id: {}", UserContextHolder.getContext().getUserId());
+
+        UserContextHolder
+                .getContext()
+                .setUserId(httpServletRequest
+                        .getHeader(UserContext.Constants.USER_ID.toString()));
+
+        UserContextHolder
+                .getContext()
+                .setAuthToken(httpServletRequest
+                        .getHeader(UserContext.Constants.AUTH_TOKEN.toString()));
+
+        UserContextHolder
+                .getContext()
+                .setCorrelationId(httpServletRequest
+                .getHeader(UserContext.Constants.CORRELATION_ID.toString()));
+
+        logger.debug("UserContextFilter Correlation id: {}", UserContextHolder.getContext().getCorrelationId());
 
         filterChain.doFilter(httpServletRequest, servletResponse);
     }

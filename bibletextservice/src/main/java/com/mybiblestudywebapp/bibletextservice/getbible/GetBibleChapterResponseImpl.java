@@ -12,7 +12,7 @@ import java.util.*;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class GetBibleChapterResponseImpl implements GetBibleResponse {
 
-    // naming convention broke hear for sake of simplicity in Jackson mappings
+    // naming convention broke here for sake of simplicity in Jackson mappings
     private String type;
     private String version;
     private String book_name;
