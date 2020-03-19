@@ -1,0 +1,35 @@
+spring:
+  application:
+    name: zuulservice
+  profiles:
+    active:
+      default
+  cloud:
+    config:
+      enabled: true
+
+#Setting logging levels
+logging:
+  level:
+    com.netflix: WARN
+    org.springframework.web: WARN
+
+hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds: 10000
+
+mybiblestudyservice:
+  ribbon:
+    ReadTimeout: 10000
+
+
+zuul:
+  prefix: /api
+  routes:
+    bibletextservice: /bibletext/**
+    mybiblestudyservice: /mybiblestudy/**
+  ignored-services: 'bibletextservice'
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

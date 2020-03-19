@@ -12,9 +12,9 @@ import java.util.Map;
  * <a href="mailto:michael@jeszenka.com">michael@jeszenka.com</a>
  * 3/16/20
  */
-@FeignClient("bibletextservice")
+@FeignClient("zuulservice")
 public interface BibleTextClient {
 
-    @GetMapping("/bibletext/{book}/{chapterNo}")
+    @GetMapping("/api/bibletext/bibletext/{book}/{chapterNo}")
     List<Map<String, String>> getVerses(@PathVariable String book, @PathVariable int chapterNo);
 }
