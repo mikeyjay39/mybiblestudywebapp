@@ -2,7 +2,6 @@ package com.mybiblestudywebapp.hystrix;
 
 import com.mybiblestudywebapp.utils.UserContext;
 import com.mybiblestudywebapp.utils.UserContextHolder;
-import org.aspectj.weaver.ast.Call;
 
 import java.util.concurrent.Callable;
 

@@ -149,6 +149,12 @@
             <artifactId>spring-security-rsa</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.mybiblestudywebapp</groupId>
+            <artifactId>utils</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
 
     </dependencies>
 

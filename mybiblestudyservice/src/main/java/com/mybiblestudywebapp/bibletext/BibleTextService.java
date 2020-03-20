@@ -1,6 +1,5 @@
 package com.mybiblestudywebapp.bibletext;
 
-import com.mybiblestudywebapp.utils.UserContext;
 import com.mybiblestudywebapp.utils.UserContextHolder;
 import com.netflix.hystrix.contrib.javanica.annotation.DefaultProperties;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;

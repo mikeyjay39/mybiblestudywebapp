@@ -29,17 +29,17 @@ public class UserContextFilter implements Filter {
         UserContextHolder
                 .getContext()
                 .setUserId(httpServletRequest
-                        .getHeader(UserContext.Constants.USER_ID.toString()));
+                        .getHeader(Constants.USER_ID.toString()));
 
         UserContextHolder
                 .getContext()
                 .setAuthToken(httpServletRequest
-                        .getHeader(UserContext.Constants.AUTH_TOKEN.toString()));
+                        .getHeader(Constants.AUTH_TOKEN.toString()));
 
         UserContextHolder
                 .getContext()
                 .setCorrelationId(httpServletRequest
-                .getHeader(UserContext.Constants.CORRELATION_ID.toString()));
+                .getHeader(Constants.CORRELATION_ID.toString()));
 
         logger.debug("UserContextFilter Correlation id: {}", UserContextHolder.getContext().getCorrelationId());
 
