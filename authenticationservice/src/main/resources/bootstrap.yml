@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: authenticationservice
+  profiles:
+    active:
+      default, ${SPRING_PROFILE}
+  cloud:
+    config:
+      enabled: true

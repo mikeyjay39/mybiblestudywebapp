@@ -17,6 +17,7 @@
 
     <modules>
         <module>utils</module>
+        <module>authenticationservice</module>
         <module>mybiblestudyservice</module>
         <module>zuulsvr</module>
         <module>eurekasvr</module>
