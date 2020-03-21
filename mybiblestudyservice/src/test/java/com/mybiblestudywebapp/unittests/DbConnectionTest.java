@@ -32,7 +32,7 @@ public class DbConnectionTest {
     private static DataSource embeddedDataSource;
     private static Connection livePostgresConnection;
     private static DataSource liveDataSource;
-    private static String sqlDir = "/home/michael/Projects/mybiblestudywebapp/sql/";
+    private static String sqlDir = "/home/michael/Projects/mybiblestudywebapp/mybiblestudyservice/sql/";
     private static JdbcTemplate jdbcTemplate;
 
     /*@BeforeClass
