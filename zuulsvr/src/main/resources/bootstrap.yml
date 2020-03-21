@@ -3,7 +3,7 @@ spring:
     name: zuulservice
   profiles:
     active:
-      default
+      default, ${SPRING_PROFILE}
   cloud:
     config:
       enabled: true

@@ -1,6 +1,8 @@
 spring:
   application:
-     name: mybiblestudyservice
+    name: mybiblestudyservice
+  profiles:
+    active: default, ${SPRING_PROFILE}
   cloud:
     config:
       enabled: true

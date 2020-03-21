@@ -23,6 +23,7 @@ public class MyBibleStudyWebAppApplication {
 
 }
 
+// TODO remove this after testing Spring Cloud Config
 @RestController
 class MessageRestController {
 

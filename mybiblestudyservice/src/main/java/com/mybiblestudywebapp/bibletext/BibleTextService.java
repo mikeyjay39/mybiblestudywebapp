@@ -52,7 +52,7 @@ public class BibleTextService {
     private List<Map<String, String>> getVersesFallback(String book, int chapterNo) {
         logger.warn("getVersesFallback method called. Bibletextservice may be unreachable.");
         Map<String, String> verse = new HashMap<>();
-        verse.put("verse", "Error loading verses for " + book + " " + chapterNo);
+        verse.put("verse", String.format("Error loading verses for %s %s", book, chapterNo));
         verse.put("verseNr", "");
         return List.of(verse);
     }
