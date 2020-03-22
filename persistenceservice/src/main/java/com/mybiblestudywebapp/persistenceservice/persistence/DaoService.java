@@ -33,8 +33,7 @@ public interface DaoService {
      * @param chapterNo
      * @return
      */
-    List<Note> getStudyNotesForChapter(String viewCode, String book, long chapterNo)
-            throws DaoServiceException;
+    List<Note> getStudyNotesForChapter(String viewCode, String book, long chapterNo);
 
     /**
      * Creates a new user account. Hashes the password if encoder is present.
@@ -50,7 +49,7 @@ public interface DaoService {
      * @param request
      * @return noteId
      */
-    Long addNote(Note request) throws DaoServiceException;
+    long addNote(Note request);
 
     /**
      * Ranks a note. increaseRanking field should be set to true if we are increasing the ranking
@@ -59,7 +58,7 @@ public interface DaoService {
      * @param request
      * @return
      */
-    RankNoteResponse rankNote(RankNoteRequest request) throws DaoServiceException;
+    RankNoteResponse rankNote(RankNoteRequest request);
 
     Response login(String username);
 
@@ -68,7 +67,7 @@ public interface DaoService {
      *
      * @return
      */
-    Long addView() throws DaoServiceException;
+    long addView();
 
     /**
      * Get only the text of a chapter.
@@ -77,15 +76,14 @@ public interface DaoService {
      * @param chapterNo
      * @return response that contains the book_id, and chapter_id
      */
-    Map<String, Integer> getChapter(String book, int chapterNo) throws DaoServiceException;
+    Map<String, Integer> getChapter(String book, int chapterNo);
 
     /**
      * Get all the view codes for the currently logged in user.
      *
      * @return
-     * @throws DaoServiceException
      */
-    List<String> getViews() throws DaoServiceException;
+    List<String> getViews();
 
     /**
      * Remove a note from a view
@@ -93,7 +91,6 @@ public interface DaoService {
      * @param viewcode
      * @param noteId
      * @return
-     * @throws DaoServiceException
      */
     String removeNoteFromView(String viewcode, long noteId);
 
@@ -103,15 +100,14 @@ public interface DaoService {
      * @param viewcode
      * @return response success or failure
      */
-    String deleteView(String viewcode) throws DaoServiceException;
+    String deleteView(String viewcode);
 
     /**
      * Returns all users
      *
      * @return
-     * @throws DaoServiceException
      */
-    List<User> getUsers() throws DaoServiceException;
+    List<User> getUsers();
 
     /**
      * Add all notes from an author above a certain ranking to the target viewcode.
@@ -121,26 +117,22 @@ public interface DaoService {
      * @param ranking  all notes above this ranking
      * @return
      */
-    String addNotesToView(String viewcode, long authorId, int ranking)
-            throws DaoServiceException;
+    String addNotesToView(String viewcode, long authorId, int ranking);
 
     /**
      * Gets all notes for the logged in user
      *
      * @return
-     * @throws DaoServiceException
      */
-    List<Note> getAllChapterNotesForUser(String book, long chapterNo, long userId)
-            throws DaoServiceException;
+    List<Note> getAllChapterNotesForUser(String book, long chapterNo, long userId);
 
     /**
      * Updates a note
      *
      * @param note
      * @return "success"  on success
-     * @throws DaoServiceException on failure
      */
-    String updateNote(Note note) throws DaoServiceException;
+    String updateNote(Note note);
 
     /**
      * Delete a note. The userId stored in the user session will be
@@ -148,27 +140,24 @@ public interface DaoService {
      *
      * @param noteId
      * @return "success" on success
-     * @throws DaoServiceException on failure
      */
-    String deleteNote(long noteId) throws DaoServiceException;
+    String deleteNote(long noteId);
 
     /**
      * Get comments for a note
      *
      * @param noteId
      * @return
-     * @throws DaoServiceException
      */
-    List<Comment> getComments(long noteId) throws DaoServiceException;
+    List<Comment> getComments(long noteId);
 
     /**
      * Add a comment
      *
      * @param comment
      * @return
-     * @throws DaoServiceException
      */
-    Response addComent(Comment comment) throws DaoServiceException;
+    Response addComent(Comment comment);
 
     /**
      * Add a single note to a view
@@ -176,7 +165,6 @@ public interface DaoService {
      * @param viewcode
      * @param noteId
      * @return
-     * @throws DaoServiceException
      */
-    Response addNoteToView(String viewcode, long noteId) throws DaoServiceException;
+    Response addNoteToView(String viewcode, long noteId);
 }

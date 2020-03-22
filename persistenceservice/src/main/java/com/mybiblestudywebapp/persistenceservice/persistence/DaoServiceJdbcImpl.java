@@ -150,8 +150,7 @@ public class DaoServiceJdbcImpl implements DaoService {
      * @return
      */
     @Override
-    public List<Note> getStudyNotesForChapter(String viewCode, String book, long chapterNo)
-            throws DaoServiceException {
+    public List<Note> getStudyNotesForChapter(String viewCode, String book, long chapterNo) {
         Map<String, Object> viewArgs = new HashMap<>();
         Map<String, Object> bookArgs = new HashMap<>();
         Map<String, Object> chapterArgs = new HashMap<>();
@@ -171,10 +170,12 @@ public class DaoServiceJdbcImpl implements DaoService {
             // not the generic view case to get viewId
             viewOpt = viewDao.get(viewArgs);
 
-            viewList = viewOpt.orElseThrow(
-                    () -> new DaoServiceException("No views returned for view: " + viewCode)
-            );
+            if (viewOpt.isEmpty()) {
+                logger.error("No views found for viewId: {}", viewCode);
+                return List.of();
+            }
 
+            viewList = viewOpt.get();
             view = viewList.get(0);
             viewId = view.getViewId();
         }
@@ -182,10 +183,12 @@ public class DaoServiceJdbcImpl implements DaoService {
         // get book_id
         Optional<List<Book>> bookIdOpt = bookDao.get(bookArgs);
 
-        List<Book> bookResults = bookIdOpt.orElseThrow(
-                () -> new DaoServiceException("No books returned for: " + book)
-        );
+        if (bookIdOpt.isEmpty()){
+            logger.error("No books returned for: {}", book);
+            return List.of();
+        }
 
+        List<Book> bookResults = bookIdOpt.get();
         Book bookResult = bookResults.get(0);
 
         // get chapter_id
@@ -193,10 +196,12 @@ public class DaoServiceJdbcImpl implements DaoService {
         chapterArgs.put("chapterNo", chapterNo);
         Optional<List<Chapter>> chaptersOpt = chapterDao.get(chapterArgs);
 
-        List<Chapter> chapterIds = chaptersOpt.orElseThrow(
-                () -> new DaoServiceException("No chapters returned for: " + book + " " + chapterNo)
-        );
+        if (chaptersOpt.isEmpty()) {
+            logger.error("No chapters returned for: {} {}", book, chapterNo);
+            return List.of();
+        }
 
+        List<Chapter> chapterIds = chaptersOpt.get();
         Chapter chapter = chapterIds.get(0);
         long chapterId = chapter.getChapterId();
 
@@ -256,12 +261,12 @@ public class DaoServiceJdbcImpl implements DaoService {
      * @throws DaoServiceException
      */
     @Override
-    public Long addNote(Note request) throws DaoServiceException {
+    public long addNote(Note request) {
         request.setUserId(userSession.userId);
         long result = noteDao.save(request);
 
         if (result < 0) {
-            throw new DaoServiceException("Could not add new note: " + request.getNoteText());
+            logger.error("Could not add new note: {}", request.getNoteText());
         }
 
         return result;
@@ -276,9 +281,12 @@ public class DaoServiceJdbcImpl implements DaoService {
      */
     @Override
     @Transactional
-    public RankNoteResponse rankNote(RankNoteRequest request) throws DaoServiceException {
+    public RankNoteResponse rankNote(RankNoteRequest request) {
 
         RankNoteResponse response = new RankNoteResponse();
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setStatus(400);
+
         String checkRankingSql = "SELECT ranking_value FROM rank_note " +
                 "WHERE note_id = :noteId AND user_id = :userId";
         String insertRankNote = "INSERT INTO rank_note (note_id, user_id, ranking_value) " +
@@ -301,8 +309,14 @@ public class DaoServiceJdbcImpl implements DaoService {
         } catch (EmptyResultDataAccessException e) {
             // no results
         } catch (DataAccessException e) {
-            throw new DaoServiceException("No note retrieved for note_id: " + request.getNoteId() + " user_id: " +
-                    request.getUserId() + "\n" + e.getMessage());
+            String errMsg = String.format("No note retrieved for note_id: %s user_id: %s%n%s",
+                    request.getNoteId(),
+                    request.getUserId(),
+                    e.getMessage());
+            logger.error(errMsg);
+            errorResponse.setDetail(errMsg);
+            response.setErrorResponse(errorResponse);
+            return response;
         }
 
         int currentRankingValue = 0;
@@ -335,7 +349,9 @@ public class DaoServiceJdbcImpl implements DaoService {
             if (rows < 1) {
                 String errMsg = "Could not update rank_note table for noteId " + request.getNoteId() + "\n";
                 logger.error(errMsg);
-                throw new DaoServiceException(errMsg);
+                errorResponse.setDetail(errMsg);
+                response.setErrorResponse(errorResponse);
+                return response;
             }
         } else {
             // does not exist so insert into note_ranking and update note table
@@ -344,8 +360,9 @@ public class DaoServiceJdbcImpl implements DaoService {
                 String errMsg = "Could not insert into rank_note table for noteId " + request.getNoteId() +
                         "\n";
                 logger.error(errMsg);
-                throw new DaoServiceException(errMsg);
-            }
+                errorResponse.setDetail(errMsg);
+                response.setErrorResponse(errorResponse);
+                return response;            }
         }
 
         // update note table
@@ -353,8 +370,9 @@ public class DaoServiceJdbcImpl implements DaoService {
         if (rows < 1) {
             String errMsg = "Could not update note table for noteId " + request.getNoteId() + "\n";
             logger.error(errMsg);
-            throw new DaoServiceException(errMsg);
-        }
+            errorResponse.setDetail(errMsg);
+            response.setErrorResponse(errorResponse);
+            return response;        }
 
         response.setResult("success");
         return response;
@@ -385,13 +403,14 @@ public class DaoServiceJdbcImpl implements DaoService {
      */
     @Override
     @Transactional
-    public Long addView() throws DaoServiceException {
+    public long addView() {
         View view = new View();
         view.setUserId(userSession.userId);
         long viewId = viewDao.save(view);
 
         if (viewId < 0) {
-            throw new DaoServiceException("Could not add new view for user_id: " + userSession.userId);
+            String errMsg = String.format("Could not add new view for user_id: %s", userSession.userId);
+            logger.error(errMsg);
         }
 
         return viewId;
@@ -401,8 +420,7 @@ public class DaoServiceJdbcImpl implements DaoService {
      * {@inheritDoc}
      */
     @Override
-    public Map<String, Integer> getChapter(String book, int chapterNo)
-            throws DaoServiceException {
+    public Map<String, Integer> getChapter(String book, int chapterNo) {
         String sql = "SELECT b.book_id, c.chapter_id FROM books AS b " +
                 "JOIN chapters AS c ON b.book_id = c.book_id " +
                 "WHERE b.title = :title AND c.chapter_no = :chapterNo";
@@ -421,8 +439,8 @@ public class DaoServiceJdbcImpl implements DaoService {
                 queryResult.put("chapterId", rs.getInt("chapter_id"));
             }
         } catch (DataAccessException e) {
-            throw new DaoServiceException("Could not find IDs for book: " + book + " and chapter: " + chapterNo +
-                    "\n" + e.getMessage());
+            logger.error("Could not find IDs for book: {}  and chapter: {} \n{}", book, chapterNo, e.getMessage());
+            return Map.of();
         }
 
         return queryResult;
@@ -432,7 +450,7 @@ public class DaoServiceJdbcImpl implements DaoService {
      * {@inheritDoc}
      */
     @Override
-    public List<String> getViews() throws DaoServiceException {
+    public List<String> getViews() {
         return ((ViewDao) viewDao).getAllCodesForUser(userSession.userId);
     }
 
@@ -460,7 +478,7 @@ public class DaoServiceJdbcImpl implements DaoService {
      */
     @Override
     @Transactional
-    public String deleteView(String viewcode) throws DaoServiceException {
+    public String deleteView(String viewcode) {
         String sql = "SELECT v.view_id FROM views AS v JOIN " +
                 "users AS u on u.user_id = v.user_id " +
                 "WHERE u.user_id = :userId AND v.view_code = :viewCode";
@@ -472,8 +490,9 @@ public class DaoServiceJdbcImpl implements DaoService {
         Long viewId = namedParameterJdbcTemplate.queryForObject(sql, params, Long.class);
 
         if (viewId == null) {
-            throw new DaoServiceException("Could not match viewcode: " + viewcode + " to " +
-                    "user_id: " + userSession.userId);
+            String errMsg = String.format("Could not match viewcode: %s to user_id: %s",viewcode, userSession.userId);
+            logger.error(errMsg);
+            return errMsg;
         }
 
         View view = new View();
@@ -482,7 +501,9 @@ public class DaoServiceJdbcImpl implements DaoService {
         if (viewDao.delete(view)) {
             return "success";
         } else {
-            throw new DaoServiceException("Could not delete viewCode: " + viewcode);
+            String errMsg = String.format("Could not delete viewCode: %s",viewcode);
+            logger.error(errMsg);
+            return errMsg;
         }
     }
 
@@ -490,11 +511,12 @@ public class DaoServiceJdbcImpl implements DaoService {
      * {@inheritDoc}
      */
     @Override
-    public List<User> getUsers() throws DaoServiceException {
+    public List<User> getUsers() {
         var result = userDao.getAll();
 
         if (result.isEmpty()) {
-            throw new DaoServiceException("No users returned by query");
+            logger.error("No users returned by query");
+            return List.of();
         }
 
         return result;
@@ -504,7 +526,7 @@ public class DaoServiceJdbcImpl implements DaoService {
      * {@inheritDoc}
      */
     @Override
-    public String addNotesToView(String viewcode, long authorId, int ranking) throws DaoServiceException {
+    public String addNotesToView(String viewcode, long authorId, int ranking) {
         Map<String, Object> args = new HashMap<>();
         args.put("viewCode", viewcode);
         List<View> viewList = (List<View>) viewDao.get(args).get();
@@ -524,12 +546,14 @@ public class DaoServiceJdbcImpl implements DaoService {
         try {
             results = namedParameterJdbcTemplate.query(sql, params, NoteDao::mapRow);
             if (results.isEmpty()) {
-                throw new DaoServiceException("No notes found to be added to view");
+                String errMsg = String.format("No notes found to be added to view");
+                logger.error(errMsg);
+                return errMsg;
             }
         } catch (DataAccessException e) {
-            String errMsg = "Could not find notes from author: " + authorId + "\n" + e.getMessage();
+            String errMsg = String.format("Could not find notes from author: %s%n%s", authorId, e.getMessage());
             logger.info(errMsg);
-            throw new DaoServiceException(errMsg);
+            return errMsg;
         }
 
         List<ViewNote> viewNotes = new ArrayList<>();
@@ -563,8 +587,7 @@ public class DaoServiceJdbcImpl implements DaoService {
      * {@inheritDoc}
      */
     @Override
-    public List<Note> getAllChapterNotesForUser(String book, long chapterNo, long userId)
-            throws DaoServiceException {
+    public List<Note> getAllChapterNotesForUser(String book, long chapterNo, long userId) {
         Map<String, Object> args = new HashMap<>();
         args.put("userId", userId);
         args.put("book", book);
@@ -575,7 +598,7 @@ public class DaoServiceJdbcImpl implements DaoService {
 
         var opt = noteDao.get(args);
 
-        return (List<Note>) opt.orElse(new ArrayList<>());
+        return (List<Note>) opt.orElseGet(List::of);
     }
 
 
@@ -584,7 +607,7 @@ public class DaoServiceJdbcImpl implements DaoService {
      */
     @Override
     @Transactional
-    public String updateNote(Note note) throws DaoServiceException {
+    public String updateNote(Note note) {
 
         // set user_id here to make sure the user isn't trying to update a note they don't own
         note.setUserId(userSession.userId);
@@ -597,7 +620,9 @@ public class DaoServiceJdbcImpl implements DaoService {
         if (noteDao.update(note)) {
             return "success";
         } else {
-            throw new DaoServiceException("Could note update note_id: " + note.getNoteId());
+            String errMsg = String.format("Could note update note_id: %s", note.getNoteId());
+            logger.error(errMsg);
+            return errMsg;
         }
     }
 
@@ -606,7 +631,7 @@ public class DaoServiceJdbcImpl implements DaoService {
      */
     @Override
     @Transactional
-    public String deleteNote(long noteId) throws DaoServiceException {
+    public String deleteNote(long noteId) {
 
         Note note = new Note();
         note.setNoteId(noteId);
@@ -615,7 +640,9 @@ public class DaoServiceJdbcImpl implements DaoService {
         if (noteDao.delete(note)) {
             return "success";
         } else {
-            throw new DaoServiceException("Could note delete noteId: " + noteId);
+            String errMsg = String.format("Could note delete noteId: " + noteId);
+            logger.error(errMsg);
+            return errMsg;
         }
     }
 
@@ -623,7 +650,7 @@ public class DaoServiceJdbcImpl implements DaoService {
      * {@inheritDoc}
      */
     @Override
-    public List<Comment> getComments(long noteId) throws DaoServiceException {
+    public List<Comment> getComments(long noteId) {
 
         // Check if user is requesting their own notes. We don't want them viewing comments on private notes.
         boolean userOwnsNote = true;
@@ -641,7 +668,8 @@ public class DaoServiceJdbcImpl implements DaoService {
         Optional<List<Comment>> optComments = commentDao.get(args);
 
         if (optComments.isEmpty()) {
-            throw new DaoServiceException("Couldn't retrieve comments for note_id: " + noteId);
+            logger.error("Couldn't retrieve comments for note_id: " + noteId);
+            return List.of();
         }
 
         return optComments.get();
@@ -652,15 +680,23 @@ public class DaoServiceJdbcImpl implements DaoService {
      */
     @Override
     @Transactional
-    public Response addComent(Comment comment) throws DaoServiceException {
+    public Response addComent(Comment comment) {
         comment.setUserId(userSession.userId);
+        GenericResponse response = new GenericResponse();
+
         long result = commentDao.save(comment);
 
         if (result <= 0) {
-            throw new DaoServiceException("Could not add comment to note_id: " + comment.getNoteId());
+            String errMsg = String.format("Could not add comment to note_id: " + comment.getNoteId());
+            logger.error(errMsg);
+            ErrorResponse errorResponse = new ErrorResponse();
+            errorResponse.setDetail(errMsg);
+            errorResponse.setStatus(400);
+            response.setErrorResponse(errorResponse);
+            response.setStatus("failure");
+            return response;
         }
 
-        GenericResponse response = new GenericResponse();
         response.setUserId(userSession.userId);
         response.setStatus("success");
         response.setEntityId(result);
@@ -672,14 +708,22 @@ public class DaoServiceJdbcImpl implements DaoService {
      */
     @Override
     @Transactional
-    public Response addNoteToView(String viewcode, long noteId) throws DaoServiceException {
+    public Response addNoteToView(String viewcode, long noteId) {
         Map<String, Object> args = new HashMap<>();
         args.put("viewCode", viewcode);
         var opt = viewDao.get(args);
         long viewId;
+        GenericResponse response = new GenericResponse();
 
         if (opt.isEmpty()) {
-            throw new DaoServiceException("Could not get id for viewcode: " + viewcode);
+            String errMsg = String.format("Could not get id for viewcode: %s");
+            logger.error(errMsg);
+            ErrorResponse errorResponse = new ErrorResponse();
+            errorResponse.setDetail(errMsg);
+            errorResponse.setStatus(400);
+            response.setErrorResponse(errorResponse);
+            response.setStatus("failure");
+            return response;
         } else {
             viewId = ((List<View>) opt.get()).get(0).getViewId();
         }
@@ -689,11 +733,17 @@ public class DaoServiceJdbcImpl implements DaoService {
         viewNote.setNoteId(noteId);
 
         if (viewNoteDao.save(viewNote) < 1) {
-            throw new DaoServiceException("Could note add note_id " + noteId + " to view_id " + viewId + "\n" +
-                    "Note already exists");
+            String errMsg =
+                    String.format("Could note add note_id %s to view_id %s%nNote already exists", noteId, viewId);
+            logger.error(errMsg);
+            ErrorResponse errorResponse = new ErrorResponse();
+            errorResponse.setDetail(errMsg);
+            errorResponse.setStatus(400);
+            response.setErrorResponse(errorResponse);
+            response.setStatus("failure");
+            return response;
         }
 
-        GenericResponse response = new GenericResponse();
         response.setStatus("success");
         return response;
     }
