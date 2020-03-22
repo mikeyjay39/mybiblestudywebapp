@@ -1,12 +1,10 @@
 package com.mybiblestudywebapp.unittests;
 
-import com.mybiblestudywebapp.persistence.model.Note;
-import com.mybiblestudywebapp.persistence.NoteDao;
+import com.mybiblestudywebapp.utils.persistence.model.Note;
+import com.mybiblestudywebapp.persistenceservice.persistence.NoteDao;
 import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;

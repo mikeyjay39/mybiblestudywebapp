@@ -1,8 +1,7 @@
 package com.mybiblestudywebapp.bible;
 
-import com.mybiblestudywebapp.main.ErrorResponse;
-import com.mybiblestudywebapp.main.Response;
-import com.mybiblestudywebapp.persistence.model.Note;
+import com.mybiblestudywebapp.utils.http.ErrorResponse;
+import com.mybiblestudywebapp.utils.http.Response;
 
 import java.util.List;
 import java.util.Map;

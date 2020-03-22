@@ -6,19 +6,19 @@ import com.mybiblestudywebapp.bible.GetChapterResponse;
 import com.mybiblestudywebapp.bibletext.BibleTextService;
 import com.mybiblestudywebapp.dashboard.notes.AddNoteResponse;
 import com.mybiblestudywebapp.dashboard.notes.GetCommentsResponse;
-import com.mybiblestudywebapp.dashboard.notes.RankNoteRequest;
-import com.mybiblestudywebapp.dashboard.notes.RankNoteResponse;
+import com.mybiblestudywebapp.utils.http.RankNoteRequest;
+import com.mybiblestudywebapp.utils.http.RankNoteResponse;
 import com.mybiblestudywebapp.dashboard.users.GetUsersResponse;
 import com.mybiblestudywebapp.dashboard.views.AddNotesToViewResponse;
 import com.mybiblestudywebapp.dashboard.views.AddViewResponse;
 import com.mybiblestudywebapp.dashboard.views.DeleteViewResponse;
 import com.mybiblestudywebapp.dashboard.views.GetViewsResponse;
-import com.mybiblestudywebapp.persistence.Dao;
-import com.mybiblestudywebapp.persistence.DaoService;
-import com.mybiblestudywebapp.persistence.DaoServiceException;
-import com.mybiblestudywebapp.persistence.model.Comment;
-import com.mybiblestudywebapp.persistence.model.Note;
-import com.mybiblestudywebapp.persistence.model.User;
+import com.mybiblestudywebapp.persistenceservice.persistence.Dao;
+import com.mybiblestudywebapp.persistenceservice.persistence.DaoService;
+import com.mybiblestudywebapp.persistenceservice.persistence.DaoServiceException;
+import com.mybiblestudywebapp.utils.persistence.model.Comment;
+import com.mybiblestudywebapp.utils.persistence.model.Note;
+import com.mybiblestudywebapp.utils.persistence.model.User;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,6 +29,8 @@ import java.util.concurrent.ExecutionException;
 
 import com.mybiblestudywebapp.dashboard.users.CreateUserRequest;
 import com.mybiblestudywebapp.dashboard.users.CreateUserResponse;
+import com.mybiblestudywebapp.utils.http.GenericResponse;
+import com.mybiblestudywebapp.utils.http.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +38,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 
@@ -49,6 +52,9 @@ public class MainServiceImpl implements MainService {
 
     @Autowired
     private BibleTextService bibleTextService;
+
+    @Autowired
+    private PasswordEncoder encoder;
 
     @Autowired
     private DaoService daoService;
@@ -112,7 +118,7 @@ public class MainServiceImpl implements MainService {
         requestUser.setEmail(request.getEmail());
         requestUser.setFirstname(request.getFirstname());
         requestUser.setLastname(request.getLastname());
-        requestUser.setPassword(request.getPassword());
+        requestUser.setPassword(encoder.encode(request.getPassword()));
         User result = null;
 
         try {

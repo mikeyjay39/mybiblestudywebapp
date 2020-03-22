@@ -1,17 +1,15 @@
 package com.mybiblestudywebapp.integrationtests;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.mybiblestudywebapp.bible.BibleStudyResponse;
 import com.mybiblestudywebapp.dashboard.notes.AddNoteResponse;
 import com.mybiblestudywebapp.dashboard.notes.GetCommentsResponse;
-import com.mybiblestudywebapp.dashboard.notes.RankNoteRequest;
-import com.mybiblestudywebapp.dashboard.notes.RankNoteResponse;
-import com.mybiblestudywebapp.dashboard.views.GetViewsResponse;
-import com.mybiblestudywebapp.main.GenericResponse;
-import com.mybiblestudywebapp.persistence.model.Comment;
-import com.mybiblestudywebapp.persistence.model.Note;
+import com.mybiblestudywebapp.utils.http.RankNoteRequest;
+import com.mybiblestudywebapp.utils.http.RankNoteResponse;
+import com.mybiblestudywebapp.utils.http.GenericResponse;
+import com.mybiblestudywebapp.utils.persistence.model.Comment;
+import com.mybiblestudywebapp.utils.persistence.model.Note;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;

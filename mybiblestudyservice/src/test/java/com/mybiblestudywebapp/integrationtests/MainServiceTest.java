@@ -1,12 +1,12 @@
 package com.mybiblestudywebapp.integrationtests;
 
-import com.mybiblestudywebapp.dashboard.notes.RankNoteRequest;
+import com.mybiblestudywebapp.utils.http.RankNoteRequest;
 import com.mybiblestudywebapp.dashboard.users.CreateUserRequest;
 import com.mybiblestudywebapp.dashboard.users.CreateUserResponse;
 import com.mybiblestudywebapp.main.MainService;
-import com.mybiblestudywebapp.persistence.NoteDao;
-import com.mybiblestudywebapp.persistence.UpdatableDao;
-import com.mybiblestudywebapp.persistence.model.Note;
+import com.mybiblestudywebapp.persistenceservice.persistence.NoteDao;
+import com.mybiblestudywebapp.persistenceservice.persistence.UpdatableDao;
+import com.mybiblestudywebapp.utils.persistence.model.Note;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;

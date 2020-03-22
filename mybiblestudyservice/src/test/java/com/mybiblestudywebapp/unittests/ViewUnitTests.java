@@ -1,10 +1,9 @@
 package com.mybiblestudywebapp.unittests;
 
-import com.mybiblestudywebapp.persistence.model.View;
-import com.mybiblestudywebapp.persistence.ViewDao;
+import com.mybiblestudywebapp.utils.persistence.model.View;
+import com.mybiblestudywebapp.persistenceservice.persistence.ViewDao;
 import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
