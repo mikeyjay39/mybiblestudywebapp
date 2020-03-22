@@ -34,18 +34,10 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
-    /*@Bean//(name = "webUserDetails")
-    @Override
-    public UserDetailsService userDetailsServiceBean() throws Exception {
-        JdbcUserDetailsManager userDetailsManager = new JdbcUserDetailsManager();
-        userDetailsManager.setDataSource(dataSource);
-        return userDetailsManager;
-    }*/
-
-    @Bean
+    /*@Bean
     public PasswordEncoder encoder() {
         return NoOpPasswordEncoder.getInstance();
-    }
+    }*/
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -74,12 +66,12 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
     @Autowired
     private DataSource dataSource;
 
-    /*private static final String SALT = "thisisasalt";
+    private static final String SALT = "thisisasalt";
 
     @Bean
     public PasswordEncoder encoder() {
         return new BCryptPasswordEncoder(12, new SecureRandom(SALT.getBytes()));
-    }*/
+    }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {

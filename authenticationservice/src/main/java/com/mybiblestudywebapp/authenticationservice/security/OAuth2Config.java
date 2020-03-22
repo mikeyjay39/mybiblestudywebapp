@@ -42,9 +42,6 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
     private DataSource dataSource;
 
     @Autowired
-    private PasswordEncoder encoder;
-
-    @Autowired
     private AuthenticationManager authenticationManager;
 
     @Bean(name = "jcds")
@@ -67,38 +64,13 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
         return new JdbcAuthorizationCodeServices(dataSource);
     }
 
-   /* @Bean
-    public ClientDetailsService clientDetailsServiceBean() {
-        return new ClientDetailsService() {
-            @Override
-            public ClientDetails loadClientByClientId(String s) throws ClientRegistrationException {
-                BaseClientDetails details = new BaseClientDetails();
-                details.setClientId(s);
-                details.setAuthorizedGrantTypes(Arrays.asList("refresh_token", "password", "client_credentials") );
-                details.setScope(Arrays.asList("webclient", "mobileclient"));
-                //details.setRegisteredRedirectUri(Collections.singleton("http://anywhere.com"));
-                //details.setResourceIds(Arrays.asList("oauth2-resource"));
-                Set<GrantedAuthority> authorities = new HashSet<GrantedAuthority>();
-                authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
-                details.setAuthorities(authorities);
-                return details;
-            }
-        };
-    }*/
 
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
         clients
-                /*withClientDetails(clientDetailsServiceBean()
-                )
-                .jdbc().withClient("mybiblestudywebapp")
-                .secret("secret")
-                .authorizedGrantTypes("refresh_token", "password", "client_credentials")
-                .scopes("webclient", "mobileclient");
-                //.and().build();*/
                 .inMemory()
                 .withClient("mybiblestudywebapp")
-                .secret("secret")
+                .secret("$2a$12$WmFGfJ8SwY.aLsxlvJ00D.GMISwI8pILEJqTU1DMPcVnlkbGTNmrW") // = "secret"
                 .authorizedGrantTypes("refresh_token", "password", "client_credentials")
                 .scopes("webclient", "mobileclient");
     }
@@ -113,15 +85,6 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
         endpoints
                 .authenticationManager(authenticationManager).tokenStore(tokenStore());
-                /*.approvalStore(approvalStore())
-                .authorizationCodeServices(authorizationCodeServices())
-                .tokenStore(tokenStore());*/
-    }
 
-    /*@Override
-    public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
-        endpoints
-                .authenticationManager(authenticationManager)
-                .userDetailsService(userDetailsService);
-    }*/
+    }
 }
