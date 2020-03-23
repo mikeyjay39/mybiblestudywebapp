@@ -15,7 +15,7 @@ import java.util.Map;
  * <a href="mailto:michael@jeszenka.com">michael@jeszenka.com</a>
  * 3/22/20
  */
-@FeignClient(contextId = "persistenceClient", name = "zuulservice", configuration = PersistenceClientConfig.class)
+@FeignClient(contextId = "persistenceClient", name = "zuulservice")
 public interface PersistenceClient {
 
     @PostMapping("/api/persistence/persistence/addUserNotesToView/{userId}/{viewId}")
