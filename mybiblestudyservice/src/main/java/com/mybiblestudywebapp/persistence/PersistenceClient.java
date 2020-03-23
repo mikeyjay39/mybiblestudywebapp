@@ -31,8 +31,11 @@ public interface PersistenceClient {
     @PostMapping("/api/addNote/{note}")
     long addNote(@PathVariable Note note);
 
-    @PostMapping("/api/rankdNote/{request}")
+    @PostMapping("/api/rankNote/{request}")
     RankNoteResponse rankNote(@PathVariable RankNoteRequest request);
+
+    @PostMapping("/api/login/{username}")
+    Response login(@PathVariable String username);
 
     @PostMapping("/api/addView")
     long addView();

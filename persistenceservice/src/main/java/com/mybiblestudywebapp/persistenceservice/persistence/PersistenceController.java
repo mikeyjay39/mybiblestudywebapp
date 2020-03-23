@@ -47,9 +47,14 @@ public class PersistenceController {
         return daoService.addNote(note);
     }
 
-    @PostMapping("/rankdNote/{request}")
+    @PostMapping("/rankNote/{request}")
     public RankNoteResponse rankNote(@PathVariable RankNoteRequest request) {
         return daoService.rankNote(request);
+    }
+
+    @PostMapping("/login/{username}")
+    public Response login(@PathVariable String username) {
+        return daoService.login(username);
     }
 
     @PostMapping("/addView")

@@ -13,6 +13,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
 import java.util.Map;
@@ -51,7 +53,13 @@ public class PersistenceService {
                                                long chapterNo) {
         return persistenceClient.getStudyNotesForChapter(viewCode, book, chapterNo);
     }
-    
+
+    @HystrixCommand
+    public Response login(String username) {
+        return persistenceClient.login(username);
+    }
+
+
     @HystrixCommand
     public long addNote( Note note) {
         return persistenceClient.addNote(note);
