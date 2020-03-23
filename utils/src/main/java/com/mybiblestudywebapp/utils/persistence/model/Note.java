@@ -10,7 +10,6 @@ import java.util.Objects;
  * <a href="mailto:michael@jeszenka.com">michael@jeszenka.com</a>
  * 2019. 10. 14.
  */
-@JsonIgnoreProperties(ignoreUnknown=true)
 public class Note {
 
     private long noteId;

@@ -607,13 +607,7 @@ public class DaoServiceJdbcImpl implements DaoService {
      */
     @Override
     @Transactional
-    public String updateNote(String n) {
-
-        ObjectMapper mapper = new ObjectMapper();
-        Note note = null;
-        try {
-            note = mapper.readValue(n, Note.class);
-        } catch (Exception e){}
+    public String updateNote(Note note) {
 
         // set user_id here to make sure the user isn't trying to update a note they don't own
         note.setUserId(userSession.userId);

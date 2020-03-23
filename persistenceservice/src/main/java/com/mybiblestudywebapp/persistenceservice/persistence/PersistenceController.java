@@ -20,7 +20,7 @@ import java.util.Map;
  * 3/22/20
  */
 @RestController
-@RequestMapping("persistence")
+@RequestMapping(path = "persistence")
 public class PersistenceController {
 
     private final DaoService daoService;
@@ -30,12 +30,12 @@ public class PersistenceController {
         this.daoService = daoService;
     }
 
-    @PostMapping("/addUserNotesToView/{userId}/{viewId}")
+    @PostMapping(path = "/addUserNotesToView/{userId}/{viewId}")
     public Long addUserNotesToView(@PathVariable long userId, @PathVariable long viewId) {
         return daoService.addUserNotesToView(userId, viewId);
     }
 
-    @GetMapping("/getStudyNotesForChapter/{viewCode}/{book}/{chapterNo}")
+    @GetMapping(path = "/getStudyNotesForChapter/{viewCode}/{book}/{chapterNo}")
     public List<Note> getStudyNotesForChapter(@PathVariable String viewCode,
                                               @PathVariable String book,
                                               @PathVariable long chapterNo) {
@@ -43,88 +43,88 @@ public class PersistenceController {
         return daoService.getStudyNotesForChapter(viewCode, book, chapterNo);
     }
 
-    @PostMapping("/addNote/{note}")
-    public long addNote(@PathVariable Note note) {
+    @PostMapping(path = "/addNote", consumes = "application/json", produces = "application/json")
+    public long addNote(@RequestBody Note note) {
         return daoService.addNote(note);
     }
 
-    @PostMapping("/rankNote/{request}")
-    public RankNoteResponse rankNote(@PathVariable RankNoteRequest request) {
+    @PostMapping(path = "/rankNote", consumes = "application/json", produces = "application/json")
+    public RankNoteResponse rankNote(@RequestBody RankNoteRequest request) {
         return daoService.rankNote(request);
     }
 
-    @PostMapping("/login/{username}")
+    @PostMapping(path = "/login/{username}")
     public LoginResponse login(@PathVariable String username) {
         return daoService.login(username);
     }
 
-    @PostMapping("/addView")
+    @PostMapping(path = "/addView")
     public long addView() {
         return daoService.addView();
     }
 
-    @GetMapping("/getChapter/{book}/{chapterNo}")
+    @GetMapping(path = "/getChapter/{book}/{chapterNo}")
     public Map<String, Integer> getChapter(@PathVariable String book,
                                            @PathVariable int chapterNo) {
         return daoService.getChapter(book, chapterNo);
     }
 
-    @GetMapping("/getViews")
+    @GetMapping(path = "/getViews")
     public List<String> getViews() {
         return daoService.getViews();
     }
 
-    @DeleteMapping("/removeNoteFromView/{viewcode}/{noteId}")
+    @DeleteMapping(path = "/removeNoteFromView/{viewcode}/{noteId}")
     public String removeNoteFromView(@PathVariable String viewcode,
                                      @PathVariable long noteId) {
         return daoService.removeNoteFromView(viewcode, noteId);
     }
 
-    @DeleteMapping("/deleteView/{viewcode}")
+    @DeleteMapping(path = "/deleteView/{viewcode}")
     public String deleteView(@PathVariable String viewcode) {
         return daoService.deleteView(viewcode);
     }
 
-    @GetMapping("/getUsers")
+    @GetMapping(path = "/getUsers")
     public List<User> getUsers() {
         return daoService.getUsers();
     }
 
-    @PostMapping("/addNotesToView/{viewcode}/{authorId}/{ranking}")
+    @PostMapping(path = "/addNotesToView/{viewcode}/{authorId}/{ranking}")
     public String addNotesToView(@PathVariable String viewcode,
                                  @PathVariable long authorId,
                                  @PathVariable int ranking) {
         return daoService.addNotesToView(viewcode, authorId, ranking);
     }
 
-    @GetMapping("/getAllChapterNotesForUser/{book}/{chapterNo}/{userId}")
+    @GetMapping(path = "/getAllChapterNotesForUser/{book}/{chapterNo}/{userId}")
     public List<Note> getAllChapterNotesForUser(@PathVariable String book,
                                                 @PathVariable long chapterNo,
                                                 @PathVariable long userId) {
         return daoService.getAllChapterNotesForUser(book, chapterNo, userId);
     }
 
-    @PutMapping("/updateNote/{note}")
-    public String updateNote(@PathVariable String note) {
+    @PutMapping(path = "/updateNote", consumes = "application/json", produces = "application/json")
+    public String updateNote(@RequestBody Note note) {
         return daoService.updateNote(note);
     }
 
-    @DeleteMapping("/deleteNote/{noteId}")
+    @DeleteMapping(path = "/deleteNote/{noteId}")
     public String deleteNote(@PathVariable long noteId) {
         return daoService.deleteNote(noteId);
     }
 
-    @GetMapping("/getComments/{noteId}")
+    @GetMapping(path = "/getComments/{noteId}")
     public List<Comment> getComments(@PathVariable long noteId) {
         return daoService.getComments(noteId);
     }
 
-    @PostMapping("/addComment/{comment}")
-    public Response addComment(@PathVariable Comment comment) {
+    @PostMapping(path = "/addComment", consumes = "application/json", produces = "application/json")
+    public Response addComment(@RequestBody Comment comment) {
         return daoService.addComent(comment);
     }
 
-    @PostMapping("/addNoteToView/{viewcode}/{noteId}")
+    @PostMapping(path = "/addNoteToView/{viewcode}/{noteId}")
     public Response addNoteToView(@PathVariable String viewcode,
                                   @PathVariable long noteId) {
         return daoService.addNoteToView(viewcode, noteId);

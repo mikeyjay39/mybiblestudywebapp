@@ -130,7 +130,7 @@ public interface DaoService {
      * @param note
      * @return "success"  on success
      */
-    String updateNote(String note);
+    String updateNote(Note note);
 
     /**
      * Delete a note. The userId stored in the user session will be

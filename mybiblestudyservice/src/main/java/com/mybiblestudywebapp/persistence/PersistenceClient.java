@@ -26,11 +26,17 @@ public interface PersistenceClient {
                                               @PathVariable String book,
                                               @PathVariable long chapterNo);
 
-    @PostMapping("/api/persistence/persistence/addNote/{note}")
-    long addNote(@PathVariable Note note);
+    @PostMapping(
+            path = "/api/persistence/persistence/addNote",
+            consumes = "application/json",
+            produces = "application/json")
+    long addNote(@RequestBody Note note);
 
-    @PostMapping("/api/persistence/persistence/rankNote/{request}")
-    RankNoteResponse rankNote(@PathVariable RankNoteRequest request);
+    @PostMapping(
+            path = "/api/persistence/persistence/rankNote",
+            consumes = "application/json",
+            produces = "application/json")
+    RankNoteResponse rankNote(@RequestBody RankNoteRequest request);
 
     @PostMapping("/api/persistence/persistence/login/{username}")
     LoginResponse login(@PathVariable String username);
@@ -65,8 +71,11 @@ public interface PersistenceClient {
                                                 @PathVariable long chapterNo,
                                                 @PathVariable long userId);
 
-    @PutMapping("/api/persistence/persistence/updateNote/{note}")
-    String updateNote(@PathVariable String note);
+    @PutMapping(
+            path = "/api/persistence/persistence/updateNote",
+            consumes = "application/json",
+            produces = "application/json")
+    String updateNote(@RequestBody Note note);
 
     @DeleteMapping("/api/persistence/persistence/deleteNote/{noteId}")
     String deleteNote(@PathVariable long noteId);
@@ -74,8 +83,11 @@ public interface PersistenceClient {
     @GetMapping("/api/persistence/persistence/getComments/{noteId}")
     List<Comment> getComments(@PathVariable long noteId);
 
-    @PostMapping("/api/persistence/persistence/addComment/{comment}")
-    Response addComment(@PathVariable Comment comment);
+    @PostMapping(
+            path = "/api/persistence/persistence/addComment",
+            consumes = "application/json",
+            produces = "application/json")
+    Response addComment(@RequestBody Comment comment);
 
     @PostMapping("/api/persistence/persistence/addNoteToView/{viewcode}/{noteId}")
     Response addNoteToView(@PathVariable String viewcode,

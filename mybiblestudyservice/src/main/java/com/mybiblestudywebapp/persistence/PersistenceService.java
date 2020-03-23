@@ -118,14 +118,7 @@ public class PersistenceService {
 
     @HystrixCommand
     public String updateNote(Note note) {
-        ObjectMapper mapper = new ObjectMapper();
-        String n = null;
-        try {
-            n = mapper.writeValueAsString(note);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-        return persistenceClient.updateNote(n);
+        return persistenceClient.updateNote(note);
     }
 
     @HystrixCommand
