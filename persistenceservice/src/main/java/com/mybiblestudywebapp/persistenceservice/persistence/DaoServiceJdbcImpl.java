@@ -1,5 +1,6 @@
 package com.mybiblestudywebapp.persistenceservice.persistence;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mybiblestudywebapp.utils.persistence.DaoServiceException;
 import com.mybiblestudywebapp.utils.persistence.model.*;
 import com.mybiblestudywebapp.utils.http.*;
@@ -15,7 +16,6 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -385,7 +385,7 @@ public class DaoServiceJdbcImpl implements DaoService {
      * @return
      */
     @Override
-    public Response login(String username) {
+    public LoginResponse login(String username) {
         LoginResponse loginResponse = new LoginResponse();
         String sql = "SELECT user_id FROM users WHERE email = :username";
         SqlParameterSource params = new MapSqlParameterSource()
@@ -607,7 +607,13 @@ public class DaoServiceJdbcImpl implements DaoService {
      */
     @Override
     @Transactional
-    public String updateNote(Note note) {
+    public String updateNote(String n) {
+
+        ObjectMapper mapper = new ObjectMapper();
+        Note note = null;
+        try {
+            note = mapper.readValue(n, Note.class);
+        } catch (Exception e){}
 
         // set user_id here to make sure the user isn't trying to update a note they don't own
         note.setUserId(userSession.userId);

@@ -1,8 +1,6 @@
 package com.mybiblestudywebapp.persistence;
 
-import com.mybiblestudywebapp.utils.http.RankNoteRequest;
-import com.mybiblestudywebapp.utils.http.RankNoteResponse;
-import com.mybiblestudywebapp.utils.http.Response;
+import com.mybiblestudywebapp.utils.http.*;
 import com.mybiblestudywebapp.utils.persistence.model.Comment;
 import com.mybiblestudywebapp.utils.persistence.model.Note;
 import com.mybiblestudywebapp.utils.persistence.model.User;
@@ -17,7 +15,7 @@ import java.util.Map;
  * <a href="mailto:michael@jeszenka.com">michael@jeszenka.com</a>
  * 3/22/20
  */
-@FeignClient(contextId = "persistenceClient", name = "zuulservice")
+@FeignClient(contextId = "persistenceClient", name = "zuulservice", configuration = PersistenceClientConfig.class)
 public interface PersistenceClient {
 
     @PostMapping("/api/persistence/persistence/addUserNotesToView/{userId}/{viewId}")
@@ -35,7 +33,7 @@ public interface PersistenceClient {
     RankNoteResponse rankNote(@PathVariable RankNoteRequest request);
 
     @PostMapping("/api/persistence/persistence/login/{username}")
-    Response login(@PathVariable String username);
+    LoginResponse login(@PathVariable String username);
 
     @PostMapping("/api/persistence/persistence/addView")
     long addView();
@@ -68,7 +66,7 @@ public interface PersistenceClient {
                                                 @PathVariable long userId);
 
     @PutMapping("/api/persistence/persistence/updateNote/{note}")
-    String updateNote(@PathVariable Note note);
+    String updateNote(@PathVariable String note);
 
     @DeleteMapping("/api/persistence/persistence/deleteNote/{noteId}")
     String deleteNote(@PathVariable long noteId);

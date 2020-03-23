@@ -1,5 +1,7 @@
 package com.mybiblestudywebapp.utils.persistence.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -8,6 +10,7 @@ import java.util.Objects;
  * <a href="mailto:michael@jeszenka.com">michael@jeszenka.com</a>
  * 2019. 10. 14.
  */
+@JsonIgnoreProperties(ignoreUnknown=true)
 public class Note {
 
     private long noteId;

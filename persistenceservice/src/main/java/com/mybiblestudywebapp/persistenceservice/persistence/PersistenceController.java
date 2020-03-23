@@ -1,5 +1,6 @@
 package com.mybiblestudywebapp.persistenceservice.persistence;
 
+import com.mybiblestudywebapp.utils.http.LoginResponse;
 import com.mybiblestudywebapp.utils.http.RankNoteRequest;
 import com.mybiblestudywebapp.utils.http.RankNoteResponse;
 import com.mybiblestudywebapp.utils.http.Response;
@@ -53,7 +54,7 @@ public class PersistenceController {
     }
 
     @PostMapping("/login/{username}")
-    public Response login(@PathVariable String username) {
+    public LoginResponse login(@PathVariable String username) {
         return daoService.login(username);
     }
 
@@ -104,7 +105,7 @@ public class PersistenceController {
     }
 
     @PutMapping("/updateNote/{note}")
-    public String updateNote(@PathVariable Note note) {
+    public String updateNote(@PathVariable String note) {
         return daoService.updateNote(note);
     }
 

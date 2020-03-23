@@ -1,12 +1,10 @@
 package com.mybiblestudywebapp.persistenceservice.persistence;
 
+import com.mybiblestudywebapp.utils.http.*;
 import com.mybiblestudywebapp.utils.persistence.DaoServiceException;
 import com.mybiblestudywebapp.utils.persistence.model.Comment;
 import com.mybiblestudywebapp.utils.persistence.model.Note;
 import com.mybiblestudywebapp.utils.persistence.model.User;
-import com.mybiblestudywebapp.utils.http.RankNoteRequest;
-import com.mybiblestudywebapp.utils.http.RankNoteResponse;
-import com.mybiblestudywebapp.utils.http.Response;
 
 import java.util.List;
 import java.util.Map;
@@ -60,7 +58,7 @@ public interface DaoService {
      */
     RankNoteResponse rankNote(RankNoteRequest request);
 
-    Response login(String username);
+    LoginResponse login(String username);
 
     /**
      * Creates a new view to hold notes. Gets the request from MainService and forwards it to the ViewDao
@@ -132,7 +130,7 @@ public interface DaoService {
      * @param note
      * @return "success"  on success
      */
-    String updateNote(Note note);
+    String updateNote(String note);
 
     /**
      * Delete a note. The userId stored in the user session will be

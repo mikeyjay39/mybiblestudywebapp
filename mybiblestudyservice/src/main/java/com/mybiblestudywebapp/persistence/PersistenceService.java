@@ -1,8 +1,8 @@
 package com.mybiblestudywebapp.persistence;
 
-import com.mybiblestudywebapp.utils.http.RankNoteRequest;
-import com.mybiblestudywebapp.utils.http.RankNoteResponse;
-import com.mybiblestudywebapp.utils.http.Response;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mybiblestudywebapp.utils.http.*;
 import com.mybiblestudywebapp.utils.persistence.model.Comment;
 import com.mybiblestudywebapp.utils.persistence.model.Note;
 import com.mybiblestudywebapp.utils.persistence.model.User;
@@ -30,7 +30,7 @@ import java.util.Map;
         commandProperties=
                 {@HystrixProperty(
                         name="execution.isolation.thread.timeoutInMilliseconds",
-                        value="5000")})
+                        value="10000")})
 public class PersistenceService {
 
     private final PersistenceClient persistenceClient;
@@ -55,7 +55,7 @@ public class PersistenceService {
     }
 
     @HystrixCommand
-    public Response login(String username) {
+    public LoginResponse login(String username) {
         return persistenceClient.login(username);
     }
 
@@ -110,15 +110,22 @@ public class PersistenceService {
     }
 
     @HystrixCommand
-    public List<Note> getAllChapterNotesForUser( String book,
+    public List<Note> getAllChapterNotesForUser(String book,
                                                  long chapterNo,
                                                  long userId) {
         return persistenceClient.getAllChapterNotesForUser(book, chapterNo, userId);
     }
 
     @HystrixCommand
-    public String updateNote( Note note) {
-        return persistenceClient.updateNote(note);
+    public String updateNote(Note note) {
+        ObjectMapper mapper = new ObjectMapper();
+        String n = null;
+        try {
+            n = mapper.writeValueAsString(note);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return persistenceClient.updateNote(n);
     }
 
     @HystrixCommand
