@@ -26,6 +26,7 @@ zuul:
   routes:
     bibletextservice: /bibletext/**
     mybiblestudyservice: /mybiblestudy/**
+    persistenceservice: /persistence/**
   ignored-services: 'bibletextservice'
 
 management:

@@ -1,7 +1,7 @@
 package com.mybiblestudywebapp.unittests;
 
-import com.mybiblestudywebapp.persistence.model.Chapter;
-import com.mybiblestudywebapp.persistence.ChapterDao;
+import com.mybiblestudywebapp.utils.persistence.model.Chapter;
+import com.mybiblestudywebapp.persistenceservice.persistence.ChapterDao;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;

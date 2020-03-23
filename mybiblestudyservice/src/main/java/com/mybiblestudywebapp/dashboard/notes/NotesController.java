@@ -1,9 +1,10 @@
 package com.mybiblestudywebapp.dashboard.notes;
 
 import com.mybiblestudywebapp.main.MainService;
-import com.mybiblestudywebapp.main.Response;
-import com.mybiblestudywebapp.persistence.model.Comment;
-import com.mybiblestudywebapp.persistence.model.Note;
+import com.mybiblestudywebapp.utils.http.RankNoteRequest;
+import com.mybiblestudywebapp.utils.http.Response;
+import com.mybiblestudywebapp.utils.persistence.model.Comment;
+import com.mybiblestudywebapp.utils.persistence.model.Note;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

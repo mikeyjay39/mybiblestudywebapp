@@ -1,10 +1,11 @@
 package com.mybiblestudywebapp.main;
 
 import com.mybiblestudywebapp.bible.BibleStudyRequest;
-import com.mybiblestudywebapp.dashboard.notes.RankNoteRequest;
+import com.mybiblestudywebapp.utils.http.RankNoteRequest;
 import com.mybiblestudywebapp.dashboard.users.CreateUserRequest;
-import com.mybiblestudywebapp.persistence.model.Comment;
-import com.mybiblestudywebapp.persistence.model.Note;
+import com.mybiblestudywebapp.utils.persistence.model.Comment;
+import com.mybiblestudywebapp.utils.persistence.model.Note;
+import com.mybiblestudywebapp.utils.http.Response;
 import org.springframework.http.ResponseEntity;
 
 /**
