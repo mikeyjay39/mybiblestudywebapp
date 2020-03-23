@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static com.mybiblestudywebapp.main.Constants.*;
+import static com.mybiblestudywebapp.utils.main.Constants.TITLE;
 
 /**
  * Created by Michael Jeszenka.

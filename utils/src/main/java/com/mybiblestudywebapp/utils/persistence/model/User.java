@@ -1,7 +1,5 @@
 package com.mybiblestudywebapp.utils.persistence.model;
 
-import org.springframework.security.core.GrantedAuthority;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;

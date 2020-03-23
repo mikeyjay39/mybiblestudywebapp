@@ -17,8 +17,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static com.mybiblestudywebapp.main.Constants.NOTE_ID;
-import static com.mybiblestudywebapp.main.Constants.VIEW_ID;
+import static com.mybiblestudywebapp.utils.main.Constants.NOTE_ID;
+import static com.mybiblestudywebapp.utils.main.Constants.VIEW_ID;
 
 /**
  * Created by Michael Jeszenka.

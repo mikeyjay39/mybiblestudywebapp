@@ -20,7 +20,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.*;
 
-import static com.mybiblestudywebapp.main.Constants.*;
+import static com.mybiblestudywebapp.utils.main.Constants.*;
 
 
 /**

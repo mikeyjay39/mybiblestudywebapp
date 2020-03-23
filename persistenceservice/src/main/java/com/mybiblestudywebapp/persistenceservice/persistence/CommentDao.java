@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static com.mybiblestudywebapp.main.Constants.COMMENT_ID;
+import static com.mybiblestudywebapp.utils.main.Constants.COMMENT_ID;
 
 /**
  * Created by Michael Jeszenka.

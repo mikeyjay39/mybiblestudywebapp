@@ -17,69 +17,69 @@ import java.util.Map;
  * <a href="mailto:michael@jeszenka.com">michael@jeszenka.com</a>
  * 3/22/20
  */
-@FeignClient("zuulservice")
+@FeignClient(contextId = "persistenceClient", name = "zuulservice")
 public interface PersistenceClient {
 
-    @PostMapping("/api/addUserNotesToView/{userId}/{viewId}")
+    @PostMapping("/api/persistence/persistence/addUserNotesToView/{userId}/{viewId}")
     Long addUserNotesToView(@PathVariable long userId, @PathVariable long viewId);
 
-    @GetMapping("/api/getStudyNotesForChapter/{viewCode}/{book}/{chapterNo}")
+    @GetMapping("/api/persistence/persistence/getStudyNotesForChapter/{viewCode}/{book}/{chapterNo}")
     List<Note> getStudyNotesForChapter(@PathVariable String viewCode,
                                               @PathVariable String book,
                                               @PathVariable long chapterNo);
 
-    @PostMapping("/api/addNote/{note}")
+    @PostMapping("/api/persistence/persistence/addNote/{note}")
     long addNote(@PathVariable Note note);
 
-    @PostMapping("/api/rankNote/{request}")
+    @PostMapping("/api/persistence/persistence/rankNote/{request}")
     RankNoteResponse rankNote(@PathVariable RankNoteRequest request);
 
-    @PostMapping("/api/login/{username}")
+    @PostMapping("/api/persistence/persistence/login/{username}")
     Response login(@PathVariable String username);
 
-    @PostMapping("/api/addView")
+    @PostMapping("/api/persistence/persistence/addView")
     long addView();
 
-    @GetMapping("/api/getChapter/{book}/{chapterNo}")
+    @GetMapping("/api/persistence/persistence/getChapter/{book}/{chapterNo}")
     Map<String, Integer> getChapter(@PathVariable String book,
                                            @PathVariable int chapterNo);
 
-    @GetMapping("/api/getViews")
+    @GetMapping("/api/persistence/persistence/getViews")
     List<String> getViews();
 
-    @DeleteMapping("/api/removeNoteFromView/{viewcode}/{noteId}")
+    @DeleteMapping("/api/persistence/persistence/removeNoteFromView/{viewcode}/{noteId}")
     String removeNoteFromView(@PathVariable String viewcode,
                                      @PathVariable long noteId);
 
-    @DeleteMapping("/api/deleteView/{viewcode}")
+    @DeleteMapping("/api/persistence/persistence/deleteView/{viewcode}")
     String deleteView(@PathVariable String viewcode);
 
-    @GetMapping("/api/getUsers")
+    @GetMapping("/api/persistence/persistence/getUsers")
     List<User> getUsers();
 
-    @PostMapping("/api/addNotesToView/{viewcode}/{authorId}/{ranking}")
+    @PostMapping("/api/persistence/persistence/addNotesToView/{viewcode}/{authorId}/{ranking}")
     String addNotesToView(@PathVariable String viewcode,
                                  @PathVariable long authorId,
                                  @PathVariable int ranking);
 
-    @GetMapping("/api/getAllChapterNotesForUser/{book}/{chapterNo}/{userId}")
+    @GetMapping("/api/persistence/persistence/getAllChapterNotesForUser/{book}/{chapterNo}/{userId}")
     List<Note> getAllChapterNotesForUser(@PathVariable String book,
                                                 @PathVariable long chapterNo,
                                                 @PathVariable long userId);
 
-    @PutMapping("/api/updateNote/{note}")
+    @PutMapping("/api/persistence/persistence/updateNote/{note}")
     String updateNote(@PathVariable Note note);
 
-    @DeleteMapping("/api/deleteNote/{noteId}")
+    @DeleteMapping("/api/persistence/persistence/deleteNote/{noteId}")
     String deleteNote(@PathVariable long noteId);
 
-    @GetMapping("/api/getComments/{noteId}")
+    @GetMapping("/api/persistence/persistence/getComments/{noteId}")
     List<Comment> getComments(@PathVariable long noteId);
 
-    @PostMapping("/api/addComment/{comment}")
+    @PostMapping("/api/persistence/persistence/addComment/{comment}")
     Response addComment(@PathVariable Comment comment);
 
-    @PostMapping("/api/addNoteToView/{viewcode}/{noteId}")
+    @PostMapping("/api/persistence/persistence/addNoteToView/{viewcode}/{noteId}")
     Response addNoteToView(@PathVariable String viewcode,
                                   @PathVariable long noteId);
 }
