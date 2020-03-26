@@ -12,8 +12,18 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.R
 @Configuration
 public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
+    private static final String[] PUBLIC_URLS = {
+            "/persistence/getStudyNotesForChapter/**",
+            "/getChapter/**"
+    };
+
     @Override
     public void configure(HttpSecurity http) throws Exception{
-        http.authorizeRequests().anyRequest().authenticated();
+        http
+                .authorizeRequests()
+                .antMatchers(PUBLIC_URLS).permitAll()
+                .and()
+                .authorizeRequests()
+                .anyRequest().authenticated();
     }
 }
