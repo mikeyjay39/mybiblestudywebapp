@@ -1,4 +1,4 @@
-package com.mybiblestudywebapp.unittests;
+package com.mybiblestudywebapp.persistenceservice.unittests;
 
 import com.mybiblestudywebapp.utils.persistence.model.Book;
 import com.mybiblestudywebapp.persistenceservice.persistence.BookDao;

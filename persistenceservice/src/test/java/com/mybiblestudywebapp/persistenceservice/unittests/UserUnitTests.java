@@ -1,4 +1,4 @@
-package com.mybiblestudywebapp.unittests;
+package com.mybiblestudywebapp.persistenceservice.unittests;
 
 import com.mybiblestudywebapp.utils.persistence.model.User;
 import com.mybiblestudywebapp.persistenceservice.persistence.UserDao;

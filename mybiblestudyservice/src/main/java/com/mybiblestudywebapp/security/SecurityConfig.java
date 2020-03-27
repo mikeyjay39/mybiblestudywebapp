@@ -22,7 +22,7 @@ import static org.springframework.http.HttpStatus.FORBIDDEN;
  * Created by Michael Jeszenka.
  * <a href="mailto:michael@jeszenka.com">michael@jeszenka.com</a>
  * 10/25/19
- */
+ *//*
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
@@ -87,9 +87,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()) // use this if we want to enable csrf protection
                 .and()
                 .headers()
-                /*.contentSecurityPolicy("script-src 'self' https://trustedscripts.example.com; " +
-                        "object-src https://trustedplugins.example.com; report-uri /csp-report-endpoint/")
-                .and()*/
+
                 .and()
                 .logout()
                 .logoutUrl("/perform_logout")
@@ -97,4 +95,4 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .deleteCookies("JSESSIONID")
         ;
     }
-}
+}*/

@@ -1,4 +1,4 @@
-package com.mybiblestudywebapp.unittests;
+package com.mybiblestudywebapp.persistenceservice.unittests;
 
 import com.mybiblestudywebapp.utils.persistence.model.View;
 import com.mybiblestudywebapp.persistenceservice.persistence.ViewDao;

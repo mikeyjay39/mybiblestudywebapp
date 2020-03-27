@@ -1,6 +1,6 @@
-package com.mybiblestudywebapp;
+package com.mybiblestudywebapp.persistenceservice;
 
-import com.mybiblestudywebapp.unittests.*;
+import com.mybiblestudywebapp.persistenceservice.unittests.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 

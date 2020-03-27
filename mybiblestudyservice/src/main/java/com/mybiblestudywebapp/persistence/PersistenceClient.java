@@ -1,5 +1,6 @@
 package com.mybiblestudywebapp.persistence;
 
+import com.mybiblestudywebapp.feign.OAuth2FeignAutoConfiguration;
 import com.mybiblestudywebapp.utils.http.*;
 import com.mybiblestudywebapp.utils.persistence.model.Comment;
 import com.mybiblestudywebapp.utils.persistence.model.Note;
@@ -15,7 +16,7 @@ import java.util.Map;
  * <a href="mailto:michael@jeszenka.com">michael@jeszenka.com</a>
  * 3/22/20
  */
-@FeignClient(contextId = "persistenceClient", name = "zuulservice")
+@FeignClient(contextId = "persistenceClient", name = "zuulservice", configuration = OAuth2FeignAutoConfiguration.class)
 public interface PersistenceClient {
 
     @PostMapping("/api/persistence/persistence/addUserNotesToView/{userId}/{viewId}")
