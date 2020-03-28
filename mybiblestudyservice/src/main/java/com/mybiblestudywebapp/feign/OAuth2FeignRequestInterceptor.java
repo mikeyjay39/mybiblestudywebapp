@@ -1,5 +1,7 @@
 package com.mybiblestudywebapp.feign;
 
+import com.mybiblestudywebapp.utils.UserContext;
+import com.mybiblestudywebapp.utils.UserContextHolder;
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
 import org.slf4j.Logger;
@@ -33,7 +35,12 @@ public class OAuth2FeignRequestInterceptor implements RequestInterceptor {
     public void apply(RequestTemplate template) {
         LOGGER.info("Inside apply method for feign");
 
-        AccessTokenRequest accessTokenRequest = oauth2ClientContext.getAccessTokenRequest();
+        UserContext context = UserContextHolder.getContext();
+        String authHeader = context.getAuthToken();
+
+        template.header("Authorization", authHeader);
+
+       /* AccessTokenRequest accessTokenRequest = oauth2ClientContext.getAccessTokenRequest();
         OAuth2AccessToken oAuth2AccessToken = accessTokenRequest.getExistingToken();
 
         String authHeader = String.valueOf(template.headers().get(AUTHORIZATION_HEADER));
@@ -48,6 +55,6 @@ public class OAuth2FeignRequestInterceptor implements RequestInterceptor {
             LOGGER.debug("Constructing Header {} for Token {}", AUTHORIZATION_HEADER, BEARER_TOKEN_TYPE);
             template.header(AUTHORIZATION_HEADER, String.format("%s %s", BEARER_TOKEN_TYPE,
                     oAuth2AccessToken.toString()));
-        }
+        }*/
     }
 }

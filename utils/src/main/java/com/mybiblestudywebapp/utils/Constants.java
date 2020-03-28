@@ -6,7 +6,7 @@ package com.mybiblestudywebapp.utils;
  * 3/19/20
  */
 public enum Constants {
-    AUTH_TOKEN("auth-token"),
+    AUTH_TOKEN("Authorization"),
     CORRELATION_ID("correlation-id"),
     USER_ID("user-id"),
     PRE_FILTER_TYPE("pre"),
