@@ -18,3 +18,7 @@ spring:
     url: ${PSQLDBURL}
     username: ${PSQLDBUSER}
     password: ${PSQLDBPASS}
+
+# TODO - change this, encrypt it and put it in Config server
+signing:
+  key: "345345fsdfsf5345"
