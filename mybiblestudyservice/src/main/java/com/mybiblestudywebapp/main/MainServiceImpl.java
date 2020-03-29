@@ -7,7 +7,6 @@ import com.mybiblestudywebapp.bibletext.BibleTextService;
 import com.mybiblestudywebapp.dashboard.notes.AddNoteResponse;
 import com.mybiblestudywebapp.dashboard.notes.GetCommentsResponse;
 import com.mybiblestudywebapp.dashboard.users.CreateUserRequest;
-import com.mybiblestudywebapp.dashboard.users.CreateUserResponse;
 import com.mybiblestudywebapp.dashboard.users.GetUsersResponse;
 import com.mybiblestudywebapp.dashboard.views.AddNotesToViewResponse;
 import com.mybiblestudywebapp.dashboard.views.AddViewResponse;
@@ -27,9 +26,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -49,11 +48,14 @@ public class MainServiceImpl implements MainService {
     @Autowired
     private BibleTextService bibleTextService;
 
-    @Autowired
-    private PasswordEncoder encoder;
+    /*@Autowired
+    private PasswordEncoder encoder;*/
 
     @Autowired
     private PersistenceService persistenceService;
+
+    @Autowired
+    private LoginService loginService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MainServiceImpl.class);
 
@@ -92,7 +94,9 @@ public class MainServiceImpl implements MainService {
      */
     @Override
     public ResponseEntity<Response> createUserAccount(CreateUserRequest request) {
-        CreateUserResponse response = new CreateUserResponse();
+        return null;
+    }
+        /*CreateUserResponse response = new CreateUserResponse();
         User requestUser = new User();
         requestUser.setEmail(request.getEmail());
         requestUser.setFirstname(request.getFirstname());
@@ -100,28 +104,8 @@ public class MainServiceImpl implements MainService {
         requestUser.setPassword(encoder.encode(request.getPassword()));
         User result = null;
 
-        // TODO implement this in mybiblestudyservice
-       /* try {
-            result = persistenceService.createUserAccount(requestUser).get();
-            response
-                    .setUserId(result.getUserId())
-                    .setEmail(result.getEmail())
-                    .setFirstname(result.getFirstname())
-                    .setLastname(result.getLastname());
-        } catch (DaoServiceException e) {
-            return daoServiceExceptionHandler(e, response);
-        } catch (InterruptedException e) {
-            String errMsg = "Create user account " + request.getEmail() + " thread interrupted\n"
-                    + e.getMessage();
-            return interruptedExceptionHandler(e, errMsg, response);
-        } catch (ExecutionException e) {
-            String errMsg = "Create user account " + request.getEmail()
-                    + " thread execution exception\n" + e.getMessage();
-            return executionExceptionHandler(e, errMsg, response);
-        }*/
-
         return ResponseEntity.ok(response);
-    }
+    }*/
 
     /**
      * {@inheritDoc}
@@ -147,10 +131,10 @@ public class MainServiceImpl implements MainService {
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<Response> login() {
+    public ResponseEntity<Response> login(Map<String, String> headers, HttpSession session) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName(); //get logged in username
-        return ResponseEntity.ok(persistenceService.login(username));
+        return ResponseEntity.ok(loginService.login(headers, username, session));
     }
 
     /**

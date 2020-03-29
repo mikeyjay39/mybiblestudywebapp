@@ -8,6 +8,9 @@ import com.mybiblestudywebapp.utils.persistence.model.Note;
 import com.mybiblestudywebapp.utils.http.Response;
 import org.springframework.http.ResponseEntity;
 
+import javax.servlet.http.HttpSession;
+import java.util.Map;
+
 /**
  * Acts as a boss thread delegating requests to async worker services and packages responses into Response Entities
  * to return to the controllers.
@@ -56,7 +59,7 @@ public interface MainService {
      *
      * @return
      */
-    ResponseEntity<Response> login();
+    ResponseEntity<Response> login(Map<String, String> headers, HttpSession session);
 
     /**
      * Creates a new view to hold notes.

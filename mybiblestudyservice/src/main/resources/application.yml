@@ -4,11 +4,13 @@ spring:
     url: ${PSQLDBURL}
     username: ${PSQLDBUSER}
     password: ${PSQLDBPASS}
+  main.allow-bean-definition-overriding: true
 management:
   endpoints:
     web:
       exposure:
         include: "*"
+
 eureka:
   instance:
     prefer-ip-address: true
@@ -19,8 +21,13 @@ eureka:
       defaultZone: http://localhost:8761/eureka/
 
 feign:
+  hystrix:
+    enabled: true
   client:
     config:
       default:
         connectTimeout: 160000000
         readTimeout: 160000000
+
+hystrix:
+  shareSecurityContext: true

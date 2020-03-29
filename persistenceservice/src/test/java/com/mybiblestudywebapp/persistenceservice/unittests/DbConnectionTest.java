@@ -1,4 +1,4 @@
-package com.mybiblestudywebapp.unittests;
+package com.mybiblestudywebapp.persistenceservice.unittests;
 
 import com.opentable.db.postgres.embedded.EmbeddedPostgres;
 import org.junit.Assert;
