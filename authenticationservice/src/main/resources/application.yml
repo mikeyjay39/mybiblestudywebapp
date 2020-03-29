@@ -18,7 +18,3 @@ spring:
     url: ${PSQLDBURL}
     username: ${PSQLDBUSER}
     password: ${PSQLDBPASS}
-
-# TODO: change, encrypt, remove and put in Spring cloud config global
-signing:
-  key: "345345fsdfsf5345"

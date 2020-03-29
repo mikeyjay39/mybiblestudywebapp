@@ -1,8 +1,10 @@
 package com.mybiblestudywebapp.authenticationservice.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
@@ -25,16 +27,10 @@ import java.util.Arrays;
 public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
 
     @Autowired
-    private DataSource dataSource;
-
-    @Autowired
     private AuthenticationManager authenticationManager;
 
     @Autowired
     private TokenStore tokenStore;
-
-    @Autowired
-    private DefaultTokenServices tokenServices;
 
     @Autowired
     private JwtAccessTokenConverter jwtAccessTokenConverter;
@@ -42,34 +38,22 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
     @Autowired
     private TokenEnhancer jwtTokenEnhancer;
 
-    /*@Bean(name = "jcds")
-    public JdbcClientDetailsService clientDetailsService() {
-        return new JdbcClientDetailsService(dataSource);
-    }
+    @Autowired
+    private PasswordEncoder encoder;
 
-    @Bean
-    public TokenStore tokenStore() {
-        return new JdbcTokenStore(dataSource);
-    }
+    @Value("${security.oauth2.client.client-id}")
+    private String clientId;
 
-    @Bean
-    public ApprovalStore approvalStore() {
-        return new JdbcApprovalStore(dataSource);
-    }
-
-    @Bean
-    public AuthorizationCodeServices authorizationCodeServices() {
-        return new JdbcAuthorizationCodeServices(dataSource);
-    }*/
-
+    @Value("${security.oauth2.client.client-secret}")
+    private String clientSecret;
 
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
 
         clients
                 .inMemory()
-                .withClient("mybiblestudywebapp")
-                .secret("$2a$12$WmFGfJ8SwY.aLsxlvJ00D.GMISwI8pILEJqTU1DMPcVnlkbGTNmrW") // = "secret"
+                .withClient(clientId)
+                .secret(encoder.encode(clientSecret))
                 .authorizedGrantTypes("refresh_token", "password", "client_credentials")
                 .scopes("webclient", "mobileclient");
     }
@@ -91,6 +75,5 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
                 .authenticationManager(authenticationManager)
                 .tokenStore(tokenStore)
                 .accessTokenConverter(jwtAccessTokenConverter);
-
     }
 }
