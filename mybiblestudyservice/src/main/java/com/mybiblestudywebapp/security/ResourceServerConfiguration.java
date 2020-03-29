@@ -10,7 +10,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.R
  * <a href="mailto:michael@jeszenka.com">michael@jeszenka.com</a>
  * 3/26/20
  */
-@Configuration
+/*@Configuration
 public class ResourceServerConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
@@ -20,4 +20,4 @@ public class ResourceServerConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("*")
                 .permitAll();
     }
-}
+}*/

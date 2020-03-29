@@ -24,6 +24,8 @@ public class UserContextFilter implements Filter {
 
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
 
+        String accessToken =
+                (String) ((HttpServletRequest) servletRequest).getSession().getAttribute(Constants.ACCESS_TOKEN.toString());
 
 
         UserContextHolder
@@ -31,10 +33,12 @@ public class UserContextFilter implements Filter {
                 .setUserId(httpServletRequest
                         .getHeader(Constants.USER_ID.toString()));
 
+        UserContext context = UserContextHolder.getContext();
+
         UserContextHolder
                 .getContext()
-                .setAuthToken(httpServletRequest
-                        .getHeader(Constants.AUTH_TOKEN.toString()));
+                .setAuthToken(/*httpServletRequest
+                        .getHeader(Constants.AUTH_TOKEN.toString())*/"Bearer " + accessToken);
 
         UserContextHolder
                 .getContext()

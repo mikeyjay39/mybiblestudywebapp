@@ -11,7 +11,8 @@ public enum Constants {
     USER_ID("user-id"),
     PRE_FILTER_TYPE("pre"),
     POST_FILTER_TYPE("post"),
-    ROUTE_FILTER_TYPE("route");
+    ROUTE_FILTER_TYPE("route"),
+    ACCESS_TOKEN("access-token");
 
     private final String name;
 

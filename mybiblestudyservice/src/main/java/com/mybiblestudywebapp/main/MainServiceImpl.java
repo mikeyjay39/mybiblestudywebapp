@@ -28,6 +28,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -52,6 +53,9 @@ public class MainServiceImpl implements MainService {
 
     @Autowired
     private PersistenceService persistenceService;
+
+    @Autowired
+    private LoginService loginService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MainServiceImpl.class);
 
@@ -127,10 +131,10 @@ public class MainServiceImpl implements MainService {
      * {@inheritDoc}
      */
     @Override
-    public ResponseEntity<Response> login() {
+    public ResponseEntity<Response> login(Map<String, String> headers, HttpSession session) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName(); //get logged in username
-        return ResponseEntity.ok(persistenceService.login(username));
+        return ResponseEntity.ok(loginService.login(headers, username, session));
     }
 
     /**

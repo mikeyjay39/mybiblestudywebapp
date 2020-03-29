@@ -19,6 +19,6 @@ spring:
     username: ${PSQLDBUSER}
     password: ${PSQLDBPASS}
 
-# TODO - change this, encrypt it and put it in Config server
+# TODO: change, encrypt, remove and put in Spring cloud config global
 signing:
   key: "345345fsdfsf5345"

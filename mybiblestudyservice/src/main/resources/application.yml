@@ -34,10 +34,16 @@ hystrix:
 
 security:
   oauth2:
+    server:
+      token-endpoint: http://localhost:8901/auth/oauth/token
     client:
       client-id: mybiblestudywebapp
-      secret: secret
-      scope: openid email params groups webclient mobileclien
+      client-secret: secret
+      scope: openid email params groups webclient mobileclient
     resource:
       token-info-uri: http://localhost:8901/auth/oauth/check_token
       userInfoUri: http://localhost:8901/auth/user
+
+# TODO: change, encrypt, remove and put in Spring cloud config global
+signing:
+  key: "345345fsdfsf5345"
