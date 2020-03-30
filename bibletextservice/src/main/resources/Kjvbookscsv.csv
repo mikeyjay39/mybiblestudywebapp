@@ -1,0 +1,67 @@
+id,book,testament
+1,Genesis,O
+2,Exodus,O
+3,Leviticus,O
+4,Numbers,O
+5,Deuteronomy,O
+6,Joshua,O
+7,Judges,O
+8,Ruth,O
+9,1 Samuel,O
+10,2 Samuel,O
+11,1 Kings,O
+12,2 Kings,O
+13,1 Chronicles,O
+14,2 Chronicles,O
+15,Ezra,O
+16,Nehemiah,O
+17,Esther,O
+18,Job,O
+19,Psalms,O
+20,Proverbs,O
+21,Ecclesiastes,O
+22,Song of Solomon,O
+23,Isaiah,O
+24,Jeremiah,O
+25,Lamentations,O
+26,Ezekiel,O
+27,Daniel,O
+28,Hosea,O
+29,Joel,O
+30,Amos,O
+31,Obadiah,O
+32,Jonah,O
+33,Micah,O
+34,Nahum,O
+35,Habakkuk,O
+36,Zephaniah,O
+37,Haggai,O
+38,Zechariah,O
+39,Malachi,O
+40,Matthew,N
+41,Mark,N
+42,Luke,N
+43,John,N
+44,Acts (of the Apostles),N
+45,Romans,N
+46,1 Corinthians,N
+47,2 Corinthians,N
+48,Galatians,N
+49,Ephesians,N
+50,Philippians,N
+51,Colossians,N
+52,1 Thessalonians,N
+53,2 Thessalonians,N
+54,1 Timothy,N
+55,2 Timothy,N
+56,Titus,N
+57,Philemon,N
+58,Hebrews,N
+59,James,N
+60,1 Peter,N
+61,2 Peter,N
+62,1 John,N
+63,2 John,N
+64,3 John,N
+65,Jude,N
+66,Revelation,N
