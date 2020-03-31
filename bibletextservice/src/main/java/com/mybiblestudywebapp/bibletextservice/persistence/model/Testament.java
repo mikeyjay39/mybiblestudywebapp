@@ -1,6 +1,8 @@
 package com.mybiblestudywebapp.bibletextservice.persistence.model;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 
@@ -14,7 +16,10 @@ import java.util.Set;
  */
 @Entity
 @Data
-@Table(name = "testament")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@ToString(onlyExplicitlyIncluded = true, includeFieldNames = false)
+@Table(name = "testament",
+uniqueConstraints = @UniqueConstraint(columnNames = "testament"))
 @Slf4j
 @Accessors(chain = true)
 public class Testament {
@@ -25,9 +30,11 @@ public class Testament {
     @Column(name = "testament_id")
     private long id;
 
-    @OneToMany
+    @OneToMany(mappedBy = "testament", fetch = FetchType.LAZY)
     private Set<Book> books;
 
+    @EqualsAndHashCode.Include
+    @ToString.Include
     @Enumerated(EnumType.STRING)
     private Testaments testament;
 

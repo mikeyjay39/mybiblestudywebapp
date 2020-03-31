@@ -1,11 +1,16 @@
 package com.mybiblestudywebapp.bibletextservice.persistence.model;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.*;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 /**
  * Created by Michael Jeszenka.
@@ -13,8 +18,10 @@ import java.util.Set;
  * 3/29/20
  */
 @Entity
-@Table(name = "chapters", uniqueConstraints={@UniqueConstraint(columnNames={"chapter_no", "book_book_id"})})
+@Table(name = "chapters", uniqueConstraints={@UniqueConstraint(columnNames={"chapter_no", "book_id"})})
 @Data
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@ToString(onlyExplicitlyIncluded = true)
 @Accessors(chain = true)
 @Slf4j
 public class Chapter {
@@ -25,12 +32,23 @@ public class Chapter {
     @Column(name = "chapter_id")
     private long id;
 
+    @EqualsAndHashCode.Include
+    @ToString.Include
+    @ManyToOne
+    @JoinColumn(name = "book_id")
+    private Book book;
+
+    @EqualsAndHashCode.Include
+    @ToString.Include
     @Column(name = "chapter_no")
     private int chapterNo;
 
-    @ManyToOne
-    private Book book;
+    @OneToMany(mappedBy = "chapter", cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+    @MapKeyColumn(name = "verse_no")
+    private Map<Integer, Verse> verses = new TreeMap<>();
 
-    @OneToMany
-    private Set<Verse> verses;
+    public Map<Integer, Verse> addVerse(Verse verse) {
+        verses.put(verse.getVerseNo(), verse);
+        return Map.copyOf(verses);
+    }
 }

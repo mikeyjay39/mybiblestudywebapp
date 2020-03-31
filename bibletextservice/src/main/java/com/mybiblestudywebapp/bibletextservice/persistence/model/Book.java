@@ -1,13 +1,14 @@
 package com.mybiblestudywebapp.bibletextservice.persistence.model;
 
-import lombok.Data;
-import lombok.NonNull;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.*;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Created by Michael Jeszenka.
@@ -15,8 +16,11 @@ import java.util.Set;
  * 3/29/20
  */
 @Entity
-@Table(name = "books")
+@Table(name = "books",
+uniqueConstraints = @UniqueConstraint(columnNames = "title"))
 @Data
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@ToString(onlyExplicitlyIncluded = true, includeFieldNames = false)
 @Slf4j
 @Accessors(chain = true)
 public class Book {
@@ -27,13 +31,22 @@ public class Book {
     @Column(name = "book_id")
     private long id;
 
+    @EqualsAndHashCode.Include
+    @ToString.Include
     private String title;
 
     @ManyToOne
+    @JoinColumn(name = "testament_id")
     private Testament testament;
 
-    @OneToMany
-    private Set<Chapter> chapters;
+    @OneToMany(mappedBy = "book", cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+    @MapKeyColumn(name = "chapter_no")
+    private Map<Integer, Chapter> chapters = new TreeMap<>();
+
+    public Map<Integer, Chapter> addChapter(Chapter c) {
+        chapters.put(c.getChapterNo(), c);
+        return Map.copyOf(chapters);
+    }
 
 
 }
