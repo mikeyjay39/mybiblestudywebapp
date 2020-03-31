@@ -19,7 +19,7 @@ import java.util.Set;
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @ToString(onlyExplicitlyIncluded = true, includeFieldNames = false)
-@Table(name = "version", schema = "public",
+@Table(name = "version",
 uniqueConstraints = @UniqueConstraint(columnNames = "title"))
 @Slf4j
 @Accessors(chain = true)

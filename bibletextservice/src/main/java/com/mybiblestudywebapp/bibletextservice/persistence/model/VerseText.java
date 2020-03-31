@@ -15,7 +15,7 @@ import javax.persistence.*;
 @Entity
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Table(name = "verse_text", schema = "public",uniqueConstraints = @UniqueConstraint(columnNames = {"verse_id", "version"}))
+@Table(name = "verse_text", uniqueConstraints = @UniqueConstraint(columnNames = {"verse_id", "version"}))
 @ToString(onlyExplicitlyIncluded = true, includeFieldNames = true)
 @Accessors(chain = true)
 public class VerseText {

@@ -17,6 +17,11 @@ server:
 spring.h2.console.enabled: true
 spring.h2.console.path: /console/
 
-h2:
-  tcp:
-    enabled: true
+spring:
+  datasource:
+    driver-class-name: ${PSQLDBDRIVER}
+    url: jdbc:postgresql://localhost:5434/postgres
+    username: ${PSQLDBUSER}
+    password: ${PSQLDBPASS}
+  jpa:
+    generate-ddl: true

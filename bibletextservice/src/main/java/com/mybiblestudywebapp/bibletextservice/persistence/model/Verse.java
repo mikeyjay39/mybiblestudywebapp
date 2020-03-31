@@ -17,7 +17,7 @@ import java.util.Map;
  */
 @Entity
 @Data
-@Table(name = "verse", schema = "public",
+@Table(name = "verse",
 uniqueConstraints = @UniqueConstraint(columnNames = {"chapter_id", "verse_no"}))
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @ToString(onlyExplicitlyIncluded = true)
