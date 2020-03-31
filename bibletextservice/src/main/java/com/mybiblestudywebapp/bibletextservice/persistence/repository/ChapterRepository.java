@@ -13,5 +13,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ChapterRepository extends CrudRepository<Chapter, Long> {
 
-    Chapter findByBookAndAndChapterNo(Book book, int chapterNo);
+    Chapter findByBookAndChapterNo(Book book, int chapterNo);
 }

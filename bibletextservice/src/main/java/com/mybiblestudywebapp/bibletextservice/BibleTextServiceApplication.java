@@ -74,10 +74,11 @@ public class BibleTextServiceApplication {
                 //book.addChapter(chapter);
                 //saveChapter(chapterRepository, chapter);
                 //chapter = chapterRepository.findByBookAndAndChapterNo(book, Integer.valueOf(values[2]));
+                String verseText = parseVerse(Arrays.copyOfRange(values, 4, values.length));
                 Verse verse = new Verse()
                         .setVerseNo(Integer.valueOf(values[3]))
                         .setChapter(chapter)
-                        .setText(values[4])
+                        .setText(verseText)
                         .setVersion(version);
                 //verses.add(verse);
                 chapter.addVerse(verse);
@@ -122,5 +123,16 @@ public class BibleTextServiceApplication {
         try {
             repository.save(chapter);
         } catch (Exception e){}
+    }
+
+    private String parseVerse(String[] input) {
+        StringBuilder builder = new StringBuilder();
+
+        for (String s : input) {
+            builder.append(s);
+            builder.append(",");
+        }
+        builder.deleteCharAt(builder.length() -1);
+        return builder.toString();
     }
 }
