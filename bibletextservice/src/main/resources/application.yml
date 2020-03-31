@@ -16,3 +16,7 @@ server:
 
 spring.h2.console.enabled: true
 spring.h2.console.path: /console/
+
+h2:
+  tcp:
+    enabled: true

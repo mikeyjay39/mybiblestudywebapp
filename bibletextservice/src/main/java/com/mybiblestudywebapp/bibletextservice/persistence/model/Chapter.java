@@ -18,7 +18,7 @@ import java.util.TreeMap;
  * 3/29/20
  */
 @Entity
-@Table(name = "chapters", uniqueConstraints={@UniqueConstraint(columnNames={"chapter_no", "book_id"})})
+@Table(name = "chapters", schema = "public", uniqueConstraints={@UniqueConstraint(columnNames={"chapter_no", "book_id"})})
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @ToString(onlyExplicitlyIncluded = true)

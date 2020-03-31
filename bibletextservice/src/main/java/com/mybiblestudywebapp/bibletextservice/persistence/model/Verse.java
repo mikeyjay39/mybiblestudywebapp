@@ -7,6 +7,8 @@ import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Michael Jeszenka.
@@ -15,26 +17,26 @@ import javax.persistence.*;
  */
 @Entity
 @Data
-@Table(name = "verse",
-uniqueConstraints = @UniqueConstraint(columnNames = {"version_id", "chapter_id", "verse_no"}))
+@Table(name = "verse", schema = "public",
+uniqueConstraints = @UniqueConstraint(columnNames = {"chapter_id", "verse_no"}))
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@ToString
+@ToString(onlyExplicitlyIncluded = true)
 @Accessors(chain = true)
 @Slf4j
 public class Verse {
 
     @Id
-    @ToString.Exclude
     @SequenceGenerator(name = "MY_VERSE_SEQ", sequenceName = "MY_VERSE_SEQ", allocationSize=1)
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "MY_VERSE_SEQ" )
     @Column(name = "verse_id")
     private long id;
 
-    @ToString.Exclude
-    @Column(columnDefinition="TEXT")
-    private String text;
+    @OneToMany(mappedBy = "verse", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @MapKeyColumn(name = "version")
+    private Map<Version, VerseText> text = new HashMap<>();
 
     @EqualsAndHashCode.Include
+    @ToString.Include
     @Column(name = "verse_no")
     private int verseNo;
 
@@ -43,8 +45,9 @@ public class Verse {
     @JoinColumn(name = "chapter_id")
     private Chapter chapter;
 
-    @EqualsAndHashCode.Include
-    @ManyToOne
-    @JoinColumn(name = "version_id")
-    private Version version;
+    public Verse addVerseText(VerseText verseText) {
+        verseText.setVerse(this);
+        text.put(verseText.getVersion(), verseText);
+        return this;
+    }
 }

@@ -7,6 +7,7 @@ import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Set;
 
 /**
@@ -18,11 +19,11 @@ import java.util.Set;
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @ToString(onlyExplicitlyIncluded = true, includeFieldNames = false)
-@Table(name = "version",
+@Table(name = "version", schema = "public",
 uniqueConstraints = @UniqueConstraint(columnNames = "title"))
 @Slf4j
 @Accessors(chain = true)
-public class Version {
+public class Version implements Serializable {
 
     @Id
     @SequenceGenerator(name = "MY_VERSION_SEQ", sequenceName = "MY_VERSION_SEQ", allocationSize=1)
@@ -35,7 +36,7 @@ public class Version {
     private String title;
 
     @OneToMany(mappedBy = "version", cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
-    private Set<Verse> verses;
+    private Set<VerseText> verses;
 
     @Enumerated(EnumType.STRING)
     private Languages language;
