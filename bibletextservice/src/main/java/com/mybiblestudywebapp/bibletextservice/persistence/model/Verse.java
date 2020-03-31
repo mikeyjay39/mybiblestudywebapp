@@ -32,8 +32,8 @@ public class Verse {
     private long id;
 
     @OneToMany(mappedBy = "verse", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @MapKeyColumn(name = "version")
-    private Map<Version, VerseText> text = new HashMap<>();
+    @MapKeyColumn
+    private Map<Translation, VerseText> text = new HashMap<>();
 
     @EqualsAndHashCode.Include
     @ToString.Include
@@ -47,7 +47,7 @@ public class Verse {
 
     public Verse addVerseText(VerseText verseText) {
         verseText.setVerse(this);
-        text.put(verseText.getVersion(), verseText);
+        text.put(verseText.getTranslation(), verseText);
         return this;
     }
 }

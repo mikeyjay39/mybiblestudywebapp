@@ -3,7 +3,7 @@ package com.mybiblestudywebapp.bibletextservice.persistence;
 import com.mybiblestudywebapp.bibletextservice.persistence.model.*;
 import com.mybiblestudywebapp.bibletextservice.persistence.repository.BookRepository;
 import com.mybiblestudywebapp.bibletextservice.persistence.repository.TestamentRepository;
-import com.mybiblestudywebapp.bibletextservice.persistence.repository.VersionRepository;
+import com.mybiblestudywebapp.bibletextservice.persistence.repository.TranslationRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -30,7 +30,7 @@ public class PersistenceConfig {
     private TestamentRepository testamentRepository;
 
     @Autowired
-    private VersionRepository versionRepository;
+    private TranslationRepository translationRepository;
 
     @Autowired
     private BookRepository bookRepository;
@@ -44,20 +44,20 @@ public class PersistenceConfig {
     @PostConstruct
     public void init() {
 
-        Version version = initVersionAndTestament();
+        Translation translation = initVersionAndTestament();
         Map<Long, Book> bookMap = initBooks();
-        initVerses(bookMap, version);
+        initVerses(bookMap, translation);
     }
 
-    private Version initVersionAndTestament() {
+    private Translation initVersionAndTestament() {
 
         Testament ot = new Testament().setTestament(Testament.Testaments.OLD_TESTAMENT);
         Testament nt = new Testament().setTestament(Testament.Testaments.NEW_TESTAMENT);
         testamentRepository.save(ot);
         testamentRepository.save(nt);
-        Version version = new Version().setTitle("King James").setLanguage(Version.Languages.EN);
-        version = versionRepository.save(version);
-        return version;
+        Translation translation = new Translation().setTitle("King James").setLanguage(Translation.Languages.EN);
+        translation = translationRepository.save(translation);
+        return translation;
     }
 
     private Map<Long, Book> initBooks() {
@@ -93,7 +93,7 @@ public class PersistenceConfig {
         return bookMap;
     }
 
-    private void initVerses(Map<Long, Book> bookMap, Version version) {
+    private void initVerses(Map<Long, Book> bookMap, Translation translation) {
 
         LinkedHashMap<Chapter, Chapter> chapters = new LinkedHashMap<>();
         Path path = Path.of(kjvText);
@@ -106,7 +106,7 @@ public class PersistenceConfig {
                 Chapter chapterKey = new Chapter().setChapterNo(Integer.valueOf(values[2])).setBook(book);
                 Chapter chapter = chapters.getOrDefault(chapterKey, chapterKey);
                 String text = parseVerse(Arrays.copyOfRange(values, 4, values.length));
-                VerseText verseText = new VerseText().setText(text).setVersion(version);
+                VerseText verseText = new VerseText().setText(text).setTranslation(translation);
                 Verse verse = new Verse()
                         .setVerseNo(Integer.valueOf(values[3]))
                         .setChapter(chapter)

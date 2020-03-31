@@ -1,6 +1,6 @@
 package com.mybiblestudywebapp.bibletextservice.persistence.repository;
 
-import com.mybiblestudywebapp.bibletextservice.persistence.model.Version;
+import com.mybiblestudywebapp.bibletextservice.persistence.model.Translation;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -10,5 +10,5 @@ import org.springframework.stereotype.Repository;
  * 3/29/20
  */
 @Repository
-public interface VersionRepository extends CrudRepository<Version, Long> {
+public interface TranslationRepository extends CrudRepository<Translation, Long> {
 }

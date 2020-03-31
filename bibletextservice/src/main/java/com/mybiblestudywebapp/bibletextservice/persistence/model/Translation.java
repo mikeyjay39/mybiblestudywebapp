@@ -19,23 +19,22 @@ import java.util.Set;
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @ToString(onlyExplicitlyIncluded = true, includeFieldNames = false)
-@Table(name = "version",
+@Table(name = "translation",
 uniqueConstraints = @UniqueConstraint(columnNames = "title"))
 @Slf4j
 @Accessors(chain = true)
-public class Version implements Serializable {
+public class Translation implements Serializable {
 
     @Id
     @SequenceGenerator(name = "MY_VERSION_SEQ", sequenceName = "MY_VERSION_SEQ", allocationSize=1)
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "MY_VERSION_SEQ" )
-    @Column(name = "version_id")
     private long id;
 
     @EqualsAndHashCode.Include
     @ToString.Include
     private String title;
 
-    @OneToMany(mappedBy = "version", cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "translation", cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
     private Set<VerseText> verses;
 
     @Enumerated(EnumType.STRING)

@@ -24,4 +24,6 @@ spring:
     username: ${PSQLDBUSER}
     password: ${PSQLDBPASS}
   jpa:
-    generate-ddl: true
+    #generate-ddl: true
+    hibernate:
+      ddl-auto: create-drop
