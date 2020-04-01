@@ -2,6 +2,7 @@ package com.mybiblestudywebapp.utils.persistence.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -10,7 +11,7 @@ import java.util.Objects;
  * <a href="mailto:michael@jeszenka.com">michael@jeszenka.com</a>
  * 2019. 10. 14.
  */
-public class Note {
+public class Note implements Serializable {
 
     private long noteId;
     private String noteText;

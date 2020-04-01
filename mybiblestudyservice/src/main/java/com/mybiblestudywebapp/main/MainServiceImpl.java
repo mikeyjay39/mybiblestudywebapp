@@ -13,6 +13,8 @@ import com.mybiblestudywebapp.dashboard.views.AddViewResponse;
 import com.mybiblestudywebapp.dashboard.views.DeleteViewResponse;
 import com.mybiblestudywebapp.dashboard.views.GetViewsResponse;
 import com.mybiblestudywebapp.persistence.PersistenceService;
+import com.mybiblestudywebapp.persistence.request.GetStudyNotesForChapterRequest;
+import com.mybiblestudywebapp.redis.CacheService;
 import com.mybiblestudywebapp.utils.http.GenericResponse;
 import com.mybiblestudywebapp.utils.http.RankNoteRequest;
 import com.mybiblestudywebapp.utils.http.Response;
@@ -55,6 +57,9 @@ public class MainServiceImpl implements MainService {
     private PersistenceService persistenceService;
 
     @Autowired
+    private CacheService cacheService;
+
+    @Autowired
     private LoginService loginService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MainServiceImpl.class);
@@ -71,8 +76,11 @@ public class MainServiceImpl implements MainService {
         var verses = bibleTextService.getVerses(book, chapterNo);
         CompletableFuture<List<Note>> futureNotes;
 
-            List<Note> notes = persistenceService.getStudyNotesForChapter(viewCode, book, chapterNo);
-            response.setBook(book);
+            //List<Note> notes = persistenceService.getStudyNotesForChapter(viewCode, book, chapterNo);
+        List<Note> notes = cacheService.getStudyNotesForChapter(
+                new GetStudyNotesForChapterRequest(viewCode, book, chapterNo));
+
+        response.setBook(book);
             response.setChapter(chapterNo);
             response.setVerses(verses);
             response.setNotes(notes);
