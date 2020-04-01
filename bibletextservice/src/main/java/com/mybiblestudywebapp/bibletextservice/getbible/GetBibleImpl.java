@@ -45,7 +45,6 @@ public class GetBibleImpl implements GetBible {
      * @return GetBibleResponse
      */
     @Override
-    @Async
     public GetBibleResponse getVersesForChapter(String book, int chapter) {
         ResponseEntity<String> response = null;
         HttpHeaders headers = new HttpHeaders();
@@ -79,6 +78,7 @@ public class GetBibleImpl implements GetBible {
         stringResponse = stringResponse.replace("(", "").replace(")", "");
         ObjectMapper mapper = new ObjectMapper();
         GetBibleChapterResponseImpl objectResponse = null;
+
         try {
             objectResponse = mapper.readValue(stringResponse, GetBibleChapterResponseImpl.class);
         } catch (Exception e) {
