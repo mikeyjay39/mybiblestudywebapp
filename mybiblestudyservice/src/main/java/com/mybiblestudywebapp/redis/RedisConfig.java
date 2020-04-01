@@ -2,13 +2,17 @@ package com.mybiblestudywebapp.redis;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CachingConfigurerSupport;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisClientConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.RedisTemplate;
+import redis.clients.jedis.JedisPoolConfig;
 
 
 /**
@@ -17,7 +21,7 @@ import org.springframework.data.redis.core.RedisTemplate;
  * 3/31/20
  */
 @Configuration
-public class RedisConfig {
+public class RedisConfig extends CachingConfigurerSupport {
 
     @Value("${redis.server}")
     private String redisServer;
@@ -28,22 +32,10 @@ public class RedisConfig {
     @Bean
     public JedisConnectionFactory jedisConnectionFactory() {
 
-        RedisStandaloneConfiguration config = new RedisStandaloneConfiguration(redisServer, redisPort);
-
-
-        /*JedisConnectionFactory jedisConnFactory = new
-                JedisConnectionFactory(config);*/
-
-        /*jedisConnFactory.setUsePool(true);
-        jedisConnFactory.getPoolConfig().setMaxIdle(30);
-        jedisConnFactory.getPoolConfig().setMinIdle(10);*/
-
-        JedisConnectionFactory jedisConnFactory
-                = new JedisConnectionFactory();
-        jedisConnFactory.setHostName("localhost");
-        jedisConnFactory.setPort(6379);
-
-
+        RedisStandaloneConfiguration config = new RedisStandaloneConfiguration();
+        config.setHostName(redisServer);
+        config.setPort(redisPort);
+        JedisConnectionFactory jedisConnFactory = new JedisConnectionFactory(config);
         return jedisConnFactory;
     }
 
@@ -55,4 +47,6 @@ public class RedisConfig {
         //template.setEnableTransactionSupport(true);
         return template;
     }
+
+
 }

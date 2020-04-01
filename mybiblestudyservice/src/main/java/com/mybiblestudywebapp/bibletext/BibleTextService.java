@@ -60,7 +60,9 @@ public class BibleTextService {
         }
 
         logger.debug("{} not found in Redis. Calling Bibletextservice", key);
-        return bibleTextClient.getVerses(book, chapterNo);
+        result = bibleTextClient.getVerses(book, chapterNo);
+        bibleTextRedisRepository.saveVerses(key, result);
+        return result;
     }
 
     private List<Map<String, String>> getVersesFallback(String book, int chapterNo) {

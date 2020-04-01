@@ -1,6 +1,7 @@
 package com.mybiblestudywebapp.redis;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
@@ -15,11 +16,13 @@ import java.util.Map;
  * 3/31/20
  */
 @Repository
-@RequiredArgsConstructor
 public class BibleTextRedisRepositoryImpl implements BibleTextRedisRepository {
 
     private static final String HASH_NAME = "bibletext";
-    private final RedisTemplate<String, Object> redisTemplate;
+
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
+
     private HashOperations hashOperations;
 
     @PostConstruct
