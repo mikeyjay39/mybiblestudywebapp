@@ -5,6 +5,7 @@ import com.mybiblestudywebapp.persistenceservice.cache.CacheService;
 import com.mybiblestudywebapp.utils.persistence.DaoServiceException;
 import com.mybiblestudywebapp.utils.persistence.model.*;
 import com.mybiblestudywebapp.utils.http.*;
+import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,6 +62,7 @@ public class DaoServiceJdbcImpl implements DaoService {
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @Autowired
+    @Setter
     private CacheService cacheService;
 
     @Autowired

@@ -1,15 +1,21 @@
 package com.mybiblestudywebapp.persistenceservice.unittests;
 
+import com.mybiblestudywebapp.persistenceservice.cache.CacheService;
+import com.mybiblestudywebapp.persistenceservice.cache.CacheServiceImpl;
 import com.mybiblestudywebapp.persistenceservice.persistence.*;
 import com.mybiblestudywebapp.utils.persistence.model.Note;
 import com.mybiblestudywebapp.utils.persistence.model.View;
 import com.mybiblestudywebapp.utils.persistence.model.ViewNote;
 import org.junit.Assert;
 import org.junit.Test;
+import org.mockito.Mock;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import java.util.*;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * Created by Michael Jeszenka.
@@ -23,16 +29,20 @@ public class DaoServiceTest {
 
     public DaoServiceTest() {
         jdbcTemplate = DbConnectionTest.getJdbcTemplate();
-        daoService = new DaoServiceJdbcImpl(jdbcTemplate,
+        DaoServiceJdbcImpl d = new DaoServiceJdbcImpl(jdbcTemplate,
                 new NamedParameterJdbcTemplate(jdbcTemplate));
+        CacheService cacheService = mock(CacheServiceImpl.class);
+        d.setCacheService(cacheService);
+        daoService = d;
     }
 
     @Test
     public void addUserNotesToView() throws Exception {
+
         List<Long> noteIds = createNotes();
         long viewId = createView();
         var completedResult = daoService.addUserNotesToView(1, 1);
-        long result = completedResult.get();
+        long result = completedResult;
         Assert.assertTrue(result > 0);
 
         // test that viewNote was added
@@ -50,13 +60,13 @@ public class DaoServiceTest {
     public void testGetStudyNotes() throws Exception {
         createNotes();
         var completedResult = daoService.addUserNotesToView(1, 1);
-        long result = completedResult.get();
+        long result = completedResult;
         Assert.assertTrue(result > 0);
 
         Dao viewDao = new ViewDao(jdbcTemplate, new NamedParameterJdbcTemplate(jdbcTemplate));
         View view = (View) viewDao.get(1).get();
 
-        List<Note> notes = daoService.getStudyNotesForChapter(view.getViewCode(), "Genesis", 2).get();
+        List<Note> notes = daoService.getStudyNotesForChapter(view.getViewCode(), "Genesis", 2);
         Assert.assertTrue(notes.size() > 0);
     }
 
