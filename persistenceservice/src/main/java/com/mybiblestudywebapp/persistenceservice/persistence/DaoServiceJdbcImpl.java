@@ -1,6 +1,7 @@
 package com.mybiblestudywebapp.persistenceservice.persistence;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mybiblestudywebapp.persistenceservice.cache.CacheService;
 import com.mybiblestudywebapp.utils.persistence.DaoServiceException;
 import com.mybiblestudywebapp.utils.persistence.model.*;
 import com.mybiblestudywebapp.utils.http.*;
@@ -58,6 +59,9 @@ public class DaoServiceJdbcImpl implements DaoService {
 
     @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+
+    @Autowired
+    private CacheService cacheService;
 
     @Autowired
     private UserSession userSession;
@@ -128,6 +132,8 @@ public class DaoServiceJdbcImpl implements DaoService {
 
         SqlParameterSource[] batch = SqlParameterSourceUtils.createBatch(viewNotes.toArray());
         int[] updateCounts = null;
+
+        cacheService.clearDashboardCache();
 
         try {
             updateCounts = namedParameterJdbcTemplate.batchUpdate(sqlInsert, batch);
@@ -465,8 +471,10 @@ public class DaoServiceJdbcImpl implements DaoService {
         ViewNote viewNote = new ViewNote();
         viewNote.setViewId(viewList.get(0).getViewId());
         viewNote.setNoteId(noteId);
+        cacheService.clearDashboardCache();
 
         if (viewNoteDao.delete(viewNote)) {
+            cacheService.clearDashboardCache();
             return "success";
         } else {
             return "failure";
@@ -497,6 +505,7 @@ public class DaoServiceJdbcImpl implements DaoService {
 
         View view = new View();
         view.setViewId(viewId);
+        cacheService.clearDashboardCache();
 
         if (viewDao.delete(view)) {
             return "success";
@@ -542,6 +551,7 @@ public class DaoServiceJdbcImpl implements DaoService {
                 .addValue("viewId", view.getViewId())
                 .addValue("ranking", ranking);
         List<Note> results;
+        cacheService.clearDashboardCache();
 
         try {
             results = namedParameterJdbcTemplate.query(sql, params, NoteDao::mapRow);
@@ -617,6 +627,8 @@ public class DaoServiceJdbcImpl implements DaoService {
             note.setLang("en");
         }
 
+        cacheService.clearDashboardCache();
+
         if (noteDao.update(note)) {
             return "success";
         } else {
@@ -635,7 +647,9 @@ public class DaoServiceJdbcImpl implements DaoService {
 
         Note note = new Note();
         note.setNoteId(noteId);
+        // TODO add userID to all HTTP requests and use that here instead
         note.setUserId(userSession.userId);
+        cacheService.clearDashboardCache();
 
         if (noteDao.delete(note)) {
             return "success";
@@ -731,6 +745,7 @@ public class DaoServiceJdbcImpl implements DaoService {
         ViewNote viewNote = new ViewNote();
         viewNote.setViewId(viewId);
         viewNote.setNoteId(noteId);
+        cacheService.clearDashboardCache();
 
         if (viewNoteDao.save(viewNote) < 1) {
             String errMsg =

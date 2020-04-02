@@ -1,7 +1,7 @@
 package com.mybiblestudywebapp.redis;
 
 import com.mybiblestudywebapp.persistence.PersistenceService;
-import com.mybiblestudywebapp.persistence.request.GetStudyNotesForChapterRequest;
+import com.mybiblestudywebapp.utils.http.GetStudyNotesForChapterRequest;
 import com.mybiblestudywebapp.utils.persistence.model.Note;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +24,7 @@ public class CacheServiceImpl implements CacheService{
     private final PersistenceService persistenceService;
 
     @Override
-    @Cacheable("dashboard")
+    @Cacheable(value = "dashboard")
     public List<Note> getStudyNotesForChapter(GetStudyNotesForChapterRequest request) {
         log.debug("{} not found in cache, calling persistence service", request);
         return persistenceService.getStudyNotesForChapter(

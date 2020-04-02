@@ -1,4 +1,4 @@
-package com.mybiblestudywebapp.persistence.request;
+package com.mybiblestudywebapp.utils.http;
 
 import lombok.Data;
 import lombok.ToString;

@@ -13,7 +13,7 @@ import com.mybiblestudywebapp.dashboard.views.AddViewResponse;
 import com.mybiblestudywebapp.dashboard.views.DeleteViewResponse;
 import com.mybiblestudywebapp.dashboard.views.GetViewsResponse;
 import com.mybiblestudywebapp.persistence.PersistenceService;
-import com.mybiblestudywebapp.persistence.request.GetStudyNotesForChapterRequest;
+import com.mybiblestudywebapp.utils.http.GetStudyNotesForChapterRequest;
 import com.mybiblestudywebapp.redis.CacheService;
 import com.mybiblestudywebapp.utils.http.GenericResponse;
 import com.mybiblestudywebapp.utils.http.RankNoteRequest;
