@@ -1,5 +1,6 @@
 package com.mybiblestudywebapp.bibletext;
 
+import com.mybiblestudywebapp.redis.BibleTextRedisRepository;
 import com.mybiblestudywebapp.utils.UserContextHolder;
 import com.netflix.hystrix.contrib.javanica.annotation.DefaultProperties;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
@@ -32,10 +33,12 @@ public class BibleTextService {
     private static Logger logger = LoggerFactory.getLogger(BibleTextService.class);
 
     @Autowired
+    private BibleTextRedisRepository bibleTextRedisRepository;
+
+    @Autowired
     public BibleTextService(BibleTextClient bibleTextClient) {
         this.bibleTextClient = bibleTextClient;
     }
-
 
     /**
      * // TODO make another service class that class this in async wrapper
@@ -46,7 +49,20 @@ public class BibleTextService {
     @HystrixCommand(fallbackMethod = "getVersesFallback")
     public List<Map<String, String>> getVerses(String book, int chapterNo) {
         logger.debug("UserContextFilter Correlation id: {}", UserContextHolder.getContext().getCorrelationId());
-        return bibleTextClient.getVerses(book, chapterNo);
+
+        // check Redis
+        String key = String.format("%s %d", book, chapterNo);
+        List<Map<String, String>> result = bibleTextRedisRepository.findVerses(key);
+
+        if (null != result) {
+            logger.debug("{} found in Redis", key);
+            return result;
+        }
+
+        logger.debug("{} not found in Redis. Calling Bibletextservice", key);
+        result = bibleTextClient.getVerses(book, chapterNo);
+        bibleTextRedisRepository.saveVerses(key, result);
+        return result;
     }
 
     private List<Map<String, String>> getVersesFallback(String book, int chapterNo) {

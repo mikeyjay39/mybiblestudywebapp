@@ -5,3 +5,8 @@ security:
   oauth2:
     resource:
       userInfoUri: http://localhost:8901/auth/user
+
+spring:
+  redis:
+    host: localhost
+    port: 6379

@@ -13,3 +13,17 @@ eureka:
       defaultZone: http://localhost:8761/eureka/
 server:
   port: 8081
+
+spring.h2.console.enabled: true
+spring.h2.console.path: /console/
+
+spring:
+  datasource:
+    driver-class-name: ${PSQLDBDRIVER}
+    url: jdbc:postgresql://localhost:5434/postgres
+    username: ${PSQLDBUSER}
+    password: ${PSQLDBPASS}
+  jpa:
+    #generate-ddl: true
+    hibernate:
+      ddl-auto: create-drop

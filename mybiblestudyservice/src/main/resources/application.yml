@@ -5,11 +5,21 @@ spring:
     username: ${PSQLDBUSER}
     password: ${PSQLDBPASS}
   main.allow-bean-definition-overriding: true
+  redis:
+    host: localhost
+    port: 6379
+  data:
+    repositories:
+      enabled: true
+  cache:
+    type: redis
+
 management:
   endpoints:
     web:
       exposure:
         include: "*"
+
 
 eureka:
   instance:
@@ -31,3 +41,7 @@ feign:
 
 hystrix:
   shareSecurityContext: true
+
+redis:
+  server: "localhost"
+  port: "6379"
