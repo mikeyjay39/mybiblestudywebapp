@@ -2,6 +2,7 @@
 
 # launch docker and redis
 docker run --rm --name redis-docker -d -p 6379:6379 redis:alpine
+docker run --rm --name kafka-docker -d -p 2181:2181 -p 9092:9092 spotify/kafka
 docker run --rm --name pg-docker -e POSTGRES_PASSWORD=$(echo $PSQLPASSWORD) -d -p 5432:5432 -v $HOME/docker/volumes/postgres:/var/lib/postgresql/data postgres
 
 
