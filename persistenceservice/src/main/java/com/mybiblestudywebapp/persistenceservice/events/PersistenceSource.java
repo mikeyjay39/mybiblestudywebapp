@@ -2,7 +2,10 @@ package com.mybiblestudywebapp.persistenceservice.events;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.messaging.Source;
+import org.springframework.integration.config.EnableIntegration;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Component;
 
@@ -14,8 +17,10 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 @RequiredArgsConstructor
+@EnableBinding(Source.class)
 public class PersistenceSource {
 
+    @Autowired
     private final Source source;
 
     public void sendMessage() {

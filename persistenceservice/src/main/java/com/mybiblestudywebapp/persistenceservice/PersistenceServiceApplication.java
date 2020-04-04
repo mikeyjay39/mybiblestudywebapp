@@ -14,7 +14,6 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 @EnableDiscoveryClient
 @EnableResourceServer
 @EnableCaching
-@EnableBinding(Source.class)
 @EnableScheduling
 @RefreshScope
 public class PersistenceServiceApplication {
