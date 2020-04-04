@@ -1,0 +1,26 @@
+package com.mybiblestudywebapp.persistenceservice.events;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cloud.stream.messaging.Source;
+import org.springframework.messaging.support.MessageBuilder;
+import org.springframework.stereotype.Component;
+
+/**
+ * Created by Michael Jeszenka.
+ * <a href="mailto:michael@jeszenka.com">michael@jeszenka.com</a>
+ * 4/3/20
+ */
+@Component
+@Slf4j
+@RequiredArgsConstructor
+public class PersistenceSource {
+
+    private final Source source;
+
+    public void sendMessage() {
+        log.debug("Sending Kafka message");
+        source.output().send(MessageBuilder.withPayload("Message from Persistence Service")
+        .build());
+    }
+}

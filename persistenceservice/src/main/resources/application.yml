@@ -10,3 +10,15 @@ spring:
   redis:
     host: localhost
     port: 6379
+  cloud:
+    stream:
+      bindings:
+      #  bootstrap-servers: localhost:9092
+        output:
+          destination: persistenceServiceTopic
+          content-type: application/json
+      #kafka:
+      #  binder:
+      #    #brokers: localhost
+      #    #defaultBrokerPort: 9092
+      #    zkNodes: localhost

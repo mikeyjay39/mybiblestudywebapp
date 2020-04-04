@@ -2,6 +2,7 @@ package com.mybiblestudywebapp.persistenceservice.persistence;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mybiblestudywebapp.persistenceservice.cache.CacheService;
+import com.mybiblestudywebapp.persistenceservice.events.PersistenceSource;
 import com.mybiblestudywebapp.utils.persistence.DaoServiceException;
 import com.mybiblestudywebapp.utils.persistence.model.*;
 import com.mybiblestudywebapp.utils.http.*;
@@ -18,6 +19,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -67,6 +69,15 @@ public class DaoServiceJdbcImpl implements DaoService {
 
     @Autowired
     private UserSession userSession;
+
+    @Autowired
+    private PersistenceSource persistenceSource;
+
+    // TODO remove this after testing
+    @Scheduled(fixedRate = 10000L)
+    public void sendMsg() {
+        persistenceSource.sendMessage();
+    }
 
     public DaoServiceJdbcImpl() {
     }
