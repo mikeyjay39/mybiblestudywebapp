@@ -9,6 +9,8 @@ import org.springframework.integration.config.EnableIntegration;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalTime;
+
 /**
  * Created by Michael Jeszenka.
  * <a href="mailto:michael@jeszenka.com">michael@jeszenka.com</a>
@@ -20,12 +22,12 @@ import org.springframework.stereotype.Component;
 @EnableBinding(Source.class)
 public class PersistenceSource {
 
-    @Autowired
     private final Source source;
 
     public void sendMessage() {
         log.debug("Sending Kafka message");
-        source.output().send(MessageBuilder.withPayload("Message from Persistence Service")
+        String msg = LocalTime.now().toString();
+        source.output().send(MessageBuilder.withPayload("Message from Persistence Service at " + msg)
         .build());
     }
 }
