@@ -1,5 +1,7 @@
 package com.mybiblestudywebapp;
 
+import com.mybiblestudywebapp.events.PersistenceChannel;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
@@ -8,8 +10,12 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.cloud.stream.annotation.EnableBinding;
+import org.springframework.cloud.stream.annotation.StreamListener;
+import org.springframework.cloud.stream.messaging.Sink;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.security.oauth2.client.OAuth2ClientContext;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
@@ -30,6 +36,7 @@ public class MyBibleStudyWebAppApplication {
     public static void main(String[] args) {
         SpringApplication.run(MyBibleStudyWebAppApplication.class, args);
     }
+
 
 }
 

@@ -8,6 +8,18 @@ spring:
   redis:
     host: localhost
     port: 6379
+  cloud:
+    stream:
+      bindings:
+        #bootstrap-servers: localhost:9092
+        input:
+          destination: persistenceServiceTopic
+          content-type: application/json
+          group: mystudybibleGroup
+        kafka:
+          binder:
+            zkNodes: localhost
+            brokers: localhost
   data:
     repositories:
       enabled: true
