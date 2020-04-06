@@ -9,6 +9,8 @@ spring:
     host: localhost
     port: 6379
   cloud:
+    #config:
+    #  uri: http://localhost:8888
     stream:
       bindings:
         #bootstrap-servers: localhost:9092

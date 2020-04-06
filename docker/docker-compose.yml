@@ -1,0 +1,142 @@
+version: "3"
+services:
+  postgres-data:
+    image: postgres
+    expose:
+      - 5432
+    ports:
+      - 5432:5432
+    volumes:
+      - "${HOME}/docker/volumes/postgres"
+      - "/var/lib/postgresql/data"
+    environment:
+      #- POSTGRES_PASSWORD=password
+      - "POSTGRES_PASSWORD=${PSQLDBPASS}"
+  postgres-bibles:
+    image: postgres
+    environment:
+      - "POSTGRES_PASSWORD=${PSQLDBPASS}"
+    expose:
+      - 5434
+    ports:
+      - 5434:5432
+  redis:
+    image: redis:alpine
+    expose:
+      - 6379
+    ports:
+      - 6379:6379
+  zookeeper:
+    image: 'bitnami/zookeeper:3'
+    depends_on:
+      - confsvr
+    ports:
+      - '2181:2181'
+    volumes:
+      - 'zookeeper_data:/bitnami'
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+  kafka:
+    image: 'bitnami/kafka:2'
+    ports:
+      - '9092:9092'
+    volumes:
+      - 'kafka_data:/bitnami'
+    environment:
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092
+      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
+      #- KAFKA_CFG_TOPICS=persistenceServiceTopic
+    depends_on:
+      - zookeeper
+  confsvr:
+    env_file: biblestudy_envfile
+    build: ../confsvr/
+    environment:
+      EUREKASERVER_URI: "http://eurekasvr:8761/eureka/"
+    expose:
+      - 8888
+    ports:
+      - 8888:8888
+  authenticationservice:
+    env_file: biblestudy_envfile
+    environment:
+      CONFIGSERVER_URI: "http://confsvr:8888"
+      EUREKASERVER_URI: "http://eurekasvr:8761/eureka/"
+    build: ../authenticationservice/
+    depends_on:
+      - kafka
+      - postgres-data
+    expose:
+      - 8901
+    ports:
+      - 8901:8901
+  #eurekasvr:
+  #  env_file: biblestudy_envfile
+  #  environment:
+  #    CONFIGSERVER_URI: "http://confsvr:8888"
+  #  build: ../eurekasvr/
+  #  depends_on:
+  #    - confsvr
+  #  expose:
+  #    - 8761
+  #  ports:
+  #    - 8761:8761
+  #zuulsvr:
+  #  env_file: biblestudy_envfile
+  #  environment:
+  #    CONFIGSERVER_URI: "http://confsvr:8888"
+  #    EUREKASERVER_URI: "http://eurekasvr:8761/eureka/"
+  #  build: ../zuulsvr/
+  #  depends_on:
+  #    - eurekasvr
+  #  expose:
+  #    - 5555
+  #  ports:
+  #    - 5555:5555
+  #mybiblestudywebapp:
+  #  env_file: biblestudy_envfile
+  #  environment:
+  #    CONFIGSERVER_URI: "http://confsvr:8888"
+  #    EUREKASERVER_URI: "http://eurekasvr:8761/eureka/"
+  #  build: ../mybiblestudyservice/
+  #  depends_on:
+  #    - zuulsvr
+  #  expose:
+  #    - 8080
+  #  ports:
+  #    - 8080:8080
+  ##  restart: unless-stopped
+  #bibletextservice:
+  #  env_file: biblestudy_envfile
+  #  environment:
+  #    CONFIGSERVER_URI: "http://confsvr:8888"
+  #    EUREKASERVER_URI: "http://eurekasvr:8761/eureka/"
+  #  build: ../bibletextservice/
+  #  depends_on:
+  #    - zuulsvr
+  #    - postgres-bibles
+  #  expose:
+  #    - 8081
+  #  ports:
+  #    - 8081:8081
+  #persistenceservice:
+  #  env_file: biblestudy_envfile
+  #  environment:
+  #    CONFIGSERVER_URI: "http://confsvr:8888"
+  #    EUREKASERVER_URI: "http://eurekasvr:8761/eureka/"
+  #  build: ../persistenceservice/
+  #  depends_on:
+  #    - zuulsvr
+  #    - postgres-data
+  #  expose:
+  #    - 8082
+  #  ports:
+  #    - 8082:8082
+
+volumes:
+  zookeeper_data:
+    driver: local
+  kafka_data:
+    driver: local
