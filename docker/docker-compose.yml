@@ -49,7 +49,8 @@ services:
     depends_on:
       - zookeeper
   confsvr:
-    env_file: biblestudy_envfile
+    env_file:
+     - biblestudy_envfile.env
     build: ../confsvr/
     environment:
       EUREKASERVER_URI: "http://eurekasvr:8761/eureka/"
@@ -58,7 +59,8 @@ services:
     ports:
       - 8888:8888
   authenticationservice:
-    env_file: biblestudy_envfile
+    env_file:
+      - biblestudy_envfile.env
     environment:
       CONFIGSERVER_URI: "http://confsvr:8888"
       EUREKASERVER_URI: "http://eurekasvr:8761/eureka/"
@@ -72,7 +74,8 @@ services:
     ports:
       - 8901:8901
   eurekasvr:
-    env_file: biblestudy_envfile
+    env_file:
+      - biblestudy_envfile.env
     environment:
       CONFIGSERVER_URI: "http://confsvr:8888"
     build: ../eurekasvr/
@@ -122,10 +125,9 @@ services:
   #    - 8081:8081
   #persistenceservice:
   #  env_file: biblestudy_envfile
-  #  environment:
-  #    CONFIGSERVER_URI: "http://confsvr:8888"
-  #    EUREKASERVER_URI: "http://eurekasvr:8761/eureka/"
   #  build: ../persistenceservice/
+  #  environment:
+  #    PSQLDBURL=jdbc:postgresql://postgres-bibles:5434/postgres
   #  depends_on:
   #    - zuulsvr
   #    - postgres-data
