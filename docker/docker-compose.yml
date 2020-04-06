@@ -7,10 +7,8 @@ services:
     ports:
       - 5432:5432
     volumes:
-      - "${HOME}/docker/volumes/postgres"
-      - "/var/lib/postgresql/data"
+      - "${HOME}/docker/volumes/postgres:/var/lib/postgresql/data"
     environment:
-      #- POSTGRES_PASSWORD=password
       - "POSTGRES_PASSWORD=${PSQLDBPASS}"
   postgres-bibles:
     image: postgres
@@ -68,21 +66,22 @@ services:
     depends_on:
       - kafka
       - postgres-data
+      - confsvr
     expose:
       - 8901
     ports:
       - 8901:8901
-  #eurekasvr:
-  #  env_file: biblestudy_envfile
-  #  environment:
-  #    CONFIGSERVER_URI: "http://confsvr:8888"
-  #  build: ../eurekasvr/
-  #  depends_on:
-  #    - confsvr
-  #  expose:
-  #    - 8761
-  #  ports:
-  #    - 8761:8761
+  eurekasvr:
+    env_file: biblestudy_envfile
+    environment:
+      CONFIGSERVER_URI: "http://confsvr:8888"
+    build: ../eurekasvr/
+    depends_on:
+      - confsvr
+    expose:
+      - 8761
+    ports:
+      - 8761:8761
   #zuulsvr:
   #  env_file: biblestudy_envfile
   #  environment:
