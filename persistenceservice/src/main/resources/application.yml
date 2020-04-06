@@ -8,7 +8,7 @@ security:
 
 spring:
   redis:
-    host: localhost
+    host: ${REDISSERVER_URI}
     port: 6379
   cloud:
     stream:
@@ -20,7 +20,7 @@ spring:
       kafka:
         binder:
           headers:
-          brokers: localhost
+          brokers: ${KAFKASERVER_URI}
           #defaultBrokerPort: 9092
-          zkNodes: localhost
+          zkNodes: ${ZKSERVER_URI}
 

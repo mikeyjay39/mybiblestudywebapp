@@ -23,7 +23,7 @@ import redis.clients.jedis.JedisPoolConfig;
 @Configuration
 public class RedisConfig extends CachingConfigurerSupport {
 
-    @Value("${redis.server}")
+    @Value("${spring.redis.host}")
     private String redisServer;
 
     @Value("${redis.port}")

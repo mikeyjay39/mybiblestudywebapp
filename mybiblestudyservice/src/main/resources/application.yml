@@ -6,7 +6,7 @@ spring:
     password: ${PSQLDBPASS}
   main.allow-bean-definition-overriding: true
   redis:
-    host: localhost
+    host: ${REDISSERVER_URI}
     port: 6379
   cloud:
     #config:
@@ -20,8 +20,8 @@ spring:
           group: mystudybibleGroup
         kafka:
           binder:
-            zkNodes: localhost
-            brokers: localhost
+            brokers: ${KAFKASERVER_URI}
+            zkNodes: ${ZKSERVER_URI}
   data:
     repositories:
       enabled: true
@@ -42,7 +42,7 @@ eureka:
     register-with-eureka: true
     fetch-registry: true
     serviceUrl:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: ${EUREKASERVER_URI}
 
 feign:
   hystrix:
@@ -57,5 +57,5 @@ hystrix:
   shareSecurityContext: true
 
 redis:
-  server: "localhost"
+  #server: "localhost"
   port: "6379"
