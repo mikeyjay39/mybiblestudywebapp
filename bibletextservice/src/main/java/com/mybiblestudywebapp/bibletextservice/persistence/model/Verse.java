@@ -27,7 +27,7 @@ public class Verse {
 
     @Id
     @SequenceGenerator(name = "MY_VERSE_SEQ", sequenceName = "MY_VERSE_SEQ", allocationSize=1)
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "MY_VERSE_SEQ" )
+    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "MY_VERSE_SEQ" )
     @Column(name = "verse_id")
     private long id;
 

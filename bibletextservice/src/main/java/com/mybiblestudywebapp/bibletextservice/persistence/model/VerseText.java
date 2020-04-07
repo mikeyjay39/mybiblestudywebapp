@@ -23,7 +23,7 @@ public class VerseText {
     @Id
     @EqualsAndHashCode.Include
     @SequenceGenerator(name = "VERSE_TEXT_SEQ", sequenceName = "VERSE_TEXT_SEQ", allocationSize=1)
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "VERSE_TEXT_SEQ" )
+    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "VERSE_TEXT_SEQ" )
     @Column(name = "verse_text_id")
     private long id;
 

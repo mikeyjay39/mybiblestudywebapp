@@ -26,7 +26,7 @@ public class Testament {
 
     @Id
     @SequenceGenerator(name = "MY_TESTAMENT_SEQ", sequenceName = "MY_TESTAMENT_SEQ", allocationSize=1)
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "MY_TESTAMENT_SEQ" )
+    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "MY_TESTAMENT_SEQ" )
     @Column(name = "testament_id")
     private long id;
 
