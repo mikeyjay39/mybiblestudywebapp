@@ -6,10 +6,15 @@ import com.mybiblestudywebapp.bibletextservice.persistence.repository.TestamentR
 import com.mybiblestudywebapp.bibletextservice.persistence.repository.TranslationRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 
 import javax.annotation.PostConstruct;
+import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
@@ -35,14 +40,31 @@ public class PersistenceConfig {
     @Autowired
     private BookRepository bookRepository;
 
-    private String kjvBooks =
-            "/home/michael/Projects/mybiblestudywebapp/bibletextservice/src/main/resources/Kjvbookscsv.csv";
+    //@Value("classpath:Kjvbookscsv.csv")
+    private Resource kjvBooksR = new ClassPathResource("Kjvbookscsv.csv");
 
-    private String kjvText =
-            "/home/michael/Projects/mybiblestudywebapp/bibletextservice/src/main/resources/Kjvtextcsv.csv";
+    private String kjvBooks = "Kjvbookscsv.csv";
+
+    //@Value("classpath:Kjvtextcsv.csv")
+    private Resource kjvTextR = new ClassPathResource("Kjvtextcsv.csv");
+
+    private String kjvText = "Kjvtextcsv.csv";
 
     @PostConstruct
     public void init() {
+        /*log.debug("init() trying to open Bible resource files");
+        try {
+            kjvBooks = kjvBooksR.getFile().toURI();
+            kjvText = kjvTextR.getFile().toURI();
+            log.debug("Opening bible csv files:\n{}\n{}",
+                    kjvBooks,
+                    kjvText);
+
+        } catch (IOException e) {
+            log.error("Could not open {} or {}\n{}",
+                    kjvBooksR.toString(), kjvTextR.toString(),e.getMessage());
+        }*/
+
 
         Translation translation = initVersionAndTestament();
         Map<Long, Book> bookMap = initBooks();
@@ -71,6 +93,7 @@ public class PersistenceConfig {
         try (
             Stream<String> stream = Files.lines(path))
         {
+            log.debug("{} found and parsing", kjvBooks);
             stream.skip(1).forEach(s -> {
                         String[] values = s.split(",");
                         Book book = new Book()
@@ -99,6 +122,8 @@ public class PersistenceConfig {
         Path path = Path.of(kjvText);
 
         try (Stream<String> stream = Files.lines(path)) {
+            log.debug("{} found and parsing", kjvText);
+
             stream.skip(1).forEach(s -> {
 
                 String[] values = s.split(",");
