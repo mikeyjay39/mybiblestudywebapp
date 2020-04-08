@@ -10,7 +10,7 @@ eureka:
     register-with-eureka: true
     fetch-registry: true
     serviceUrl:
-      defaultZone: ${EUREKASERVER_URI}}
+      defaultZone: ${EUREKASERVER_URI}
 server:
   port: 8081
 

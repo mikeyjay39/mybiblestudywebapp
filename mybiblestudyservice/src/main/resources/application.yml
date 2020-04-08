@@ -18,10 +18,10 @@ spring:
           destination: persistenceServiceTopic
           content-type: application/json
           group: mystudybibleGroup
-        kafka:
-          binder:
-            brokers: ${KAFKASERVER_URI}
-            zkNodes: ${ZKSERVER_URI}
+      kafka:
+        binder:
+          brokers: ${KAFKASERVER_URI}
+          zkNodes: ${ZKSERVER_URI}
   data:
     repositories:
       enabled: true
