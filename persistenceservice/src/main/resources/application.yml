@@ -6,6 +6,15 @@ security:
     resource:
       userInfoUri: http://localhost:8901/auth/user
 
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    serviceUrl:
+      defaultZone: ${EUREKASERVER_URI}
+
 spring:
   redis:
     host: ${REDISSERVER_URI}
