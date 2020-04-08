@@ -15,7 +15,13 @@ logging:
     com.netflix: WARN
     org.springframework.web: WARN
 
-hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds: 17000
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 17000
 
 mybiblestudyservice:
   ribbon:

@@ -33,7 +33,7 @@ public class OAuth2FeignRequestInterceptor implements RequestInterceptor {
 
     @Override
     public void apply(RequestTemplate template) {
-        LOGGER.info("Inside apply method for feign");
+        LOGGER.debug("Inside apply method for feign");
 
         UserContext context = UserContextHolder.getContext();
         String authHeader = context.getAuthToken();
