@@ -13,7 +13,7 @@ spring:
     #  uri: http://localhost:8888
     stream:
       bindings:
-        #bootstrap-servers: localhost:9092
+        #bootstrap-servers: zookeeper:2181
         input:
           destination: persistenceServiceTopic
           content-type: application/json

@@ -36,7 +36,7 @@ while ! `nc -z redis $REDIS_PORT`; do sleep 10; done
 echo "******* REDIS has started"
 
 echo "********************************************************"
-echo "Starting BibleTextService with Configuration Service via Eureka :  $EUREKASERVER_URI:$SERVER_PORT"
+echo "Starting PersistenceService with Configuration Service via Eureka :  $EUREKASERVER_URI:$SERVER_PORT"
 echo "Using Kafka Server: $KAFKASERVER_URI"
 echo "Using ZK    Server: $ZKSERVER_URI"
 echo "********************************************************"
