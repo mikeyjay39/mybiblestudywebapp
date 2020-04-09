@@ -1,14 +1,23 @@
 server:
   port: 8082
 
-security:
-  oauth2:
-    resource:
-      userInfoUri: http://localhost:8901/auth/user
+#security:
+#  oauth2:
+#    resource:
+#      userInfoUri: http://localhost:8901/auth/user
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    serviceUrl:
+      defaultZone: ${EUREKASERVER_URI}
 
 spring:
   redis:
-    host: localhost
+    host: ${REDISSERVER_URI}
     port: 6379
   cloud:
     stream:
@@ -20,7 +29,7 @@ spring:
       kafka:
         binder:
           headers:
-          brokers: localhost
+          brokers: ${KAFKASERVER_URI}
           #defaultBrokerPort: 9092
-          zkNodes: localhost
+          zkNodes: ${ZKSERVER_URI}
 

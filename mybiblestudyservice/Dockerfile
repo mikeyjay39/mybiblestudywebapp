@@ -1,5 +1,8 @@
 FROM openjdk:11
 VOLUME /tmp
 EXPOSE 8080
-COPY target/*.jar app.jar
-ENTRYPOINT ["java","-jar","/app.jar"]
+RUN  apt update --yes --allow-unauthenticated && apt upgrade --yes --allow-unauthenticated && apt install netcat-openbsd --yes --allow-unauthenticated
+ADD target/*.jar app.jar
+ADD run.sh run.sh
+RUN chmod +x run.sh
+CMD ./run.sh

@@ -27,7 +27,7 @@ public class Translation implements Serializable {
 
     @Id
     @SequenceGenerator(name = "MY_VERSION_SEQ", sequenceName = "MY_VERSION_SEQ", allocationSize=1)
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "MY_VERSION_SEQ" )
+    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "MY_VERSION_SEQ" )
     private long id;
 
     @EqualsAndHashCode.Include

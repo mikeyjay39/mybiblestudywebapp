@@ -28,7 +28,7 @@ public class Chapter {
 
     @Id
     @SequenceGenerator(name = "MY_CHAPTER_SEQ", sequenceName = "MY_CHAPTER_SEQ", allocationSize=1)
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "MY_CHAPTER_SEQ" )
+    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "MY_CHAPTER_SEQ" )
     @Column(name = "chapter_id")
     private long id;
 

@@ -1,11 +1,43 @@
 #!/bin/bash
+echo "********************************************************"
+echo "Waiting for the eureka server to start on port $EUREKASERVER_URI"
+echo "********************************************************"
+while ! `nc -z eurekasvr $EUREKASERVER_PORT`; do sleep 3; done
+echo "******* Eureka Server has started"
 
-# launch docker and redis
-docker run --rm --name redis-docker -d -p 6379:6379 redis:alpine
-#docker run --rm --name kafka-docker -d -p 2181:2181 -p 9092:9092 spotify/kafka
-docker run --rm --name pg-docker -e POSTGRES_PASSWORD=$(echo $PSQLPASSWORD) -d -p 5432:5432 -v $HOME/docker/volumes/postgres:/var/lib/postgresql/data postgres
-docker run --rm  --name kafka-docker -d -p 2181:2181 -p 9092:9092 --env ADVERTISED_HOST=localhost --env ADVERTISED_PORT=9092 --env TOPICS=persistenceServiceTopic spotify/kafka
+
+echo "********************************************************"
+echo "Waiting for the database server to start on $PSQLDBURL"
+echo "********************************************************"
+while ! `nc -z postgres-bibles $DATABASESERVER_PORT`;
+do
+  sleep 3;
+  echo "Checking for the database server to start on $PSQLDBURL";
+  done
+echo "******** Database Server has started "
+
+echo "********************************************************"
+echo "Waiting for the configuration server to start on port $CONFIGSERVER_PORT"
+echo "********************************************************"
+while ! `nc -z confsvr $CONFIGSERVER_PORT`; do sleep 3; done
+echo "*******  Configuration Server has started"
 
 
-# use this script to start firefox and go to the web app
-# firefox http://mybiblestudywebapp.us-east-2.elasticbeanstalk.com/index.html &
+echo "********************************************************"
+echo "Waiting for the kafka server to start on port $KAFKASERVER_PORT"
+echo "********************************************************"
+while ! `nc -z zookeeper $KAFKASERVER_PORT`; do sleep 10; done
+echo "******* Kafka Server has started"
+
+echo "********************************************************"
+echo "Waiting for the REDIS server to start  on port $REDIS_PORT"
+echo "********************************************************"
+while ! `nc -z redis $REDIS_PORT`; do sleep 10; done
+echo "******* REDIS has started"
+
+echo "********************************************************"
+echo "Starting MyBibleStudyService with Configuration Service via Eureka :  $EUREKASERVER_URI:$SERVER_PORT"
+echo "Using Kafka Server: $KAFKASERVER_URI"
+echo "Using ZK    Server: $ZKSERVER_URI"
+echo "********************************************************"
+java -jar app.jar

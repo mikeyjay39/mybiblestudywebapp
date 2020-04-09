@@ -27,7 +27,7 @@ public class Book {
 
     @Id
     @SequenceGenerator(name = "MY_ENTITY_SEQ", sequenceName = "MY_ENTITY_SEQ", allocationSize=1)
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "MY_ENTITY_SEQ" )
+    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "MY_ENTITY_SEQ" )
     @Column(name = "book_id")
     private long id;
 
