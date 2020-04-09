@@ -26,7 +26,7 @@ public class RedisConfig extends CachingConfigurerSupport {
     @Value("${spring.redis.host}")
     private String redisServer;
 
-    @Value("${redis.port}")
+    @Value("${spring.redis.port}")
     private int redisPort;
 
     @Bean
