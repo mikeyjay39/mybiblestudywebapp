@@ -15,8 +15,8 @@ services:
       - "POSTGRES_USER=postgres"
     ports:
       - 5434:5432
-    #volumes:
-    #  - "${HOME}/docker/volumes/postgres-bibles:/var/lib/postgresql/data"
+    volumes:
+      - "${HOME}/docker/volumes/postgres-bibles:/var/lib/postgresql/data"
   redis:
     image: redis:alpine
     expose:
