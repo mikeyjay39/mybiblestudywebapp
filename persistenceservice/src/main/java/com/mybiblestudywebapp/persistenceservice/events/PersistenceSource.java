@@ -30,4 +30,10 @@ public class PersistenceSource {
         source.output().send(MessageBuilder.withPayload("Message from Persistence Service at " + msg)
         .build());
     }
+
+    public void sendMessage(String msg) {
+        log.debug("Sending Kafka message: {}", msg);
+        source.output().send(MessageBuilder.withPayload(msg)
+                .build());
+    }
 }

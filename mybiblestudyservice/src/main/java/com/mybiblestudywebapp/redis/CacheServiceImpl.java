@@ -38,4 +38,10 @@ public class CacheServiceImpl implements CacheService{
     @CacheEvict(value = "dashboard", key = "#request")
     public void clearStudyNotesForChapter(GetStudyNotesForChapterRequest request) {
     }
+
+    @Override
+    @CacheEvict(value = "dashboard", allEntries = true)
+    public void invalidateCache() {
+
+    }
 }

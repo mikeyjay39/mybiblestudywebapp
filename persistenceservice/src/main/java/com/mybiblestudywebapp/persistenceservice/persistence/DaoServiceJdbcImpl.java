@@ -147,6 +147,7 @@ public class DaoServiceJdbcImpl implements DaoService {
         int[] updateCounts = null;
 
         cacheService.clearDashboardCache();
+        persistenceSource.sendMessage("INVALIDATE");
 
         try {
             updateCounts = namedParameterJdbcTemplate.batchUpdate(sqlInsert, batch);
@@ -641,6 +642,8 @@ public class DaoServiceJdbcImpl implements DaoService {
         }
 
         cacheService.clearDashboardCache();
+        persistenceSource.sendMessage("INVALIDATE");
+
 
         if (noteDao.update(note)) {
             return "success";

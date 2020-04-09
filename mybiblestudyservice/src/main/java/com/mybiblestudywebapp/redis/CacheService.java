@@ -16,5 +16,7 @@ public interface CacheService {
 
     void clearStudyNotesForChapter(GetStudyNotesForChapterRequest request);
 
+    void invalidateCache();
+
 
 }
