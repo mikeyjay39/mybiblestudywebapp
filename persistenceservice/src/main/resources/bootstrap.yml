@@ -2,7 +2,7 @@ spring:
   application:
     name: persistenceservice
   profiles:
-    active: default, ${SPRING_PROFILE}
+    active: default, ${SPRING_PROFILE}, postgres, redis
   cloud:
     config:
       enabled: true

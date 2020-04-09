@@ -1,33 +1,13 @@
-management:
-  endpoints:
-    web:
-      exposure:
-        include: "*"
-eureka:
-  instance:
-    prefer-ip-address: true
-  client:
-    register-with-eureka: true
-    fetch-registry: true
-    serviceUrl:
-      defaultZone: ${EUREKASERVER_URI}
 server:
   port: 8081
-
-spring.h2.console.enabled: true
-spring.h2.console.path: /console/
 
 spring:
   datasource:
     driver-class-name: ${PSQLDBDRIVER}
-    url: ${PSQLBIBLESDBURL} #jdbc:postgresql://localhost:5434/postgres #
+    url: ${PSQLBIBLESDBURL}
     username: ${PSQLDBUSER}
     password: ${PSQLDBPASS}
   jpa:
     hibernate:
       ddl-auto: none
     database: postgresql
-logging:
-  level:
-    com:
-      mybiblestudywebapp: DEBUG

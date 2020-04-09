@@ -1,22 +1,6 @@
-eureka:
-  instance:
-    preferIpAddress: true
-  client:
-    registerWithEureka: true
-    fetchRegistry: true
-    serviceUrl:
-      defaultZone: ${EUREKASERVER_URI}
-
 server:
   port: 8901
   servlet:
     context-path: /auth
-
-spring:
-  datasource:
-    driver-class-name: ${PSQLDBDRIVER}
-    url: ${PSQLDBURL}
-    username: ${PSQLDBUSER}
-    password: ${PSQLDBPASS}
 
 

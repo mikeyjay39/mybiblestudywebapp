@@ -1,15 +1,2 @@
 server:
   port: 5555
-
-eureka:
-  instance:
-    preferIpAddress: true
-  client:
-    registerWithEureka: true
-    fetchRegistry: true
-    serviceUrl:
-      defaultZone: ${EUREKASERVER_URI}
-
-# Add to Spring config
-zuul:
-  sensitiveHeaders: Cookie,Set-Cookie

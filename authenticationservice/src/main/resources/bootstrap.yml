@@ -3,7 +3,7 @@ spring:
     name: authenticationservice
   profiles:
     active:
-      default, ${SPRING_PROFILE}
+      default, ${SPRING_PROFILE}, postgres
   cloud:
     config:
       enabled: true

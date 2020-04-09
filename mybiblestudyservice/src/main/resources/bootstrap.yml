@@ -2,9 +2,8 @@ spring:
   application:
     name: mybiblestudyservice
   profiles:
-    active: default, ${SPRING_PROFILE}
+    active: default, ${SPRING_PROFILE}, postgres, redis
   cloud:
     config:
       enabled: true
       uri: ${CONFIGSERVER_URI}
-    #uri: http://localhost:8888

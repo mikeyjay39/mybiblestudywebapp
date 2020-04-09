@@ -1,28 +1,10 @@
 server:
   port: 8082
 
-#security:
-#  oauth2:
-#    resource:
-#      userInfoUri: http://localhost:8901/auth/user
-
-eureka:
-  instance:
-    prefer-ip-address: true
-  client:
-    register-with-eureka: true
-    fetch-registry: true
-    serviceUrl:
-      defaultZone: ${EUREKASERVER_URI}
-
 spring:
-  redis:
-    host: ${REDISSERVER_URI}
-    port: 6379
   cloud:
     stream:
       bindings:
-      #  bootstrap-servers: localhost:9092
         output:
           destination: persistenceServiceTopic
           content-type: application/json
@@ -30,6 +12,4 @@ spring:
         binder:
           headers:
           brokers: ${KAFKASERVER_URI}
-          #defaultBrokerPort: 9092
           zkNodes: ${ZKSERVER_URI}
-
