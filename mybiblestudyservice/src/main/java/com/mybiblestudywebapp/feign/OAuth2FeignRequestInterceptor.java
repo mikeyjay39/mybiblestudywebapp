@@ -7,8 +7,6 @@ import feign.RequestTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.oauth2.client.OAuth2ClientContext;
-import org.springframework.security.oauth2.client.token.AccessTokenRequest;
-import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.util.Assert;
 
 /**
