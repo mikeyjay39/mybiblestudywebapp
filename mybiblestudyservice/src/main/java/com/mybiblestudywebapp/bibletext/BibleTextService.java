@@ -1,6 +1,7 @@
 package com.mybiblestudywebapp.bibletext;
 
 import com.mybiblestudywebapp.redis.BibleTextRedisRepository;
+import com.mybiblestudywebapp.security.OAuth2Session;
 import com.mybiblestudywebapp.utils.UserContextHolder;
 import com.netflix.hystrix.contrib.javanica.annotation.DefaultProperties;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
@@ -36,6 +37,9 @@ public class BibleTextService {
     private BibleTextRedisRepository bibleTextRedisRepository;
 
     @Autowired
+    private OAuth2Session oAuth2Session;
+
+    @Autowired
     public BibleTextService(BibleTextClient bibleTextClient) {
         this.bibleTextClient = bibleTextClient;
     }
@@ -60,7 +64,10 @@ public class BibleTextService {
         }
 
         logger.debug("{} not found in Redis. Calling Bibletextservice", key);
-        result = bibleTextClient.getVerses(book, chapterNo);
+
+        String authHeader = oAuth2Session.authHeader;
+
+        result = bibleTextClient.getVerses(authHeader, book, chapterNo);
         bibleTextRedisRepository.saveVerses(key, result);
         return result;
     }

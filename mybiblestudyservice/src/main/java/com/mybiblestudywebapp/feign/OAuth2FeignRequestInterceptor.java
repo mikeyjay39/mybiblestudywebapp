@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.oauth2.client.OAuth2ClientContext;
 import org.springframework.util.Assert;
+import org.springframework.web.context.request.RequestContextListener;
 
 /**
  * Created by Michael Jeszenka.
@@ -36,23 +37,6 @@ public class OAuth2FeignRequestInterceptor implements RequestInterceptor {
         UserContext context = UserContextHolder.getContext();
         String authHeader = context.getAuthToken();
 
-        template.header("Authorization", authHeader);
-
-       /* AccessTokenRequest accessTokenRequest = oauth2ClientContext.getAccessTokenRequest();
-        OAuth2AccessToken oAuth2AccessToken = accessTokenRequest.getExistingToken();
-
-        String authHeader = String.valueOf(template.headers().get(AUTHORIZATION_HEADER));
-        template.header(AUTHORIZATION_HEADER, authHeader);
-
-
-        if (template.headers().containsKey(AUTHORIZATION_HEADER)) {
-            LOGGER.warn("The Authorization token has been already set");
-        } else if (oAuth2AccessToken == null) {
-            LOGGER.warn("Can not obtain existing token for request, if it is a non secured request, ignore.");
-        } else {
-            LOGGER.debug("Constructing Header {} for Token {}", AUTHORIZATION_HEADER, BEARER_TOKEN_TYPE);
-            template.header(AUTHORIZATION_HEADER, String.format("%s %s", BEARER_TOKEN_TYPE,
-                    oAuth2AccessToken.toString()));
-        }*/
+        //template.header("Authorization", authHeader);
     }
 }
