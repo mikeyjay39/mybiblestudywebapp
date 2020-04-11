@@ -20,10 +20,10 @@ import java.util.Map;
 public interface PersistenceClient {
 
     @PostMapping("/api/persistence/persistence/addUserNotesToView/{userId}/{viewId}")
-    Long addUserNotesToView(@PathVariable long userId, @PathVariable long viewId);
+    Long addUserNotesToView(@RequestHeader("Authorization") String authHeader, @PathVariable long userId, @PathVariable long viewId);
 
     @GetMapping("/api/persistence/persistence/getStudyNotesForChapter/{viewCode}/{book}/{chapterNo}")
-    List<Note> getStudyNotesForChapter(@PathVariable String viewCode,
+    List<Note> getStudyNotesForChapter(@RequestHeader("Authorization") String authHeader, @PathVariable String viewCode,
                                               @PathVariable String book,
                                               @PathVariable long chapterNo);
 
@@ -31,44 +31,44 @@ public interface PersistenceClient {
             path = "/api/persistence/persistence/addNote",
             consumes = "application/json",
             produces = "application/json")
-    long addNote(@RequestBody Note note);
+    long addNote(@RequestHeader("Authorization") String authHeader, @RequestBody Note note);
 
     @PostMapping(
             path = "/api/persistence/persistence/rankNote",
             consumes = "application/json",
             produces = "application/json")
-    RankNoteResponse rankNote(@RequestBody RankNoteRequest request);
+    RankNoteResponse rankNote(@RequestHeader("Authorization") String authHeader, @RequestBody RankNoteRequest request);
 
     @PostMapping("/api/persistence/persistence/login/{username}")
     LoginResponse login(@PathVariable String username);
 
     @PostMapping("/api/persistence/persistence/addView")
-    long addView();
+    long addView(@RequestHeader("Authorization") String authHeader);
 
     @GetMapping("/api/persistence/persistence/getChapter/{book}/{chapterNo}")
-    Map<String, Integer> getChapter(@PathVariable String book,
+    Map<String, Integer> getChapter(@RequestHeader("Authorization") String authHeader, @PathVariable String book,
                                            @PathVariable int chapterNo);
 
     @GetMapping("/api/persistence/persistence/getViews")
-    List<String> getViews();
+    List<String> getViews(@RequestHeader("Authorization") String authHeader);
 
     @DeleteMapping("/api/persistence/persistence/removeNoteFromView/{viewcode}/{noteId}")
-    String removeNoteFromView(@PathVariable String viewcode,
+    String removeNoteFromView(@RequestHeader("Authorization") String authHeader, @PathVariable String viewcode,
                                      @PathVariable long noteId);
 
     @DeleteMapping("/api/persistence/persistence/deleteView/{viewcode}")
-    String deleteView(@PathVariable String viewcode);
+    String deleteView(@RequestHeader("Authorization") String authHeader, @PathVariable String viewcode);
 
     @GetMapping("/api/persistence/persistence/getUsers")
-    List<User> getUsers();
+    List<User> getUsers(@RequestHeader("Authorization") String authHeader);
 
     @PostMapping("/api/persistence/persistence/addNotesToView/{viewcode}/{authorId}/{ranking}")
-    String addNotesToView(@PathVariable String viewcode,
+    String addNotesToView(@RequestHeader("Authorization") String authHeader, @PathVariable String viewcode,
                                  @PathVariable long authorId,
                                  @PathVariable int ranking);
 
     @GetMapping("/api/persistence/persistence/getAllChapterNotesForUser/{book}/{chapterNo}/{userId}")
-    List<Note> getAllChapterNotesForUser(@PathVariable String book,
+    List<Note> getAllChapterNotesForUser(@RequestHeader("Authorization") String authHeader, @PathVariable String book,
                                                 @PathVariable long chapterNo,
                                                 @PathVariable long userId);
 
@@ -76,21 +76,21 @@ public interface PersistenceClient {
             path = "/api/persistence/persistence/updateNote",
             consumes = "application/json",
             produces = "application/json")
-    String updateNote(@RequestBody Note note);
+    String updateNote(@RequestHeader("Authorization") String authHeader, @RequestBody Note note);
 
     @DeleteMapping("/api/persistence/persistence/deleteNote/{noteId}")
-    String deleteNote(@PathVariable long noteId);
+    String deleteNote(@RequestHeader("Authorization") String authHeader, @PathVariable long noteId);
 
     @GetMapping("/api/persistence/persistence/getComments/{noteId}")
-    List<Comment> getComments(@PathVariable long noteId);
+    List<Comment> getComments(@RequestHeader("Authorization") String authHeader, @PathVariable long noteId);
 
     @PostMapping(
             path = "/api/persistence/persistence/addComment",
             consumes = "application/json",
             produces = "application/json")
-    Response addComment(@RequestBody Comment comment);
+    Response addComment(@RequestHeader("Authorization") String authHeader, @RequestBody Comment comment);
 
     @PostMapping("/api/persistence/persistence/addNoteToView/{viewcode}/{noteId}")
-    Response addNoteToView(@PathVariable String viewcode,
+    Response addNoteToView(@RequestHeader("Authorization") String authHeader, @PathVariable String viewcode,
                                   @PathVariable long noteId);
 }

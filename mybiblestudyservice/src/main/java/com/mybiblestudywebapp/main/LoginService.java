@@ -3,11 +3,9 @@ package com.mybiblestudywebapp.main;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mybiblestudywebapp.dashboard.users.JwtToken;
+import com.mybiblestudywebapp.security.OAuth2Session;
 import com.mybiblestudywebapp.utils.Constants;
 import com.mybiblestudywebapp.utils.http.LoginResponse;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwt;
-import io.jsonwebtoken.Jwts;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,14 +17,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
-import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpSession;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Map;
@@ -43,6 +39,9 @@ public class LoginService {
 
     @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+
+    @Autowired
+    private OAuth2Session oAuth2Session;
 
     @Value("${security.oauth2.client.client-id}")
     private String clientId;
@@ -66,6 +65,7 @@ public class LoginService {
         session.setAttribute("userId", userId);
         session.setAttribute(Constants.ACCESS_TOKEN.toString(), accessToken);
         loginResponse.setUserId(userId);
+        oAuth2Session.authHeader = String.format("Bearer %s", accessToken);
         return loginResponse;
     }
 

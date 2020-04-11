@@ -3,6 +3,7 @@ package com.mybiblestudywebapp.utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -35,10 +36,9 @@ public class UserContextFilter implements Filter {
 
         UserContext context = UserContextHolder.getContext();
 
-        UserContextHolder
+        /*UserContextHolder
                 .getContext()
-                .setAuthToken(/*httpServletRequest
-                        .getHeader(Constants.AUTH_TOKEN.toString())*/"Bearer " + accessToken);
+                .setAuthToken("Bearer " + accessToken);*/
 
         UserContextHolder
                 .getContext()
@@ -47,6 +47,8 @@ public class UserContextFilter implements Filter {
 
         logger.debug("UserContextFilter Auth token: {}", UserContextHolder.getContext().getAuthToken());
         logger.debug("UserContextFilter Correlation id: {}", UserContextHolder.getContext().getCorrelationId());
+
+
 
         filterChain.doFilter(httpServletRequest, servletResponse);
     }
