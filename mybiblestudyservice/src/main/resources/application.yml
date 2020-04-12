@@ -1,0 +1,7 @@
+#logging:
+#  file:
+#    name: /home/michael/Projects/mybiblestudywebapp/application.log
+logging:
+  level:
+    com:
+      mybiblestudywebapp: DEBUG
