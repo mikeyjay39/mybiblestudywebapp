@@ -56,6 +56,9 @@ services:
       - 8888
     ports:
       - 8888:8888
+    labels:
+      collect_logs_with_filebeat: "true"
+      decode_log_event_to_json_object: "true"
   authenticationservice:
     env_file:
       - biblestudy_envfile.env
@@ -79,6 +82,9 @@ services:
       - 8901
     ports:
       - 8901:8901
+    labels:
+      collect_logs_with_filebeat: "true"
+      decode_log_event_to_json_object: "true"
   eurekasvr:
     env_file:
       - biblestudy_envfile.env
@@ -92,6 +98,9 @@ services:
       - 8761
     ports:
       - 8761:8761
+    labels:
+      collect_logs_with_filebeat: "true"
+      decode_log_event_to_json_object: "true"
   zuulsvr:
     env_file: biblestudy_envfile.env
     environment:
@@ -107,6 +116,9 @@ services:
       - 5555
     ports:
       - 5555:5555
+    labels:
+      collect_logs_with_filebeat: "true"
+      decode_log_event_to_json_object: "true"
   mybiblestudywebapp:
     env_file: biblestudy_envfile.env
     environment:
@@ -162,6 +174,9 @@ services:
       - 8081
     ports:
       - 8081:8081
+    labels:
+      collect_logs_with_filebeat: "true"
+      decode_log_event_to_json_object: "true"
   persistenceservice:
     env_file: biblestudy_envfile.env
     build: ../persistenceservice/
@@ -187,15 +202,17 @@ services:
       - 8082
     ports:
       - 8082:8082
-
+    labels:
+      collect_logs_with_filebeat: "true"
+      decode_log_event_to_json_object: "true"
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.2.0
     ports:
       - "9200:9200"
     environment:
       - "discovery.type=single-node"
-    volumes:
-      - ./elasticsearch/data:/usr/share/elasticsearch/data:rw              # Persistence data
+    #volumes:
+    #  - "${HOME}/docker/volumes/elasticsearch/data:/usr/share/elasticsearch/data:rw"             # Persistence data
 
   logstash:
     image: docker.elastic.co/logstash/logstash:7.2.0
