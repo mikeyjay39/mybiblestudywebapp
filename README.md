@@ -1,134 +1,95 @@
 # My Bible Study Web App
 
-## Access
+Access at: 
 
-The web app can be accessed at: http://mybiblestudywebapp.us-east-2.elasticbeanstalk.com/index.html
+http://mybiblestudywebapp.us-east-2.elasticbeanstalk.com/index.html
+## Overview
 
-## Build
+This is a web application to facilitate collaborative study
+of the Bible. Under the dashboard area users can sign up for accounts
+and create notes for verses and chapters of the Bible. They
+can compile their own notes into a *view* as well as add
+public notes from other authors to their view. They can then
+share their views. Users can access a generic view without
+an account in the Client section on the frontend.
 
-Run the build script:
+## BUILD
 
-```
-./dockerbuild.sh
-```
+From parent level directory run:
 
-## Contents
+```mvn clean install```
 
-#### root directory
-Many of the files in the root directory are related to build the project, docker, and pushing it to
-my AWS repository. They will not work in your environment. To do so would require my AWS
-credentials. I apologize for the inconvenience.
+After building, to run locally navigate to `./docker` and run:
 
-#### .mvn/wrapper/
-This is a standalone executable version of maven, the build tool I used.
+```docker-compose up```
 
-#### documentation/
-This folder contains schema diagrams of the database I made, as well as a UML sequence
-diagram showing how the service classes inside the backend app communicate with each other.
+## Architecture
 
-#### frontend/
-This contains the frontend html and javascript files. It is used for testing purposes locally and is
-not included in the actual deployed version of the app. It mirrors the html and javascript files
-found in src/main/resources/static
+![image info](./docs/Services.png "Schema")
 
-#### sql/
-This folder contains scripts for setting up the Postgres database.
+### mybiblestudyservice
+- Main backend service
+- Provides endpoints for the frontend requests
 
-#### src/
-This folder contains all the source code of the project.
+### bibletextservices
+- Serves Bible verses
 
-## Random Development Notes
-
-__Backup Schema__
-
-1. Right click on "public" in datagrip
-2. SQL Scripts > SQL Generator
-3. Checkmark "Use create or replace syntax" AND "Ignore owner"
-4. Save to schema.sql
-
-NOTE: After backing up the schema we need to delete the create uuid
-functions at the end of schema.sql otherwise the import will fail.
-
-For INSERT statements .sql file we need to remove the primary key columns
-otherwise the sequences nextval() will not properly be incremented.
-
-__SQL__
-
-```
-TRUNCATE TABLE table_name 
-RESTART IDENTITY CASCADE;
-```
+### persistenceservice
+- Manages data 
 
 
+![image info](./docs/Servers.png "Schema")
 
-__Docker__
+### Config server
+- Serves configuration files to the services
 
-https://hackernoon.com/dont-install-postgres-docker-pull-postgres-bee20e200198
+### Eureka server
+- Provides client discovery to the services
 
-To launch Postgres:
+### Auth server
+- OAuth2 server that issues JWTs.
 
-```
-sudo docker run --rm --name pg-docker -e POSTGRES_PASSWORD=$(echo $PSQLPASSWORD) -d -p 5432:5432 -v $HOME/docker/volumes/postgres:/var/lib/postgresql/data postgres
-```
+### Zuul server
+- Provides service routing and filtering
 
-To stop:
+### Zooker/Kafka
+- Provides event streams
 
-```
-sudo docker sto <container id>
-```
+### Redis
+- Provides memory caching
 
-__MileStone__
+### Elastic stack
+- Provides Log aggregation. Includes **Elasticsearch**, **Logstash**, **Kibana**, and **Filebeat**
 
-Hit API with curl:
+## Security
 
-```
-curl -X POST -H "Content-Type: application/json" -d '{"viewCode":"6e9e6366-f386-11e9-b633-0242ac110002","book":"Genesis","chapterNo":1}' localhost:8080/biblestudy
-```
+![image info](./docs/Authentication_Authorization.png "Schema")
 
-```
-curl -v -X POST -H "Content-Type: application/json" -d '{"email":"testingemail@testing.com","firstname":"Abe","lastname":"Lincoln","password","testingpassword"}' localhost:8080/users
-```
+1. User logs in via Http Basic Authetnication with their username and password
+at the mybiblestudyservice.
 
-__Docker Build Process__
+2. Mybiblestudyservice checks the username and password and if good
+then it creates a user session and forwards the request to the Auth server
+including the OAuth2 clientID and secret.
 
-1. Delete all running bible app containers
+3. The Auth server response with a JWT. The mybiblestudyservice appends
+the JWT to the user session.
 
-```
-sudo docker rm <cotainer id>
-```
+4. Mybiblestudy services appens the JWT as a header to subsequent requests
+to the other services.
 
-2. Delete all bible app images
+## Schema
 
-```
-sudo docker rmi <image id>
-```
+### Postgres - Bibles
 
-3. Rebuild with maven
+![image info](./bibletextservice/docs/schema.png "Schema")
 
-```
-mvn clean install
-```
+## Postgres - Data
 
-4. Build docker image
+![image info](./mybiblestudyservice/documentation/schema.png "Schema")
 
-```
-sudo docker-compose up
-```
 
-5. Push to ECR
+### Configuration
 
-```
-sudo docker tag mybiblestudywebapp_mybiblestudywebapp:latest 721517280680.dkr.ecr.us-east-2.amazonaws.com/mybiblestudywebapp:latest
-
-sudo docker push 721517280680.dkr.ecr.us-east-2.amazonaws.com/mybiblestudywebapp:latest
-```
-
-6. Reupload aws.zip to EBS. This should contain the Dockerrun.aws.json file
-
-Remove all containers
-
-```
-sudo docker rm $(sudo docker ps -a -q)
-
-sudo docker rmi $(sudo docker images -a -q)
-```
+- All microservice URIs are configured via OS environment variables
+- Everything else is set by the Spring Cloud Config server

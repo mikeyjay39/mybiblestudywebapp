@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: authenticationservice
+  profiles:
+    active:
+      default, ${SPRING_PROFILE}, postgres
+  cloud:
+    config:
+      enabled: true
+      uri: ${CONFIGSERVER_URI}

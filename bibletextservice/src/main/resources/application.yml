@@ -1,0 +1,13 @@
+server:
+  port: 8081
+
+spring:
+  datasource:
+    driver-class-name: ${PSQLDBDRIVER}
+    url: ${PSQLBIBLESDBURL}
+    username: ${PSQLDBUSER}
+    password: ${PSQLDBPASS}
+  jpa:
+    hibernate:
+      ddl-auto: none
+    database: postgresql

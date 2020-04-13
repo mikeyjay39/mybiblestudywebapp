@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: bibletextservice
+  profiles:
+    active: default, ${SPRING_PROFILE}
+  cloud:
+    config:
+      enabled: true
+      uri: ${CONFIGSERVER_URI}

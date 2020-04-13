@@ -1,0 +1,15 @@
+server:
+  port: 8082
+
+spring:
+  cloud:
+    stream:
+      bindings:
+        output:
+          destination: persistenceServiceTopic
+          content-type: application/json
+      kafka:
+        binder:
+          headers:
+          brokers: ${KAFKASERVER_URI}
+          zkNodes: ${ZKSERVER_URI}
