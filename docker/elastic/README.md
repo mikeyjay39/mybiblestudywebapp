@@ -2,7 +2,7 @@
 
 To access Kibana:
 
-```http://localhost:5601/```
+[http://localhost:5601/](http://localhost:5601/)
 
 ### Errors due to too little diskspace available
 
