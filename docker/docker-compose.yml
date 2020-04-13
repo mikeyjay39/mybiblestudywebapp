@@ -56,6 +56,9 @@ services:
       - 8888
     ports:
       - 8888:8888
+    labels:
+      collect_logs_with_filebeat: "true"
+      decode_log_event_to_json_object: "true"
   authenticationservice:
     env_file:
       - biblestudy_envfile.env
@@ -79,6 +82,9 @@ services:
       - 8901
     ports:
       - 8901:8901
+    labels:
+      collect_logs_with_filebeat: "true"
+      decode_log_event_to_json_object: "true"
   eurekasvr:
     env_file:
       - biblestudy_envfile.env
@@ -92,6 +98,9 @@ services:
       - 8761
     ports:
       - 8761:8761
+    labels:
+      collect_logs_with_filebeat: "true"
+      decode_log_event_to_json_object: "true"
   zuulsvr:
     env_file: biblestudy_envfile.env
     environment:
@@ -107,6 +116,9 @@ services:
       - 5555
     ports:
       - 5555:5555
+    labels:
+      collect_logs_with_filebeat: "true"
+      decode_log_event_to_json_object: "true"
   mybiblestudywebapp:
     env_file: biblestudy_envfile.env
     environment:
@@ -131,6 +143,9 @@ services:
       - 8080
     ports:
       - 8080:8080
+    labels:
+      collect_logs_with_filebeat: "true"
+      decode_log_event_to_json_object: "true"
   #  restart: unless-stopped
   bibletextservice:
     env_file:
@@ -159,6 +174,9 @@ services:
       - 8081
     ports:
       - 8081:8081
+    labels:
+      collect_logs_with_filebeat: "true"
+      decode_log_event_to_json_object: "true"
   persistenceservice:
     env_file: biblestudy_envfile.env
     build: ../persistenceservice/
@@ -184,6 +202,47 @@ services:
       - 8082
     ports:
       - 8082:8082
+    labels:
+      collect_logs_with_filebeat: "true"
+      decode_log_event_to_json_object: "true"
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.2.0
+    ports:
+      - "9200:9200"
+    environment:
+      - "discovery.type=single-node"
+    #volumes:
+    #  - "/var/lib/elasticsearch/data:/usr/share/elasticsearch/data:rw"             # Persistence data
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:7.2.0
+    ports:
+      - "25826:25826"
+      - "5044:5044"
+    volumes:
+      - ./elastic/logstash/pipeline:/usr/share/logstash/pipeline:ro                # Pipeline configuration
+    restart: on-failure
+    depends_on:
+      - elasticsearch
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.2.0
+    ports:
+      - "5601:5601"
+    restart: on-failure
+    depends_on:
+      - elasticsearch
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:7.2.0
+    volumes:
+      - ./elastic/filebeat/filebeat.docker.yml:/usr/share/filebeat/filebeat.yml:ro # Configuration file
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro           # Docker logs
+      - /var/run/docker.sock:/var/run/docker.sock:ro                       # Additional information about containers
+      - /var/lib/filebeat/data:/usr/share/filebeat/data:rw                 # Persistence data
+    user: root                                                             # Allow access to log files and docker.sock
+    restart: on-failure
+    depends_on:
+      - logstash
 
 volumes:
   zookeeper_data:
