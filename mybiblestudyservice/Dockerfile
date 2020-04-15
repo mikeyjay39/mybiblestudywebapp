@@ -1,4 +1,4 @@
-FROM openjdk:11
+FROM adoptopenjdk:11-jre-hotspot
 VOLUME /tmp
 EXPOSE 8080
 RUN  apt update --yes --allow-unauthenticated && apt upgrade --yes --allow-unauthenticated && apt install netcat-openbsd --yes --allow-unauthenticated
